@@ -1,0 +1,33 @@
+{
+    "env": {
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+
+  "plugins": ["@typescript-eslint"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
+    }
+  ],
+    "extends": "standard-with-typescript",
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+        "semi": "off",
+        "@typescript-eslint/semi": "off",
+        "@typescript-eslint/no-misused-promises": [
+            "error",
+            {
+                "checksVoidReturn": false
+            }
+        ]
+    }
+}
