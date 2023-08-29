@@ -1,15 +1,11 @@
 import express from 'express'
 import cors from 'cors'
-import path from 'path'
-import dotenv from 'dotenv'
-import UserRoutes from './routes/user'
+import UserRoutes from './routes/user.routes'
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-dotenv.config({ path: path.resolve('./.env') }); // configurando para uso do arquivo .ENV
 
 const PORT = 8000;
 
