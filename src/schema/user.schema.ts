@@ -19,4 +19,4 @@ export const userLoginSchema = z.object({
 })
 
 export type createUserType = TypeOf<typeof createUserSchema>['body'];
-export type userLoginType = TypeOf<typeof userLoginSchema>;
+export type userLoginType = TypeOf<typeof userLoginSchema>['body'];

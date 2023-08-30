@@ -7,7 +7,7 @@ import { db } from '../../../database';
 import { user } from '../../../database/schema';
 import { eq } from 'drizzle-orm';
 import deleteObjKey from '../../utils/index';
-import { type createUserType } from '../../schema/user.schema';
+import { type userLoginType, type createUserType } from '../../schema/user.schema';
 import { type HandleLoginRes, type CreateUserRes, type GetUsersRes, type LoggedUser } from './types.user.controller';
 
 dotenv.config({ path: path.resolve('./.env') });
@@ -65,7 +65,7 @@ export async function createUser (req: Request<unknown, unknown, createUserType>
   }
 };
 
-export async function handleLogin (req: Request, res: Response<HandleLoginRes>): Promise<Response<HandleLoginRes, Record<string, any>>> {
+export async function handleLogin (req: Request<unknown, unknown, userLoginType>, res: Response<HandleLoginRes>): Promise<Response<HandleLoginRes, Record<string, any>>> {
   try {
     const { email, password } = req.body;
 
