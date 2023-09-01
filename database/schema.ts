@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
+  boolean,
   int,
   mysqlEnum,
   mysqlTable,
@@ -64,9 +65,11 @@ export const menuItem = mysqlTable('menu_items', {
     .references(() => user.id)
     .notNull(),
   categoryId: int('category_id').references(() => menuCategory.id),
-  itemName: varchar('name', { length: 256 }).notNull(),
+  name: varchar('name', { length: 256 }).notNull(),
   description: varchar('description', { length: 256 }).notNull(),
   price: real('price', { precision: 10, scale: 2 }).notNull(),
+  temperature: mysqlEnum('temperature', ['cold', 'hot']),
+  vegan: boolean('vegan'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -81,5 +84,7 @@ export const menuItemRelations = relations(menuItem, ({ one }) => ({
   }),
 }));
 
-export type User = typeof user.$inferSelect; // return type when queried
-export type NewUser = typeof user.$inferInsert; // insert type
+export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
+
+export type MenuItem = typeof menuItem.$inferInsert;

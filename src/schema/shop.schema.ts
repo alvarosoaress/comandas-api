@@ -3,17 +3,17 @@ import { type TypeOf, z } from 'zod';
 export const createShopSchema = z.object({
   body: z.object({
     userId: z.number().positive(),
-    addressId: z.number().positive()
-  })
-})
+    addressId: z.number().positive(),
+  }),
+});
 
 // id Se torna uma string pois os params vem na url
 // tudo na url é string
-export const getShopByIdSchema = z.object({
+export const getShopSchema = z.object({
   params: z.object({
-    id: z.string()
-  })
-})
+    id: z.string(),
+  }),
+});
 
 export type createShopType = TypeOf<typeof createShopSchema>['body'];
-export type getShopByIdType = TypeOf<typeof getShopByIdSchema>['params'];
+export type getShopType = TypeOf<typeof getShopSchema>['params'];

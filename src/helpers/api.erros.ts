@@ -1,44 +1,44 @@
 export class ApiError extends Error {
   public readonly statusCode: number;
 
-  constructor (message: string, statusCode: number) {
+  constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
   }
 }
 
 export class InternalServerError extends ApiError {
-  constructor () {
+  constructor() {
     super('Internal Sever Error', 500);
   }
 }
 
 export class BadRequestError extends ApiError {
-  constructor (message: string) {
+  constructor(message: string) {
     super(message, 400);
   }
 }
 
 export class UnauthorizedError extends ApiError {
-  constructor (message: string) {
+  constructor(message: string) {
     super(message, 401);
   }
 }
 
 export class ForbiddenError extends ApiError {
-  constructor (message: string) {
+  constructor(message: string) {
     super(message, 403);
   }
 }
 
 export class NotFoundError extends ApiError {
-  constructor (message: string) {
+  constructor(message: string) {
     super(message, 404);
   }
 }
 
 export class ConflictError extends ApiError {
-  constructor (message: string) {
+  constructor(message: string) {
     super(message, 409);
   }
 }

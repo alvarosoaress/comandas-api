@@ -1,9 +1,9 @@
-import 'express-async-errors'
-import express from 'express'
-import cors from 'cors'
-import UserRoutes from './routes/user.routes'
-import AddressRoutes from './routes/address.routes'
-import ShopRoutes from './routes/shop.routes'
+import 'express-async-errors';
+import express from 'express';
+import cors from 'cors';
+import UserRoutes from './routes/user.routes';
+import AddressRoutes from './routes/address.routes';
+import ShopRoutes from './routes/shop.routes';
 import { errorMiddleware } from './middleware/error';
 
 const app = express();
@@ -27,5 +27,5 @@ app.use('/shop', ShopRoutes);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-  console.log(`Server is running fine! http://localhost:${PORT}/`)
+  console.log(`Server is running fine! http://localhost:${PORT}/`);
 });

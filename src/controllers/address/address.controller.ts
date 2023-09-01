@@ -4,44 +4,61 @@ import { db } from '../../../database';
 import { address } from '../../../database/schema';
 import { ConflictError, NotFoundError } from '../../helpers/api.erros';
 import { type Request, type Response } from 'express';
-import { type getAddressByIdType, type createAddressType } from '../../schema/address.schema';
+import {
+  type getAddressType,
+  type createAddressType,
+} from '../../schema/address.schema';
 
-export async function getAddresses (req: Request, res: Response) {
+export async function getAddresses(req: Request, res: Response) {
   const addresses = await db.query.address.findMany();
 
-  if (!addresses) throw new NotFoundError('No addresses found')
+  if (!addresses) throw new NotFoundError('No addresses found');
 
   return res.status(200).json({
     error: false,
-    data: addresses
+    data: addresses,
   });
-};
+}
 
-export async function getAddressById (req: Request<getAddressByIdType>, res: Response) {
+export async function getAddress(req: Request<getAddressType>, res: Response) {
   const { id } = req.params;
 
-  const addressFound = await db.query.user.findFirst({ where: eq(address.id, parseInt(id)) });
+  const addressFound = await db.query.user.findFirst({
+    where: eq(address.id, parseInt(id)),
+  });
 
-  if (!addressFound) throw new NotFoundError('No address found')
+  if (!addressFound) throw new NotFoundError('No address found');
 
   return res.status(200).json({
     error: false,
-    data: addressFound
+    data: addressFound,
   });
-};
+}
 
-export async function createAddress (req: Request<unknown, unknown, createAddressType>, res: Response) {
-  const { street, number, neighborhood, city, state, country, zipcode, lat, long } = req.body;
+export async function createAddress(
+  req: Request<unknown, unknown, createAddressType>,
+  res: Response,
+) {
+  const {
+    street,
+    number,
+    neighborhood,
+    city,
+    state,
+    country,
+    zipcode,
+    lat,
+    long,
+  } = req.body;
 
   const addressExists = await db.query.address.findFirst({
-    where:
-        and(
-          eq(address.street, street),
-          eq(address.number, number),
-          eq(address.neighborhood, neighborhood),
-          eq(address.city, city)
-        )
-  })
+    where: and(
+      eq(address.street, street),
+      eq(address.number, number),
+      eq(address.neighborhood, neighborhood),
+      eq(address.city, city),
+    ),
+  });
 
   if (addressExists != null) throw new ConflictError('Address already exists');
 
@@ -54,7 +71,7 @@ export async function createAddress (req: Request<unknown, unknown, createAddres
     country,
     zipcode,
     lat,
-    long
+    long,
   };
 
   const insertReturn = await db.insert(address).values(newAddress);
@@ -64,6 +81,6 @@ export async function createAddress (req: Request<unknown, unknown, createAddres
   return res.status(200).json({
     error: false,
     message: 'Address created',
-    data: { ...newAddress, id: insertId }
+    data: { ...newAddress, id: insertId },
   });
-};
+}

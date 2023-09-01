@@ -1,9 +1,9 @@
 {
-    "env": {
-        "commonjs": true,
-        "es2021": true,
-        "node": true
-    },
+  "env": {
+    "commonjs": true,
+    "es2021": true,
+    "node": true
+  },
 
   "plugins": ["@typescript-eslint", "prettier"],
   "overrides": [
@@ -15,22 +15,22 @@
       }
     }
   ],
-    "extends": ["standard-with-typescript","prettier"],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": "latest"
-    },
-    "rules": {
-        "semi": "off",
-        "prettier/prettier": "error",
-        "@typescript-eslint/semi": "off",
-        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-        "@typescript-eslint/no-misused-promises": [
-            "error",
-            {
-                "checksVoidReturn": false
-            }
-        ],
-        "@typescript-eslint/strict-boolean-expressions": "off"
-    }
+  "extends": ["standard-with-typescript", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "semi": "off",
+    "prettier/prettier": "error",
+    "@typescript-eslint/semi": "off",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": false
+      }
+    ],
+    "@typescript-eslint/strict-boolean-expressions": "off"
+  }
 }

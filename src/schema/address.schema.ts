@@ -5,14 +5,14 @@ import { type TypeOf, z } from 'zod';
 const addressSchema = createInsertSchema(address);
 
 export const createAddressSchema = z.object({
-  body: addressSchema
-})
+  body: addressSchema,
+});
 
-export const getAddressByIdSchema = z.object({
+export const getAddressSchema = z.object({
   params: z.object({
-    id: z.string()
-  })
-})
+    id: z.string(),
+  }),
+});
 
-export type getAddressByIdType = TypeOf<typeof getAddressByIdSchema>['params'];
+export type getAddressType = TypeOf<typeof getAddressSchema>['params'];
 export type createAddressType = TypeOf<typeof createAddressSchema>['body'];

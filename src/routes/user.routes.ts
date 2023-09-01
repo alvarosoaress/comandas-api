@@ -1,14 +1,14 @@
 import express from 'express';
 import {
   createUser,
-  getUserById,
+  getUser,
   getUsers,
   handleLogin,
 } from '../controllers/user/user.controller';
 import validate from '../middleware/validateResource';
 import {
   createUserSchema,
-  getUserByIdSchema,
+  getUserSchema,
   userLoginSchema,
 } from '../schema/user.schema';
 import verifyToken from '../middleware/verifyToken';
@@ -19,10 +19,10 @@ router.route('/create').post(validate(createUserSchema), createUser);
 
 router.route('/list').get(getUsers);
 
-router.route('/:id').get(validate(getUserByIdSchema), getUserById);
+router.route('/:id').get(validate(getUserSchema), getUser);
 
 router.route('/login').post(validate(userLoginSchema), handleLogin);
 
-router.route('/abcde').post(verifyToken, getUsers);
+router.route('/abcde').post(verifyToken(), getUsers);
 
 export default router;

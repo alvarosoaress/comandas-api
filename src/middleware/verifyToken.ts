@@ -42,10 +42,10 @@ const verifyToken =
             );
           }
         }
-
-        next();
       },
     );
+
+    next();
   };
 
 export default verifyToken;

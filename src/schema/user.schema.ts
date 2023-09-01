@@ -4,26 +4,26 @@ import { type TypeOf, z } from 'zod';
 
 const userSchema = createInsertSchema(user, {
   name: (schema) => schema.name.min(3),
-  email: (schema) => schema.email.email()
+  email: (schema) => schema.email.email(),
 });
 
 export const createUserSchema = z.object({
-  body: userSchema
-})
+  body: userSchema,
+});
 
 export const userLoginSchema = z.object({
   body: z.object({
     email: z.string().email(),
-    password: z.string()
-  })
-})
+    password: z.string(),
+  }),
+});
 
-export const getUserByIdSchema = z.object({
+export const getUserSchema = z.object({
   params: z.object({
-    id: z.string()
-  })
-})
+    id: z.string(),
+  }),
+});
 
 export type createUserType = TypeOf<typeof createUserSchema>['body'];
 export type userLoginType = TypeOf<typeof userLoginSchema>['body'];
-export type getUserByIdType = TypeOf<typeof getUserByIdSchema>['params'];
+export type getUserType = TypeOf<typeof getUserSchema>['params'];
