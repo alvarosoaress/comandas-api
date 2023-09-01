@@ -1,5 +1,12 @@
 import { relations } from 'drizzle-orm';
-import { int, mysqlEnum, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
+import {
+  int,
+  mysqlEnum,
+  mysqlTable,
+  real,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/mysql-core';
 
 export const user = mysqlTable('users', {
   id: int('id').primaryKey().autoincrement(),
@@ -11,17 +18,17 @@ export const user = mysqlTable('users', {
   birthday: timestamp('birthday'),
   addressId: int('address_id').references(() => address.id),
   role: mysqlEnum('role', ['client', 'shop']).notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull()
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
 
 export const userRelations = relations(user, ({ one }) => ({
   address: one(address, {
     fields: [user.addressId],
-    references: [address.id]
-  })
-}))
+    references: [address.id],
+  }),
+}));
 
-export const address = mysqlTable('address', {
+export const address = mysqlTable('addresses', {
   id: int('id').primaryKey().autoincrement(),
   street: varchar('street', { length: 256 }).notNull(),
   number: int('number').notNull(),
@@ -31,8 +38,48 @@ export const address = mysqlTable('address', {
   country: varchar('country', { length: 256 }).notNull(),
   zipcode: int('zipcode'),
   lat: varchar('lat', { length: 256 }),
-  long: varchar('long', { length: 256 })
+  long: varchar('long', { length: 256 }),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
+
+export const menuCategory = mysqlTable('menu_categories', {
+  id: int('id').primaryKey().autoincrement(),
+  shopId: int('shop_id')
+    .references(() => user.id)
+    .notNull(),
+  name: varchar('name', { length: 256 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const menuCategoryRelations = relations(menuCategory, ({ one }) => ({
+  shop: one(user, {
+    fields: [menuCategory.shopId],
+    references: [user.id],
+  }),
+}));
+
+export const menuItem = mysqlTable('menu_items', {
+  id: int('id').primaryKey().autoincrement(),
+  shopId: int('shop_id')
+    .references(() => user.id)
+    .notNull(),
+  categoryId: int('category_id').references(() => menuCategory.id),
+  itemName: varchar('name', { length: 256 }).notNull(),
+  description: varchar('description', { length: 256 }).notNull(),
+  price: real('price', { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const menuItemRelations = relations(menuItem, ({ one }) => ({
+  shop: one(user, {
+    fields: [menuItem.shopId],
+    references: [user.id],
+  }),
+  category: one(menuCategory, {
+    fields: [menuItem.categoryId],
+    references: [menuCategory.id],
+  }),
+}));
 
 export type User = typeof user.$inferSelect; // return type when queried
 export type NewUser = typeof user.$inferInsert; // insert type

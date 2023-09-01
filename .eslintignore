@@ -1,2 +1,3 @@
 node_modules
+database/migrations
 metro.config.js
