@@ -8,6 +8,34 @@
       "when": 1693333904666,
       "tag": "0000_striped_falcon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1693495608961,
+      "tag": "0001_broad_firebird",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1693509541043,
+      "tag": "0002_abandoned_angel",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1693509632294,
+      "tag": "0003_even_colonel_america",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1693513600005,
+      "tag": "0004_lethal_blue_blade",
+      "breakpoints": true
     }
   ]
 }
