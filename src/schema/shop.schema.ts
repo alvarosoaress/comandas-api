@@ -7,4 +7,13 @@ export const createShopSchema = z.object({
   })
 })
 
+// id Se torna uma string pois os params vem na url
+// tudo na url é string
+export const getShopByIdSchema = z.object({
+  params: z.object({
+    id: z.string()
+  })
+})
+
 export type createShopType = TypeOf<typeof createShopSchema>['body'];
+export type getShopByIdType = TypeOf<typeof getShopByIdSchema>['params'];

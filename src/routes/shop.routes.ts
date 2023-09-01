@@ -1,7 +1,7 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
-import { createShopSchema } from '../schema/shop.schema';
-import { createShop, getShops } from '../controllers/shop/shop.controller';
+import { createShopSchema, getShopByIdSchema } from '../schema/shop.schema';
+import { createShop, getShopById, getShops } from '../controllers/shop/shop.controller';
 
 const router = express.Router();
 
@@ -10,5 +10,8 @@ router.route('/create')
 
 router.route('/list')
   .get(getShops)
+
+router.route('/:id')
+  .get(validate(getShopByIdSchema), getShopById)
 
 export default router;

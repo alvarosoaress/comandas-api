@@ -6,11 +6,11 @@ export type Res = {
 }
 
 export type GetUsersRes = {
-  users?: Array<Omit<NewUser, 'password'>>
+  data?: Array<Omit<NewUser, 'password'>>
 } & Res;
 
 export type CreateUserRes = {
-  newUser?: {
+  data?: {
     name: string
     email: string
     phoneNumber?: number | null | undefined
@@ -21,6 +21,6 @@ export type LoggedUser = Omit<NewUser, 'password'>
 
 export type HandleLoginRes = {
   accessToken?: string
-  userInfo?: LoggedUser
+  data?: LoggedUser
   newUser?: NewUser
 } & Res;

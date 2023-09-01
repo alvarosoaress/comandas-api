@@ -4,16 +4,29 @@ import { db } from '../../../database';
 import { address } from '../../../database/schema';
 import { ConflictError, NotFoundError } from '../../helpers/api.erros';
 import { type Request, type Response } from 'express';
-import { type createAddressType } from '../../schema/address.schema';
+import { type getAddressByIdType, type createAddressType } from '../../schema/address.schema';
 
 export async function getAddresses (req: Request, res: Response) {
   const addresses = await db.query.address.findMany();
 
-  if (addresses === null) throw new NotFoundError('No addresses found')
+  if (!addresses) throw new NotFoundError('No addresses found')
 
   return res.status(200).json({
     error: false,
-    addresses
+    data: addresses
+  });
+};
+
+export async function getAddressById (req: Request<getAddressByIdType>, res: Response) {
+  const { id } = req.params;
+
+  const addressFound = await db.query.user.findFirst({ where: eq(address.id, parseInt(id)) });
+
+  if (!addressFound) throw new NotFoundError('No address found')
+
+  return res.status(200).json({
+    error: false,
+    data: addressFound
   });
 };
 
@@ -44,11 +57,13 @@ export async function createAddress (req: Request<unknown, unknown, createAddres
     long
   };
 
-  await db.insert(address).values(newAddress);
+  const insertReturn = await db.insert(address).values(newAddress);
+
+  const insertId = insertReturn[0].insertId;
 
   return res.status(200).json({
     error: false,
     message: 'Address created',
-    newAddress
+    data: { ...newAddress, id: insertId }
   });
 };

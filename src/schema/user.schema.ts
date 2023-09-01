@@ -18,5 +18,12 @@ export const userLoginSchema = z.object({
   })
 })
 
+export const getUserByIdSchema = z.object({
+  params: z.object({
+    id: z.string()
+  })
+})
+
 export type createUserType = TypeOf<typeof createUserSchema>['body'];
 export type userLoginType = TypeOf<typeof userLoginSchema>['body'];
+export type getUserByIdType = TypeOf<typeof getUserByIdSchema>['params'];

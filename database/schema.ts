@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import { int, mysqlEnum, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 
 export const user = mysqlTable('users', {
@@ -12,6 +13,13 @@ export const user = mysqlTable('users', {
   role: mysqlEnum('role', ['client', 'shop']).notNull(),
   createdAt: timestamp('createdAt').defaultNow().notNull()
 });
+
+export const userRelations = relations(user, ({ one }) => ({
+  address: one(address, {
+    fields: [user.addressId],
+    references: [address.id]
+  })
+}))
 
 export const address = mysqlTable('address', {
   id: int('id').primaryKey().autoincrement(),
@@ -28,6 +36,3 @@ export const address = mysqlTable('address', {
 
 export type User = typeof user.$inferSelect; // return type when queried
 export type NewUser = typeof user.$inferInsert; // insert type
-
-// export type Address = typeof address.$inferSelect; // return type when queried
-export type NewAdress = typeof address.$inferInsert; // insert type

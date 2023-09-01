@@ -1,8 +1,8 @@
 import express from 'express';
 
-import { createUser, getUsers, handleLogin } from '../controllers/user/user.controller';
+import { createUser, getUserById, getUsers, handleLogin } from '../controllers/user/user.controller';
 import validate from '../middleware/validateResource';
-import { createUserSchema, userLoginSchema } from '../schema/user.schema';
+import { createUserSchema, getUserByIdSchema, userLoginSchema } from '../schema/user.schema';
 
 const router = express.Router();
 
@@ -11,6 +11,9 @@ router.route('/create')
 
 router.route('/list')
   .get(getUsers)
+
+router.route('/:id')
+  .get(validate(getUserByIdSchema), getUserById)
 
 router.route('/login')
   .post(validate(userLoginSchema), handleLogin)
