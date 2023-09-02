@@ -25,11 +25,12 @@ export const user = mysqlTable('users', {
   createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
 
-export const userRelations = relations(user, ({ one }) => ({
+export const userRelations = relations(user, ({ one, many }) => ({
   address: one(address, {
     fields: [user.addressId],
     references: [address.id],
   }),
+  item: many(item),
 }));
 
 export const address = mysqlTable('addresses', {
@@ -46,7 +47,7 @@ export const address = mysqlTable('addresses', {
   createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
 
-export const menuCategory = mysqlTable('menu_categories', {
+export const category = mysqlTable('categories', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
     .references(() => user.id, { onDelete: 'cascade', onUpdate: 'cascade' })
@@ -55,19 +56,19 @@ export const menuCategory = mysqlTable('menu_categories', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const menuCategoryRelations = relations(menuCategory, ({ one }) => ({
+export const categoryRelations = relations(category, ({ one }) => ({
   shop: one(user, {
-    fields: [menuCategory.shopId],
+    fields: [category.shopId],
     references: [user.id],
   }),
 }));
 
-export const menuItem = mysqlTable('menu_items', {
+export const item = mysqlTable('items', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
     .references(() => user.id, { onDelete: 'cascade', onUpdate: 'cascade' })
     .notNull(),
-  categoryId: int('category_id').references(() => menuCategory.id, {
+  categoryId: int('category_id').references(() => category.id, {
     onDelete: 'cascade',
     onUpdate: 'cascade',
   }),
@@ -79,18 +80,18 @@ export const menuItem = mysqlTable('menu_items', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const menuItemRelations = relations(menuItem, ({ one }) => ({
+export const menuItemRelations = relations(item, ({ one }) => ({
   shop: one(user, {
-    fields: [menuItem.shopId],
+    fields: [item.shopId],
     references: [user.id],
   }),
-  category: one(menuCategory, {
-    fields: [menuItem.categoryId],
-    references: [menuCategory.id],
+  category: one(category, {
+    fields: [item.categoryId],
+    references: [category.id],
   }),
 }));
 
 export type User = typeof user.$inferSelect;
 export type NewUser = typeof user.$inferInsert;
 
-export type MenuItem = typeof menuItem.$inferInsert;
+export type Item = typeof item.$inferInsert;

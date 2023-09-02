@@ -4,6 +4,7 @@ import cors from 'cors';
 import UserRoutes from './routes/user.routes';
 import AddressRoutes from './routes/address.routes';
 import ShopRoutes from './routes/shop.routes';
+import MenuItemRoutes from './routes/menuItem.routes';
 import { errorMiddleware } from './middleware/error';
 
 const app = express();
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 app.use('/user', UserRoutes);
 app.use('/address', AddressRoutes);
 app.use('/shop', ShopRoutes);
+app.use('/item', MenuItemRoutes);
 
 // Middleware para tratamento de erros
 app.use(errorMiddleware);

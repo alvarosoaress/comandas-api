@@ -1,20 +1,20 @@
 import { createInsertSchema } from 'drizzle-zod';
 import { type TypeOf, z } from 'zod';
-import { menuItem } from '../../database/schema';
+import { item } from '../../database/schema';
 
-export const getMenuItemsSchema = z.object({
+export const getItemsSchema = z.object({
   params: z.object({
     id: z.string(),
   }),
 });
 
-export const menuItemSchema = createInsertSchema(menuItem, {
+export const itemSchema = createInsertSchema(item, {
   name: (schema) => schema.name.min(3),
 });
 
-export const createMenuItemSchema = z.object({
-  body: menuItemSchema,
+export const createItemSchema = z.object({
+  body: itemSchema,
 });
 
-export type getMenuItemsType = TypeOf<typeof getMenuItemsSchema>['params'];
-export type createMenuItemType = TypeOf<typeof createMenuItemSchema>['body'];
+export type getItemsType = TypeOf<typeof getItemsSchema>['params'];
+export type createItemType = TypeOf<typeof createItemSchema>['body'];
