@@ -8,4 +8,7 @@ export default {
   schema: './database/schema.ts',
   out: './database/migrations',
   driver: 'mysql2',
+  dbCredentials: {
+    connectionString: process.env.DATABASE_URL as string,
+  },
 } satisfies Config;

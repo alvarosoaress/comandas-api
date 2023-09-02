@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "055d3647-8107-41c4-ba6e-1436eea44fc2",
+  "id": "2c688182-53e5-4562-9c99-862b7a2d5a0e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "address": {
-      "name": "address",
+    "addresses": {
+      "name": "addresses",
       "columns": {
         "id": {
           "name": "id",
@@ -77,11 +77,11 @@
           "notNull": false,
           "autoincrement": false
         },
-        "birthday": {
-          "name": "birthday",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "(now())"
         }
@@ -89,8 +89,8 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "address_id": {
-          "name": "address_id",
+        "addresses_id": {
+          "name": "addresses_id",
           "columns": [
             "id"
           ]
@@ -98,8 +98,8 @@
       },
       "uniqueConstraints": {}
     },
-    "clients": {
-      "name": "clients",
+    "menu_categories": {
+      "name": "menu_categories",
       "columns": {
         "id": {
           "name": "id",
@@ -108,104 +108,155 @@
           "notNull": true,
           "autoincrement": true
         },
-        "user_id": {
-          "name": "user_id",
+        "shop_id": {
+          "name": "shop_id",
           "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "birthday": {
-          "name": "birthday",
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "menu_categories_shop_id_users_id_fk": {
+          "name": "menu_categories_shop_id_users_id_fk",
+          "tableFrom": "menu_categories",
+          "tableTo": "users",
+          "columnsFrom": [
+            "shop_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "menu_categories_id": {
+          "name": "menu_categories_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "menu_items": {
+      "name": "menu_items",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "shop_id": {
+          "name": "shop_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "int",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "clients_user_id_users_id_fk": {
-          "name": "clients_user_id_users_id_fk",
-          "tableFrom": "clients",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "clients_id": {
-          "name": "clients_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-    "shops": {
-      "name": "shops",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
         },
-        "user_id": {
-          "name": "user_id",
-          "type": "int",
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "address_id": {
-          "name": "address_id",
-          "type": "int",
+        "description": {
+          "name": "description",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "price": {
+          "name": "price",
+          "type": "real(10, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "temperature": {
+          "name": "temperature",
+          "type": "enum('cold','hot')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "vegan": {
+          "name": "vegan",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "shops_user_id_users_id_fk": {
-          "name": "shops_user_id_users_id_fk",
-          "tableFrom": "shops",
+        "menu_items_shop_id_users_id_fk": {
+          "name": "menu_items_shop_id_users_id_fk",
+          "tableFrom": "menu_items",
           "tableTo": "users",
           "columnsFrom": [
-            "user_id"
+            "shop_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
-        "shops_address_id_address_id_fk": {
-          "name": "shops_address_id_address_id_fk",
-          "tableFrom": "shops",
-          "tableTo": "address",
+        "menu_items_category_id_menu_categories_id_fk": {
+          "name": "menu_items_category_id_menu_categories_id_fk",
+          "tableFrom": "menu_items",
+          "tableTo": "menu_categories",
           "columnsFrom": [
-            "address_id"
+            "category_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
-        "shops_id": {
-          "name": "shops_id",
+        "menu_items_id": {
+          "name": "menu_items_id",
           "columns": [
             "id"
           ]
@@ -237,8 +288,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "hashPassword": {
-          "name": "hashPassword",
+        "password": {
+          "name": "password",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true,
@@ -258,6 +309,27 @@
           "notNull": false,
           "autoincrement": false
         },
+        "birthday": {
+          "name": "birthday",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "address_id": {
+          "name": "address_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "enum('client','shop')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "createdAt": {
           "name": "createdAt",
           "type": "timestamp",
@@ -268,7 +340,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "users_address_id_addresses_id_fk": {
+          "name": "users_address_id_addresses_id_fk",
+          "tableFrom": "users",
+          "tableTo": "addresses",
+          "columnsFrom": [
+            "address_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {
         "users_id": {
           "name": "users_id",

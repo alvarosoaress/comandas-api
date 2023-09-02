@@ -17,7 +17,10 @@ export const user = mysqlTable('users', {
   phoneNumber: int('phone_number'),
   photoUrl: varchar('photo_url', { length: 256 }),
   birthday: timestamp('birthday'),
-  addressId: int('address_id').references(() => address.id),
+  addressId: int('address_id').references(() => address.id, {
+    onDelete: 'cascade',
+    onUpdate: 'cascade',
+  }),
   role: mysqlEnum('role', ['client', 'shop']).notNull(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
@@ -46,7 +49,7 @@ export const address = mysqlTable('addresses', {
 export const menuCategory = mysqlTable('menu_categories', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
-    .references(() => user.id)
+    .references(() => user.id, { onDelete: 'cascade', onUpdate: 'cascade' })
     .notNull(),
   name: varchar('name', { length: 256 }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -62,9 +65,12 @@ export const menuCategoryRelations = relations(menuCategory, ({ one }) => ({
 export const menuItem = mysqlTable('menu_items', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
-    .references(() => user.id)
+    .references(() => user.id, { onDelete: 'cascade', onUpdate: 'cascade' })
     .notNull(),
-  categoryId: int('category_id').references(() => menuCategory.id),
+  categoryId: int('category_id').references(() => menuCategory.id, {
+    onDelete: 'cascade',
+    onUpdate: 'cascade',
+  }),
   name: varchar('name', { length: 256 }).notNull(),
   description: varchar('description', { length: 256 }).notNull(),
   price: real('price', { precision: 10, scale: 2 }).notNull(),
