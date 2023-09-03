@@ -1,11 +1,7 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
-import { createShopSchema, getShopSchema } from '../schema/shop.schema';
-import {
-  createShop,
-  getShop,
-  getShops,
-} from '../controllers/shop/shop.controller';
+import { createShopSchema, getShopSchema } from '../modules/shop/shop.schema';
+import { createShop, getShop, getShops } from '../modules/shop/shop.controller';
 
 const router = express.Router();
 

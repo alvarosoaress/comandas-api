@@ -1,11 +1,7 @@
 import { Router } from 'express';
-import {
-  createItem,
-  getItems,
-  getItem,
-} from '../controllers/item/menuItems.controller';
+import { createItem, getItems, getItem } from '../modules/item/item.controller';
 import validate from '../middleware/validateResource';
-import { getItemsSchema } from '../schema/menuItems.schema';
+import { getItemsSchema } from '../modules/item/item.schema';
 
 const router = Router();
 

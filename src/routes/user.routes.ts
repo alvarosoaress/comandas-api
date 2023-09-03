@@ -4,13 +4,13 @@ import {
   getUser,
   getUsers,
   handleLogin,
-} from '../controllers/user/user.controller';
+} from '../modules/user/user.controller';
 import validate from '../middleware/validateResource';
 import {
   createUserSchema,
   getUserSchema,
   userLoginSchema,
-} from '../schema/user.schema';
+} from '../modules/user/user.schema';
 import verifyToken from '../middleware/verifyToken';
 
 const router = express.Router();

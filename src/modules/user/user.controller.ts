@@ -11,7 +11,7 @@ import {
   type userLoginType,
   type createUserType,
   type getUserType,
-} from '../../schema/user.schema';
+} from './user.schema';
 import {
   type HandleLoginRes,
   type CreateUserRes,

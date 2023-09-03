@@ -1,15 +1,19 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
-import { createAddressSchema } from '../schema/address.schema';
-import {
-  createAddress,
-  getAddresses,
-} from '../controllers/address/address.controller';
+import { createAddressSchema } from '../modules/address/address.schema';
+import { addressFactory } from '../modules/address/address.factory';
 
 const router = express.Router();
 
-router.route('/create').post(validate(createAddressSchema), createAddress);
+router
+  .route('/create')
+  .post(
+    validate(createAddressSchema),
+    async (req, res) => await addressFactory().createAddress(req, res),
+  );
 
-router.route('/list').get(getAddresses);
+router
+  .route('/list')
+  .get(async (req, res) => await addressFactory().getAddresses(req, res));
 
 export default router;

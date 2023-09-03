@@ -1,5 +1,5 @@
 import { createInsertSchema } from 'drizzle-zod';
-import { user } from '../../database/schema';
+import { user } from '../../../database/schema';
 import { type TypeOf, z } from 'zod';
 
 const userSchema = createInsertSchema(user, {

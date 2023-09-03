@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type Request, type Response } from 'express';
-import {
-  type createItemType,
-  type getItemsType,
-} from '../../schema/menuItems.schema';
+import { type createItemType, type getItemsType } from './item.schema';
 import { db } from '../../../database';
 import { item } from '../../../database/schema';
 import { and, eq } from 'drizzle-orm';

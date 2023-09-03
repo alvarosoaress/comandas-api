@@ -4,10 +4,7 @@ import { db } from '../../../database';
 import { address, user } from '../../../database/schema';
 import { ConflictError, NotFoundError } from '../../helpers/api.erros';
 import { type Request, type Response } from 'express';
-import {
-  type getShopType,
-  type createShopType,
-} from '../../schema/shop.schema';
+import { type getShopType, type createShopType } from './shop.schema';
 
 export async function getShops(req: Request, res: Response) {
   const shops = await db.query.user.findMany({ where: eq(user.role, 'shop') });

@@ -91,7 +91,8 @@ export const menuItemRelations = relations(item, ({ one }) => ({
   }),
 }));
 
-export type User = typeof user.$inferSelect;
-export type NewUser = typeof user.$inferInsert;
+export type User = typeof user.$inferInsert;
+
+export type Address = typeof address.$inferInsert;
 
 export type Item = typeof item.$inferInsert;

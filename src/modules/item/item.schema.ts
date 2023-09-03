@@ -1,6 +1,6 @@
 import { createInsertSchema } from 'drizzle-zod';
 import { type TypeOf, z } from 'zod';
-import { item } from '../../database/schema';
+import { item } from '../../../database/schema';
 
 export const getItemsSchema = z.object({
   params: z.object({
