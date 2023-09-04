@@ -3,12 +3,12 @@ import { ForbiddenError, UnauthorizedError } from '../helpers/api.erros';
 import jwt, { type VerifyErrors, type Secret } from 'jsonwebtoken';
 import path from 'path';
 import dotenv from 'dotenv';
-import { type NewUser } from '../../database/schema';
+import { type User } from '../../database/schema';
 
 dotenv.config({ path: path.resolve('./.env') });
 
 type DecodedType = {
-  userInfo: NewUser;
+  userInfo: User;
   iat: number;
   exp: number;
 };
