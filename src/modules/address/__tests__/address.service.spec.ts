@@ -1,9 +1,9 @@
-import { type Address } from '../../../database/schema';
-import { ConflictError, NotFoundError } from '../../helpers/api.erros';
-import { AddressService } from './address.service';
-import { type IAddressRepository } from './Iaddress.repository';
+import { type Address } from '../../../../database/schema';
+import { ConflictError, NotFoundError } from '../../../helpers/api.erros';
+import { AddressService } from './../address.service';
+import { type IAddressRepository } from './../Iaddress.repository';
 
-describe('AddressService', () => {
+describe('Address Service', () => {
   let addressService: AddressService;
   let addressRepositoryMock: jest.Mocked<IAddressRepository>;
 
@@ -21,12 +21,12 @@ describe('AddressService', () => {
     jest.clearAllMocks();
   });
 
-  describe('create', () => {
+  describe('Create Address', () => {
     it('should create a new address', async () => {
       const addressInfo = {
         number: 69,
         street: 'Virgulini',
-        neighborhood: 'Franceso',
+        neighborhood: 'Francesco',
         city: 'City Test',
         state: 'Tute',
         country: 'Italia',
@@ -46,7 +46,7 @@ describe('AddressService', () => {
     it('should throw an error if the address already exists', async () => {
       const addressInfo = {
         city: 'City Test',
-        neighborhood: 'Franceso',
+        neighborhood: 'Francesco',
         number: 69,
         street: 'Virgulini',
         state: 'Tute',
@@ -63,13 +63,13 @@ describe('AddressService', () => {
     });
   });
 
-  describe('list', () => {
+  describe('List Address', () => {
     it('should return a list of addresses', async () => {
       const addressList = [
         {
           id: 45,
           city: 'City Test',
-          neighborhood: 'Franceso',
+          neighborhood: 'Francesco',
           number: 69,
           street: 'Virgulini',
           state: 'Tute',
@@ -82,7 +82,7 @@ describe('AddressService', () => {
         {
           id: 1,
           city: 'City Test',
-          neighborhood: 'Franceso',
+          neighborhood: 'Francesco',
           number: 69,
           street: 'Virgulini',
           state: 'Tute',
@@ -92,7 +92,7 @@ describe('AddressService', () => {
         {
           id: 22,
           city: 'City Test',
-          neighborhood: 'Franceso',
+          neighborhood: 'Francesco',
           number: 69,
           street: 'Virgulini',
           state: 'Tute',
@@ -120,12 +120,12 @@ describe('AddressService', () => {
     });
   });
 
-  describe('getById', () => {
+  describe('GetById Address', () => {
     it('should return the address with the specified ID', async () => {
       const address = {
         id: 1,
         city: 'City Test',
-        neighborhood: 'Franceso',
+        neighborhood: 'Francesco',
         number: 69,
         street: 'Virgulini',
         state: 'Tute',
