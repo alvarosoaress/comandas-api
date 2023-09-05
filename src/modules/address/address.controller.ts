@@ -8,6 +8,7 @@ export class AddressController {
 
   async getAddresses(req: Request, res: Response) {
     const addresses = await this.addressService.list();
+
     return res.status(200).json({
       error: false,
       data: addresses,
@@ -22,7 +23,6 @@ export class AddressController {
 
     return res.status(200).json({
       error: false,
-      message: 'Address created',
       data: newAddress,
     });
   }

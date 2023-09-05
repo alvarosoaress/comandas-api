@@ -5,5 +5,6 @@ export type IUserRepository = {
   create: (userInfo: User) => Promise<User>;
   list: () => Promise<User[]>;
   getByEmail: (email: string) => Promise<User | undefined>;
-  getById: (id: number) => Promise<User | undefined>;
+  getById: (id: string) => Promise<User | undefined>;
+  update: (newUserInfo: User) => Promise<number>;
 };

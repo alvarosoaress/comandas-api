@@ -22,6 +22,7 @@ export const user = mysqlTable('users', {
     onUpdate: 'cascade',
   }),
   role: mysqlEnum('role', ['client', 'shop']).notNull(),
+  refreshToken: varchar('refreshToken', { length: 256 }).unique(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
 

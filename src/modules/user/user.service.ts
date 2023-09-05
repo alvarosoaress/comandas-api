@@ -1,34 +1,43 @@
 import { type User } from '../../../database/schema';
-import { ConflictError, NotFoundError } from '../../helpers/api.erros';
+import {
+  ConflictError,
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+} from '../../helpers/api.erros';
+import deleteObjKey from '../../utils';
 import { type IUserRepository } from './Iuser.repository';
+import bcrypt from 'bcryptjs';
+import path from 'path';
+import dotenv from 'dotenv';
+import jwt, { type Secret } from 'jsonwebtoken';
+
+dotenv.config({ path: path.resolve('./.env') });
+
+export type UserWithoutPass = Omit<User, 'password'>;
+
+export type UserLoginRes = {
+  accessToken: string;
+  userInfo: Omit<User, 'password' | 'refreshToken'>;
+};
 
 export class UserService {
   constructor(private readonly UserRepository: IUserRepository) {}
 
-  async create(userInfo: User): Promise<User> {
+  async create(userInfo: User): Promise<UserWithoutPass> {
     const userExists = await this.UserRepository.exists(userInfo.email);
 
     if (userExists) throw new ConflictError('User already exists');
 
+    const hashPassword = await bcrypt.hash(userInfo.password, 10);
+
+    userInfo.password = hashPassword;
+
     const newUser = await this.UserRepository.create(userInfo);
 
+    deleteObjKey(newUser, 'password');
+
     return newUser;
-  }
-
-  async getById(id: number): Promise<User> {
-    const userFound = await this.UserRepository.getById(id);
-
-    if (!userFound) throw new NotFoundError('No user found');
-
-    return userFound;
-  }
-
-  async getByEmail(email: string): Promise<User> {
-    const userFound = await this.UserRepository.getByEmail(email);
-
-    if (!userFound) throw new NotFoundError('No user found');
-
-    return userFound;
   }
 
   async list(): Promise<User[]> {
@@ -37,6 +46,63 @@ export class UserService {
     if (!userList || userList.length < 1)
       throw new NotFoundError('No users found');
 
+    userList.forEach((user) => {
+      deleteObjKey(user, 'password');
+    });
+
     return userList;
+  }
+
+  async getById(id: string): Promise<UserWithoutPass> {
+    const userFound = await this.UserRepository.getById(id);
+
+    if (!userFound) throw new NotFoundError('No user found');
+
+    deleteObjKey(userFound, 'password');
+
+    return userFound;
+  }
+
+  async getByEmail(email: string): Promise<UserWithoutPass> {
+    const userFound = await this.UserRepository.getByEmail(email);
+
+    if (!userFound) throw new NotFoundError('No user found');
+
+    deleteObjKey(userFound, 'password');
+
+    return userFound;
+  }
+
+  async logIn(email: string, password: string): Promise<UserLoginRes> {
+    const userFound = await this.UserRepository.getByEmail(email);
+
+    if (!userFound) throw new NotFoundError('No user found');
+
+    const matchPassword = await bcrypt.compare(password, userFound.password);
+
+    if (!matchPassword) throw new UnauthorizedError('Credentials do not match');
+
+    const accessToken = jwt.sign(
+      {},
+      process.env.ACCESS_TOKEN_SECRET as Secret,
+      { expiresIn: '1m', subject: String(userFound.id) },
+    );
+
+    const refreshToken = jwt.sign(
+      {},
+      process.env.REFRESH_TOKEN_SECRET as Secret,
+      { expiresIn: '2m', subject: String(userFound.id) },
+    );
+
+    userFound.refreshToken = refreshToken;
+
+    const refreshTokenRes = await this.UserRepository.update(userFound);
+
+    if (refreshTokenRes < 1) throw new InternalServerError();
+
+    deleteObjKey(userFound, 'refreshToken');
+    deleteObjKey(userFound, 'password');
+
+    return { accessToken, userInfo: userFound };
   }
 }

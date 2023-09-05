@@ -18,12 +18,19 @@ export const userLoginSchema = z.object({
   }),
 });
 
-export const getUserSchema = z.object({
+export const getUserByIdSchema = z.object({
   params: z.object({
     id: z.string(),
   }),
 });
 
+export const getUserByEmailSchema = z.object({
+  params: z.object({
+    email: z.string(),
+  }),
+});
+
 export type createUserType = TypeOf<typeof createUserSchema>['body'];
 export type userLoginType = TypeOf<typeof userLoginSchema>['body'];
-export type getUserType = TypeOf<typeof getUserSchema>['params'];
+export type getUserByIdType = TypeOf<typeof getUserByIdSchema>['params'];
+export type getUserByEmailType = TypeOf<typeof getUserByEmailSchema>['params'];

@@ -36,11 +36,20 @@ export class UserRepository implements IUserRepository {
     return userFound;
   }
 
-  async getById(id: number): Promise<User | undefined> {
+  async getById(id: string): Promise<User | undefined> {
     const userFound = await db.query.user.findFirst({
-      where: eq(user.id, id),
+      where: eq(user.id, parseInt(id)),
     });
 
     return userFound;
+  }
+
+  async update(newUserInfo: User): Promise<number> {
+    const updatedUser = await db
+      .update(user)
+      .set(newUserInfo)
+      .where(eq(user.id, newUserInfo.id as number));
+
+    return updatedUser[0].affectedRows;
   }
 }

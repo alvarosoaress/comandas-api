@@ -8,7 +8,7 @@ import {
 import validate from '../middleware/validateResource';
 import {
   createUserSchema,
-  getUserSchema,
+  getUserByIdSchema,
   userLoginSchema,
 } from '../modules/user/user.schema';
 import verifyToken from '../middleware/verifyToken';
@@ -19,7 +19,7 @@ router.route('/create').post(validate(createUserSchema), createUser);
 
 router.route('/list').get(getUsers);
 
-router.route('/:id').get(validate(getUserSchema), getUser);
+router.route('/:id').get(validate(getUserByIdSchema), getUser);
 
 router.route('/login').post(validate(userLoginSchema), handleLogin);
 

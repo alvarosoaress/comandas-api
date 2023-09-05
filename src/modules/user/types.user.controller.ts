@@ -1,4 +1,4 @@
-import { type NewUser } from '../../../database/schema';
+import { type User } from '../../../database/schema';
 
 export type Res = {
   error: boolean;
@@ -6,7 +6,7 @@ export type Res = {
 };
 
 export type GetUsersRes = {
-  data?: Array<Omit<NewUser, 'password'>>;
+  data?: Array<Omit<User, 'password'>>;
 } & Res;
 
 export type CreateUserRes = {
@@ -17,10 +17,10 @@ export type CreateUserRes = {
   };
 } & Res;
 
-export type LoggedUser = Omit<NewUser, 'password'>;
+export type LoggedUser = Omit<User, 'password'>;
 
 export type HandleLoginRes = {
   accessToken?: string;
   data?: LoggedUser;
-  newUser?: NewUser;
+  newUser?: User;
 } & Res;
