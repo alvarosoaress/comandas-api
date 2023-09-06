@@ -30,7 +30,14 @@ export const getUserByEmailSchema = z.object({
   }),
 });
 
+export const updateAccessSchema = z.object({
+  body: z.object({
+    id: z.number().positive(),
+  }),
+});
+
 export type createUserType = TypeOf<typeof createUserSchema>['body'];
 export type userLoginType = TypeOf<typeof userLoginSchema>['body'];
 export type getUserByIdType = TypeOf<typeof getUserByIdSchema>['params'];
 export type getUserByEmailType = TypeOf<typeof getUserByEmailSchema>['params'];
+export type updateAccessTokenType = TypeOf<typeof updateAccessSchema>['body'];

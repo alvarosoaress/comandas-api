@@ -36,9 +36,9 @@ export class UserRepository implements IUserRepository {
     return userFound;
   }
 
-  async getById(id: string): Promise<User | undefined> {
+  async getById(id: string | number): Promise<User | undefined> {
     const userFound = await db.query.user.findFirst({
-      where: eq(user.id, parseInt(id)),
+      where: eq(user.id, Number(id)),
     });
 
     return userFound;
@@ -51,5 +51,14 @@ export class UserRepository implements IUserRepository {
       .where(eq(user.id, newUserInfo.id as number));
 
     return updatedUser[0].affectedRows;
+  }
+
+  async getRefreshToken(id: number): Promise<string | null | undefined> {
+    const response = await db.query.user.findFirst({
+      where: eq(user.id, id),
+      columns: { refreshToken: true },
+    });
+
+    return response?.refreshToken;
   }
 }

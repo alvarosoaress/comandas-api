@@ -48,6 +48,7 @@ export class UserService {
 
     userList.forEach((user) => {
       deleteObjKey(user, 'password');
+      deleteObjKey(user, 'refreshToken');
     });
 
     return userList;
@@ -104,5 +105,32 @@ export class UserService {
     deleteObjKey(userFound, 'password');
 
     return { accessToken, userInfo: userFound };
+  }
+
+  async updateAccessToken(id: number): Promise<boolean | string> {
+    const refreshTokenRes = await this.UserRepository.getRefreshToken(id);
+
+    if (!refreshTokenRes) throw new NotFoundError('No user found');
+
+    const refreshTokenVerify = jwt.decode(refreshTokenRes, { json: true });
+
+    const today = new Date().getTime() / 1000;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const diff = refreshTokenVerify!.exp! - today;
+
+    // Se a diff for negativa, o tempo de validade do token expirou
+    if (diff < 1) {
+      return false;
+    } else {
+      // Gerar novo Access Token
+      const newAccessToken = jwt.sign(
+        {},
+        process.env.ACCESS_TOKEN_SECRET as Secret,
+        { expiresIn: '1m', subject: String(id) },
+      );
+
+      return newAccessToken;
+    }
   }
 }

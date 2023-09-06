@@ -3,6 +3,7 @@ import validate from '../middleware/validateResource';
 import {
   createUserSchema,
   getUserByIdSchema,
+  updateAccessSchema,
   userLoginSchema,
 } from '../modules/user/user.schema';
 import { userFactory } from '../modules/user/user.factory';
@@ -32,6 +33,13 @@ router
   .post(
     validate(userLoginSchema),
     async (req, res) => await userFactory().logIn(req, res),
+  );
+
+router
+  .route('/updateToken')
+  .post(
+    validate(updateAccessSchema),
+    async (req, res) => await userFactory().updateAccessToken(req, res),
   );
 
 export default router;
