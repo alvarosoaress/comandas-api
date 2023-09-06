@@ -32,7 +32,7 @@ describe('Address Controller Integration', () => {
   });
 
   describe('GET /address/list', () => {
-    it(' -> should return a list of addresses', async () => {
+    it('should return a list of addresses', async () => {
       const addressList = [
         {
           number: 69,

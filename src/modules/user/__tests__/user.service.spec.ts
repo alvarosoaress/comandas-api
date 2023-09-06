@@ -16,10 +16,12 @@ describe('User Service', () => {
   };
   const jwtMock = {
     sign: jest.fn(),
+    decode: jest.fn(),
   };
   (bcrypt.compare as jest.Mock) = bcryptMock.compare;
   (bcrypt.hash as jest.Mock) = bcryptMock.hash;
   (jwt.sign as jest.Mock) = jwtMock.sign;
+  (jwt.decode as jest.Mock) = jwtMock.decode;
   let userService: UserService;
   let userRepositoryMock: jest.Mocked<IUserRepository>;
 
@@ -31,6 +33,7 @@ describe('User Service', () => {
       getByEmail: jest.fn(),
       getById: jest.fn(),
       update: jest.fn(),
+      getRefreshToken: jest.fn(),
     };
     userService = new UserService(userRepositoryMock);
   });
@@ -197,7 +200,7 @@ describe('User Service', () => {
         email: 'maquinabeloz@tute.italia',
         password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
         role: 'client' as const,
-        refreshToken: 'nothingsafeandencryptedaccesstokenold',
+        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
       };
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
@@ -252,7 +255,7 @@ describe('User Service', () => {
         email: 'maquinabeloz@tute.italia',
         password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
         role: 'client' as const,
-        refreshToken: 'nothingsafeandencryptedaccesstokenold',
+        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
       };
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
@@ -278,14 +281,14 @@ describe('User Service', () => {
         email: 'maquinabeloz@tute.italia',
         password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
         role: 'client' as const,
-        refreshToken: 'nothingsafeandencryptedaccesstokenold',
+        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
       };
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
       bcryptMock.compare.mockResolvedValue(true);
       userRepositoryMock.update.mockResolvedValue(0);
       // Retun Value pois o jwt não é await (não retorna promise)
-      jwtMock.sign.mockReturnValue('supersafeandencryptedaccesstoken');
+      jwtMock.sign.mockReturnValue('supersafeandencryptedrefreshtoken');
 
       await expect(
         userService.logIn(
@@ -301,8 +304,47 @@ describe('User Service', () => {
 
       expect(userRepositoryMock.update).toHaveBeenCalledWith({
         ...userFound,
-        refreshToken: 'supersafeandencryptedaccesstoken',
+        refreshToken: 'supersafeandencryptedrefreshtoken',
       });
+    });
+  });
+
+  describe('Update Access Token', () => {
+    it('should return updated user Access Token', async () => {
+      userRepositoryMock.getRefreshToken.mockResolvedValue(
+        'supersafeandencryptedrefreshtoken',
+      );
+      jwtMock.decode.mockReturnValue({
+        iat: 1694021780,
+        exp: 1794022259,
+        sub: '1',
+      });
+      jwtMock.sign.mockReturnValue('supersafeandencryptedaccesstoken');
+
+      const res = await userService.updateAccessToken(1);
+
+      expect(jwtMock.sign).toHaveBeenCalledWith(
+        {},
+        process.env.ACCESS_TOKEN_SECRET as Secret,
+        { expiresIn: '1m', subject: String(1) },
+      );
+
+      expect(res).toEqual('supersafeandencryptedaccesstoken');
+    });
+
+    it('should return false if user Refresh Token has expired', async () => {
+      userRepositoryMock.getRefreshToken.mockResolvedValue(
+        'supersafeandencryptedrefreshtoken',
+      );
+      jwtMock.decode.mockReturnValue({
+        iat: 1694021780,
+        exp: 1494022259,
+        sub: '1',
+      });
+
+      const res = await userService.updateAccessToken(1);
+
+      expect(res).toBeFalsy();
     });
   });
 });
