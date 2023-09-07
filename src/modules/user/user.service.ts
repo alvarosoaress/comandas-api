@@ -1,4 +1,4 @@
-import { type User } from '../../../database/schema';
+import { type UserSafe, type User } from '../../../database/schema';
 import {
   ConflictError,
   InternalServerError,
@@ -14,18 +14,16 @@ import jwt, { type Secret } from 'jsonwebtoken';
 
 dotenv.config({ path: path.resolve('./.env') });
 
-export type UserWithoutPass = Omit<User, 'password'>;
-
 export type UserLoginRes = {
   accessToken: string;
   userInfo: Omit<User, 'password' | 'refreshToken'>;
 };
 
 export class UserService {
-  constructor(private readonly UserRepository: IUserRepository) {}
+  constructor(private readonly userRepository: IUserRepository) {}
 
-  async create(userInfo: User): Promise<UserWithoutPass> {
-    const userExists = await this.UserRepository.exists(userInfo.email);
+  async create(userInfo: User): Promise<UserSafe> {
+    const userExists = await this.userRepository.exists(userInfo.email);
 
     if (userExists) throw new ConflictError('User already exists');
 
@@ -33,15 +31,16 @@ export class UserService {
 
     userInfo.password = hashPassword;
 
-    const newUser = await this.UserRepository.create(userInfo);
+    const newUser = await this.userRepository.create(userInfo);
 
     deleteObjKey(newUser, 'password');
+    deleteObjKey(newUser, 'refreshToken');
 
     return newUser;
   }
 
   async list(): Promise<User[]> {
-    const userList = await this.UserRepository.list();
+    const userList = await this.userRepository.list();
 
     if (!userList || userList.length < 1)
       throw new NotFoundError('No users found');
@@ -54,28 +53,30 @@ export class UserService {
     return userList;
   }
 
-  async getById(id: string): Promise<UserWithoutPass> {
-    const userFound = await this.UserRepository.getById(id);
+  async getById(id: string): Promise<UserSafe> {
+    const userFound = await this.userRepository.getById(id);
 
     if (!userFound) throw new NotFoundError('No user found');
 
     deleteObjKey(userFound, 'password');
+    deleteObjKey(userFound, 'refreshToken');
 
     return userFound;
   }
 
-  async getByEmail(email: string): Promise<UserWithoutPass> {
-    const userFound = await this.UserRepository.getByEmail(email);
+  async getByEmail(email: string): Promise<UserSafe> {
+    const userFound = await this.userRepository.getByEmail(email);
 
     if (!userFound) throw new NotFoundError('No user found');
 
     deleteObjKey(userFound, 'password');
+    deleteObjKey(userFound, 'refreshToken');
 
     return userFound;
   }
 
   async logIn(email: string, password: string): Promise<UserLoginRes> {
-    const userFound = await this.UserRepository.getByEmail(email);
+    const userFound = await this.userRepository.getByEmail(email);
 
     if (!userFound) throw new NotFoundError('No user found');
 
@@ -97,7 +98,7 @@ export class UserService {
 
     userFound.refreshToken = refreshToken;
 
-    const refreshTokenRes = await this.UserRepository.update(userFound);
+    const refreshTokenRes = await this.userRepository.update(userFound);
 
     if (refreshTokenRes < 1) throw new InternalServerError();
 
@@ -108,7 +109,7 @@ export class UserService {
   }
 
   async updateAccessToken(id: number): Promise<boolean | string> {
-    const refreshTokenRes = await this.UserRepository.getRefreshToken(id);
+    const refreshTokenRes = await this.userRepository.getRefreshToken(id);
 
     if (!refreshTokenRes) throw new NotFoundError('No user found');
 

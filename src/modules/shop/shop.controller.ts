@@ -1,60 +1,54 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { and, eq } from 'drizzle-orm';
-import { db } from '../../../database';
-import { address, user } from '../../../database/schema';
-import { ConflictError, NotFoundError } from '../../helpers/api.erros';
 import { type Request, type Response } from 'express';
-import { type getShopType, type createShopType } from './shop.schema';
+import {
+  type getShopType,
+  type createShopType,
+  type getShopMenuType,
+} from './shop.schema';
+import { type ShopService } from './shop.service';
 
-export async function getShops(req: Request, res: Response) {
-  const shops = await db.query.user.findMany({ where: eq(user.role, 'shop') });
+export class ShopController {
+  constructor(private readonly shopService: ShopService) {}
 
-  if (!shops || shops.length < 1) throw new NotFoundError('No shops found');
+  async createShop(
+    req: Request<unknown, unknown, createShopType>,
+    res: Response,
+  ) {
+    const newShop = await this.shopService.create(
+      req.body.userId,
+      req.body.addressId,
+    );
 
-  return res.status(200).json({
-    error: false,
-    data: shops,
-  });
-}
+    return res.status(200).json({
+      error: false,
+      data: newShop,
+    });
+  }
 
-export async function getShop(req: Request<getShopType>, res: Response) {
-  const { id } = req.params;
+  async getShops(req: Request, res: Response) {
+    const shops = await this.shopService.list();
 
-  const shopFound = await db.query.user.findFirst({
-    where: and(eq(user.id, parseInt(id)), eq(user.role, 'shop')),
-    columns: { password: false },
-    with: { address: true },
-  });
+    return res.status(200).json({
+      error: false,
+      data: shops,
+    });
+  }
 
-  if (!shopFound) throw new NotFoundError('No shop found');
+  async getShopById(req: Request<getShopType>, res: Response) {
+    const shopFound = await this.shopService.getById(req.params.id);
 
-  return res.status(200).json({
-    error: false,
-    data: shopFound,
-  });
-}
+    return res.status(200).json({
+      error: false,
+      data: shopFound,
+    });
+  }
 
-export async function createShop(
-  req: Request<unknown, unknown, createShopType>,
-  res: Response,
-) {
-  const { userId, addressId } = req.body;
+  async getShopMenu(req: Request<getShopMenuType>, res: Response) {
+    const shopMenu = await this.shopService.getMenu(req.params.id);
 
-  const addressFound = await db.query.address.findFirst({
-    where: eq(address.id, addressId),
-  });
-  if (!addressFound) throw new ConflictError('Address not found');
-
-  const userFound = await db.query.user.findFirst({
-    where: eq(user.id, userId),
-  });
-  if (!userFound) throw new NotFoundError('User not found');
-
-  await db.update(user).set({ role: 'shop' }).where(eq(user.id, userId));
-  await db.update(user).set({ addressId }).where(eq(user.id, userId));
-
-  return res.status(200).json({
-    error: false,
-    message: 'Shop created',
-  });
+    return res.status(200).json({
+      error: false,
+      data: shopMenu,
+    });
+  }
 }

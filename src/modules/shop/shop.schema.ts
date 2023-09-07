@@ -15,5 +15,12 @@ export const getShopSchema = z.object({
   }),
 });
 
+export const getShopMenuSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
 export type createShopType = TypeOf<typeof createShopSchema>['body'];
 export type getShopType = TypeOf<typeof getShopSchema>['params'];
+export type getShopMenuType = TypeOf<typeof getShopMenuSchema>['params'];

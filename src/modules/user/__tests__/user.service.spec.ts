@@ -116,6 +116,7 @@ describe('User Service', () => {
 
       users.forEach((user) => {
         expect(user).not.toHaveProperty<User>('password');
+        expect(user).not.toHaveProperty<User>('refreshToken');
       });
     });
 
@@ -147,6 +148,7 @@ describe('User Service', () => {
       expect(userFound).toEqual<User>(userInfo);
 
       expect(userFound).not.toHaveProperty<User>('password');
+      expect(userFound).not.toHaveProperty<User>('refreshToken');
     });
 
     it('should throw a error if no user found', async () => {
@@ -181,6 +183,7 @@ describe('User Service', () => {
       expect(userFound).toEqual<User>(userInfo);
 
       expect(userFound).not.toHaveProperty<User>('password');
+      expect(userFound).not.toHaveProperty<User>('refreshToken');
     });
 
     it('should throw a error if no user found', async () => {

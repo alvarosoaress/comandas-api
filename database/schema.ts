@@ -31,7 +31,7 @@ export const userRelations = relations(user, ({ one, many }) => ({
     fields: [user.addressId],
     references: [address.id],
   }),
-  item: many(item),
+  items: many(item),
 }));
 
 export const address = mysqlTable('addresses', {
@@ -74,7 +74,7 @@ export const item = mysqlTable('items', {
     onUpdate: 'cascade',
   }),
   name: varchar('name', { length: 256 }).notNull(),
-  description: varchar('description', { length: 256 }).notNull(),
+  description: varchar('description', { length: 256 }),
   price: real('price', { precision: 10, scale: 2 }).notNull(),
   temperature: mysqlEnum('temperature', ['cold', 'hot']),
   vegan: boolean('vegan'),
@@ -93,7 +93,15 @@ export const menuItemRelations = relations(item, ({ one }) => ({
 }));
 
 export type User = typeof user.$inferInsert;
+export type UserSafe = Omit<User, 'password' | 'refreshToken'>;
 
 export type Address = typeof address.$inferInsert;
+
+export type Shop = User & { address: Address | null };
+export type ShopSafe = UserSafe & { address: Address | null };
+
+export type ShopMenu = Pick<UserSafe, 'id' | 'name'> & {
+  items: Item[] | null;
+};
 
 export type Item = typeof item.$inferInsert;
