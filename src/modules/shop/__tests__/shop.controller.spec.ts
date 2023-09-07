@@ -22,7 +22,7 @@ beforeAll(async () => {
   const addressInfo = {
     number: 69,
     street: 'Virgulini',
-    neighborhood: 'Franceso',
+    neighborhood: 'Francesco',
     city: 'City Test',
     state: 'Tute',
     country: 'Italia',
@@ -53,7 +53,7 @@ describe('Shop Controller Integration', () => {
 
   describe('GET /shop/list', () => {
     it('should return a list of shops', async () => {
-      const shopList = [
+      const shopList: ShopSafe[] = [
         {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
@@ -63,7 +63,15 @@ describe('Shop Controller Integration', () => {
           photoUrl: null,
           birthday: null,
           createdAt: expect.any(String),
-          addressId: expect.any(Number),
+          address: {
+            id: 1,
+            city: 'City Test',
+            neighborhood: 'Francesco',
+            number: 69,
+            street: 'Virgulini',
+            state: 'Tute',
+            country: 'Italia',
+          },
         },
       ];
 
@@ -79,6 +87,7 @@ describe('Shop Controller Integration', () => {
 
       response.body.data.forEach((shop: ShopSafe) => {
         expect(shop.role).toEqual('shop');
+        expect(shop).toHaveProperty('address');
       });
     });
   });
@@ -90,6 +99,8 @@ describe('Shop Controller Integration', () => {
       expect(response.status).toBe(200);
 
       expect(response.body.data.id).toEqual(1);
+
+      expect(response.body.data).toHaveProperty('address');
     });
   });
 

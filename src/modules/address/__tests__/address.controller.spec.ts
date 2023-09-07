@@ -15,7 +15,7 @@ describe('Address Controller Integration', () => {
       const addressInfo = {
         number: 69,
         street: 'Virgulini',
-        neighborhood: 'Franceso',
+        neighborhood: 'Francesco',
         city: 'City Test',
         state: 'Tute',
         country: 'Italia',
@@ -37,7 +37,7 @@ describe('Address Controller Integration', () => {
         {
           number: 69,
           street: 'Virgulini',
-          neighborhood: 'Franceso',
+          neighborhood: 'Francesco',
           city: 'City Test',
           state: 'Tute',
           country: 'Italia',
