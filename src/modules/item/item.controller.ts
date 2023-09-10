@@ -1,65 +1,54 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type Request, type Response } from 'express';
-import { type createItemType, type getItemsType } from './item.schema';
-import { db } from '../../../database';
-import { item } from '../../../database/schema';
-import { and, eq } from 'drizzle-orm';
-import { ConflictError, NotFoundError } from '../../helpers/api.erros';
+import {
+  type updateItemType,
+  type createItemType,
+  type getItemType,
+} from './item.schema';
+import { type ItemService } from './item.service';
 
-export async function getItem(req: Request<getItemsType>, res: Response) {
-  const { id } = req.params;
+export class ItemController {
+  constructor(private readonly itemService: ItemService) {}
 
-  const itemFound = await db.query.item.findFirst({
-    where: eq(item.shopId, parseInt(id)),
-  });
+  async createItem(
+    req: Request<unknown, unknown, createItemType>,
+    res: Response,
+  ) {
+    const newItem = await this.itemService.create(req.body);
 
-  if (!itemFound) throw new NotFoundError('No item found');
+    return res.status(200).json({
+      error: false,
+      data: newItem,
+    });
+  }
 
-  return res.status(200).json({
-    error: false,
-    data: itemFound,
-  });
-}
+  async getItems(req: Request, res: Response) {
+    const items = await this.itemService.getItems();
 
-export async function getItems(req: Request, res: Response) {
-  const items = await db.query.item.findMany();
+    return res.status(200).json({
+      error: false,
+      data: items,
+    });
+  }
 
-  if (!items) throw new NotFoundError('No items found');
+  async getItemById(req: Request<getItemType>, res: Response) {
+    const itemFound = await this.itemService.getById(req.params.id);
 
-  return res.status(200).json({
-    error: false,
-    data: items,
-  });
-}
+    return res.status(200).json({
+      error: false,
+      data: itemFound,
+    });
+  }
 
-export async function createItem(
-  req: Request<unknown, unknown, createItemType>,
-  res: Response,
-) {
-  const { shopId, categoryId, name, description, price, temperature, vegan } =
-    req.body;
+  async updateItem(
+    req: Request<unknown, unknown, updateItemType>,
+    res: Response,
+  ) {
+    const updatedItem = await this.itemService.update(req.body);
 
-  const itemExists = await db.query.item.findFirst({
-    where: and(eq(item.shopId, shopId), eq(item.name, name)),
-  });
-
-  if (itemExists != null) throw new ConflictError('Item already exists');
-
-  const newItem = {
-    shopId,
-    categoryId,
-    name,
-    description,
-    price,
-    temperature,
-    vegan,
-  };
-
-  await db.insert(item).values(newItem);
-
-  return res.status(200).json({
-    error: false,
-    message: `Item ${name} created`,
-    data: newItem,
-  });
+    return res.status(200).json({
+      error: false,
+      data: updatedItem,
+    });
+  }
 }

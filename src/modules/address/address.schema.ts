@@ -1,6 +1,6 @@
 import { createInsertSchema } from 'drizzle-zod';
 import { address } from '../../../database/schema';
-import { type TypeOf, z } from 'zod';
+import { z } from 'zod';
 
 const addressSchema = createInsertSchema(address);
 
@@ -14,5 +14,5 @@ export const getAddressSchema = z.object({
   }),
 });
 
-export type createAddressType = TypeOf<typeof createAddressSchema>['body'];
-export type getAddressType = TypeOf<typeof getAddressSchema>['params'];
+export type createAddressType = z.infer<typeof createAddressSchema>['body'];
+export type getAddressType = z.infer<typeof getAddressSchema>['params'];

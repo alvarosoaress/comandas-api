@@ -1,4 +1,4 @@
-import { type TypeOf, z } from 'zod';
+import { z } from 'zod';
 
 export const createShopSchema = z.object({
   body: z.object({
@@ -21,6 +21,6 @@ export const getShopMenuSchema = z.object({
   }),
 });
 
-export type createShopType = TypeOf<typeof createShopSchema>['body'];
-export type getShopType = TypeOf<typeof getShopSchema>['params'];
-export type getShopMenuType = TypeOf<typeof getShopMenuSchema>['params'];
+export type createShopType = z.infer<typeof createShopSchema>['body'];
+export type getShopType = z.infer<typeof getShopSchema>['params'];
+export type getShopMenuType = z.infer<typeof getShopMenuSchema>['params'];

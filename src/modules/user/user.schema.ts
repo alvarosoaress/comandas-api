@@ -1,6 +1,6 @@
 import { createInsertSchema } from 'drizzle-zod';
 import { user } from '../../../database/schema';
-import { type TypeOf, z } from 'zod';
+import { z } from 'zod';
 
 const userSchema = createInsertSchema(user, {
   name: (schema) => schema.name.min(3),
@@ -36,8 +36,8 @@ export const updateAccessSchema = z.object({
   }),
 });
 
-export type createUserType = TypeOf<typeof createUserSchema>['body'];
-export type userLoginType = TypeOf<typeof userLoginSchema>['body'];
-export type getUserByIdType = TypeOf<typeof getUserByIdSchema>['params'];
-export type getUserByEmailType = TypeOf<typeof getUserByEmailSchema>['params'];
-export type updateAccessTokenType = TypeOf<typeof updateAccessSchema>['body'];
+export type createUserType = z.infer<typeof createUserSchema>['body'];
+export type userLoginType = z.infer<typeof userLoginSchema>['body'];
+export type getUserByIdType = z.infer<typeof getUserByIdSchema>['params'];
+export type getUserByEmailType = z.infer<typeof getUserByEmailSchema>['params'];
+export type updateAccessTokenType = z.infer<typeof updateAccessSchema>['body'];

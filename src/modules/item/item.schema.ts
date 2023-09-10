@@ -1,8 +1,8 @@
 import { createInsertSchema } from 'drizzle-zod';
-import { type TypeOf, z } from 'zod';
+import { z } from 'zod';
 import { item } from '../../../database/schema';
 
-export const getItemsSchema = z.object({
+export const getItemSchema = z.object({
   params: z.object({
     id: z.string(),
   }),
@@ -16,5 +16,10 @@ export const createItemSchema = z.object({
   body: itemSchema,
 });
 
-export type getItemsType = TypeOf<typeof getItemsSchema>['params'];
-export type createItemType = TypeOf<typeof createItemSchema>['body'];
+export const updateItemSchema = z.object({
+  body: itemSchema,
+});
+
+export type getItemType = z.infer<typeof getItemSchema>['params'];
+export type createItemType = z.infer<typeof createItemSchema>['body'];
+export type updateItemType = z.infer<typeof updateItemSchema>['body'];

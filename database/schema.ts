@@ -92,6 +92,8 @@ export const menuItemRelations = relations(item, ({ one }) => ({
   }),
 }));
 
+// TODO Inserir UpdatedAt em todas colunas
+
 export type User = typeof user.$inferInsert;
 export type UserSafe = Omit<User, 'password' | 'refreshToken'>;
 

@@ -5,6 +5,8 @@
 import { type ShopSafe } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
+import { type createUserType } from '../../user/user.schema';
+import { type createAddressType } from '../../address/address.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -13,13 +15,13 @@ jest.setTimeout(10000);
 beforeAll(async () => {
   // Pré criando informações necessárias para
   // o shop poder existir
-  const userInfo = {
+  const userInfo: createUserType = {
     name: 'Francesco Virgulini',
     email: 'maquinabeloz@tute.italia',
     password: 'supersafepasswordnobodywillnowhihi123',
     role: 'client' as const,
   };
-  const addressInfo = {
+  const addressInfo: createAddressType = {
     number: 69,
     street: 'Virgulini',
     neighborhood: 'Francesco',
