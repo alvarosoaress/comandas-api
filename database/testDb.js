@@ -1,7 +1,11 @@
 const mysql = require('mysql2/promise');
-
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const path = require('path');
+
+require('dotenv').config({
+    path: path.resolve('./.test.env'),
+});
 
 exports.createTestDatabase = async function (dbName) {
     const con = await mysql.createConnection({
