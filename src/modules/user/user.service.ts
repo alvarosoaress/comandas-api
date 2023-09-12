@@ -12,7 +12,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import jwt, { type Secret } from 'jsonwebtoken';
 
-dotenv.config({ path: path.resolve('./.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 export type UserLoginRes = {
   accessToken: string;

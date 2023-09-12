@@ -9,10 +9,6 @@ import { type createAddressType } from '../../address/address.schema';
 import { type createUserType } from '../../user/user.schema';
 import { type createItemType } from '../item.schema';
 import { type Item } from '../../../../database/schema';
-import path from 'path';
-import dotenv from 'dotenv';
-
-dotenv.config({ path: path.resolve('./.env') });
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)

@@ -5,7 +5,7 @@ import mysql from 'mysql2/promise';
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config({ path: path.resolve('./.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 const connection = mysql.createPool({
   uri: process.env.DATABASE_URL,

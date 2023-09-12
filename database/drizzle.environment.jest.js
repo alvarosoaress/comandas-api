@@ -4,7 +4,7 @@ const path = require('path');
 const testDb = require('./testDb');
 
 require('dotenv').config({
-    path: path.resolve('./.test.env'),
+    path: path.resolve(process.cwd(), '.test.env'),
 });
 
 

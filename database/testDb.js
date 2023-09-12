@@ -4,8 +4,7 @@ const exec = util.promisify(require('child_process').exec);
 const path = require('path');
 
 require('dotenv').config({
-    path: path.resolve('./.test.env'),
-});
+    path: path.resolve(process.cwd(),'.test.env')});
 
 exports.createTestDatabase = async function (dbName) {
     const con = await mysql.createConnection({

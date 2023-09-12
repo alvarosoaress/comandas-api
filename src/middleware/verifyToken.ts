@@ -5,7 +5,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { type User } from '../../database/schema';
 
-dotenv.config({ path: path.resolve('./.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 type DecodedType = {
   userInfo: User;
