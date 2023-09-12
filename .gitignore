@@ -4,3 +4,6 @@ node_modules
 .test.env
 database/migrations
 database/migrations/*
+pnpm-lock.yaml
+yarn.lock
+yarn-error.log

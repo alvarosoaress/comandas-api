@@ -1,5 +1,5 @@
 /**
- * @jest-environment ./../../../database/drizzle.environment.jest
+ * @jest-environment ./database/drizzle.environment.jest
  */
 
 import { type ShopSafe } from '../../../../database/schema';
