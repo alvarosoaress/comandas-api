@@ -21,9 +21,9 @@ class CustomEnvironment extends NodeEnvironment {
     await testDb.createTestDatabase(this.schema);
   }
 
-  //   async teardown() {
-  //     await testDb.dropTestDatabase(this.schema);
-  //   }
+  async teardown() {
+    await testDb.dropTestDatabase(this.schema);
+  }
 }
 
 module.exports = CustomEnvironment;
