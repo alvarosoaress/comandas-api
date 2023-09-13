@@ -1,9 +1,11 @@
+import { addressSchema } from '../address/address.schema';
+import { userSchema } from './../user/user.schema';
 import { z } from 'zod';
 
 export const createShopSchema = z.object({
   body: z.object({
-    userId: z.number().positive(),
-    addressId: z.number().positive(),
+    userInfo: userSchema,
+    addressInfo: addressSchema,
   }),
 });
 

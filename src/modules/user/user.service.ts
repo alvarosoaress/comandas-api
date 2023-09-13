@@ -1,4 +1,9 @@
-import { type UserSafe, type User } from '../../../database/schema';
+import {
+  type User,
+  type ClientSafe,
+  type ShopSafe,
+  type UserSafe,
+} from '../../../database/schema';
 import {
   ConflictError,
   InternalServerError,
@@ -53,24 +58,24 @@ export class UserService {
     return userList;
   }
 
-  async getById(id: string): Promise<UserSafe> {
+  async getById(id: string): Promise<ShopSafe | ClientSafe> {
     const userFound = await this.userRepository.getById(id);
 
     if (!userFound) throw new NotFoundError('No user found');
 
-    deleteObjKey(userFound, 'password');
-    deleteObjKey(userFound, 'refreshToken');
+    deleteObjKey(userFound.userInfo, 'password');
+    deleteObjKey(userFound.userInfo, 'refreshToken');
 
     return userFound;
   }
 
-  async getByEmail(email: string): Promise<UserSafe> {
+  async getByEmail(email: string): Promise<ShopSafe | ClientSafe> {
     const userFound = await this.userRepository.getByEmail(email);
 
     if (!userFound) throw new NotFoundError('No user found');
 
-    deleteObjKey(userFound, 'password');
-    deleteObjKey(userFound, 'refreshToken');
+    deleteObjKey(userFound.userInfo, 'password');
+    deleteObjKey(userFound.userInfo, 'refreshToken');
 
     return userFound;
   }
@@ -80,32 +85,37 @@ export class UserService {
 
     if (!userFound) throw new NotFoundError('No user found');
 
-    const matchPassword = await bcrypt.compare(password, userFound.password);
+    const matchPassword = await bcrypt.compare(
+      password,
+      userFound.userInfo.password,
+    );
 
     if (!matchPassword) throw new UnauthorizedError('Credentials do not match');
 
     const accessToken = jwt.sign(
       {},
       process.env.ACCESS_TOKEN_SECRET as Secret,
-      { expiresIn: '1m', subject: String(userFound.id) },
+      { expiresIn: '1m', subject: String(userFound.userInfo.id) },
     );
 
     const refreshToken = jwt.sign(
       {},
       process.env.REFRESH_TOKEN_SECRET as Secret,
-      { expiresIn: '2m', subject: String(userFound.id) },
+      { expiresIn: '2m', subject: String(userFound.userInfo.id) },
     );
 
-    userFound.refreshToken = refreshToken;
+    userFound.userInfo.refreshToken = refreshToken;
 
-    const refreshTokenRes = await this.userRepository.update(userFound);
+    const refreshTokenRes = await this.userRepository.update(
+      userFound.userInfo,
+    );
 
     if (refreshTokenRes < 1) throw new InternalServerError();
 
-    deleteObjKey(userFound, 'refreshToken');
-    deleteObjKey(userFound, 'password');
+    deleteObjKey(userFound.userInfo, 'refreshToken');
+    deleteObjKey(userFound.userInfo, 'password');
 
-    return { accessToken, userInfo: userFound };
+    return { accessToken, userInfo: userFound.userInfo };
   }
 
   async updateAccessToken(id: number): Promise<boolean | string> {

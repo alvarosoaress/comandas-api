@@ -4,42 +4,44 @@
 
 import app from '../../../app';
 import request from 'supertest';
+import { type createUserType } from '../user.schema';
+import { type createAddressType } from '../../address/address.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
 jest.setTimeout(10000);
 
+beforeAll(async () => {
+  // Pré criando informações necessárias para
+  // um user poder existir
+  const userInfo: createUserType = {
+    name: 'Francesco Virgulini',
+    email: 'maquinabeloz@tute.italia',
+    password: 'supersafepasswordnobodywillnowhihi123',
+  };
+  const addressInfo: createAddressType = {
+    number: 69,
+    street: 'Virgulini',
+    neighborhood: 'Francesco',
+    city: 'City Test',
+    state: 'Tute',
+    country: 'Italia',
+  };
+
+  await request(app).post('/shop/create').send({ userInfo, addressInfo });
+});
+
 describe('User Controller Integration', () => {
-  describe('POST /user/create', () => {
-    it('should create a new user', async () => {
-      const userInfo = {
-        name: 'Francesco Virgulini',
-        email: 'maquinabeloz@tute.italia',
-        password: 'supersafepasswordnobodywillnowhihi123',
-        role: 'client' as const,
-      };
-
-      const response = await request(app).post('/user/create').send(userInfo);
-
-      expect(response.status).toBe(200);
-
-      expect(response.body.data).toHaveProperty('id');
-    });
-  });
-
   describe('GET /user/list', () => {
     it('should return a list of users', async () => {
       const userList = [
         {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
-          role: 'client',
+          role: 'shop',
           id: expect.any(Number),
           phoneNumber: null,
-          photoUrl: null,
-          birthday: null,
           createdAt: expect.any(String),
-          addressId: null,
         },
       ];
 
@@ -60,8 +62,7 @@ describe('User Controller Integration', () => {
       const response = await request(app).get('/user/1');
 
       expect(response.status).toBe(200);
-
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.data.userInfo.id).toEqual(1);
     });
   });
 
@@ -70,13 +71,10 @@ describe('User Controller Integration', () => {
       const userInfo = {
         name: 'Francesco Virgulini',
         email: 'maquinabeloz@tute.italia',
-        role: 'client' as const,
+        role: 'shop' as const,
         id: expect.any(Number),
         phoneNumber: null,
-        photoUrl: null,
-        birthday: null,
         createdAt: expect.any(String),
-        addressId: null,
       };
 
       const userCredentials = {

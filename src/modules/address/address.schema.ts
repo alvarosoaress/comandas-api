@@ -2,7 +2,7 @@ import { createInsertSchema } from 'drizzle-zod';
 import { address } from '../../../database/schema';
 import { z } from 'zod';
 
-const addressSchema = createInsertSchema(address);
+export const addressSchema = createInsertSchema(address);
 
 export const createAddressSchema = z.object({
   body: addressSchema,

@@ -1,7 +1,14 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../../database';
 import { type IUserRepository } from './Iuser.repository';
-import { user, type User } from '../../../database/schema';
+import {
+  type Client,
+  type Shop,
+  user,
+  type User,
+  shop,
+  client,
+} from '../../../database/schema';
 
 export class UserRepository implements IUserRepository {
   async exists(email: string): Promise<boolean> {
@@ -28,20 +35,64 @@ export class UserRepository implements IUserRepository {
     return userInfo;
   }
 
-  async getByEmail(email: string): Promise<User | undefined> {
+  async getByEmail(email: string): Promise<Shop | Client | undefined> {
     const userFound = await db.query.user.findFirst({
       where: eq(user.email, email),
     });
 
-    return userFound;
+    if (!userFound) return undefined;
+
+    if (userFound?.role === 'shop') {
+      const shopFound = await db.query.shop.findFirst({
+        where: eq(shop.userId, userFound.id),
+        with: {
+          addressInfo: true,
+          userInfo: true,
+        },
+        columns: {
+          userId: false,
+        },
+      });
+
+      return shopFound;
+    } else {
+      const clientFound = await db.query.client.findFirst({
+        where: eq(client.userId, userFound.id),
+        with: { userInfo: true },
+      });
+
+      return clientFound;
+    }
   }
 
-  async getById(id: string | number): Promise<User | undefined> {
+  async getById(id: string | number): Promise<Shop | Client | undefined> {
     const userFound = await db.query.user.findFirst({
       where: eq(user.id, Number(id)),
     });
 
-    return userFound;
+    if (!userFound) return undefined;
+
+    if (userFound?.role === 'shop') {
+      const shopFound = await db.query.shop.findFirst({
+        where: eq(shop.userId, userFound.id),
+        with: {
+          addressInfo: true,
+          userInfo: true,
+        },
+        columns: {
+          userId: false,
+        },
+      });
+
+      return shopFound;
+    } else {
+      const clientFound = await db.query.client.findFirst({
+        where: eq(client.userId, userFound.id),
+        with: { userInfo: true },
+      });
+
+      return clientFound;
+    }
   }
 
   async update(newUserInfo: User): Promise<number> {

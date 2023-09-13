@@ -1,7 +1,6 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
 import {
-  createUserSchema,
   getUserByIdSchema,
   updateAccessSchema,
   userLoginSchema,
@@ -9,13 +8,6 @@ import {
 import { userFactory } from '../modules/user/user.factory';
 
 const router = express.Router();
-
-router
-  .route('/create')
-  .post(
-    validate(createUserSchema),
-    async (req, res) => await userFactory().createUser(req, res),
-  );
 
 router
   .route('/list')

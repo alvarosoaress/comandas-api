@@ -2,7 +2,7 @@ import { createInsertSchema } from 'drizzle-zod';
 import { user } from '../../../database/schema';
 import { z } from 'zod';
 
-const userSchema = createInsertSchema(user, {
+export const userSchema = createInsertSchema(user, {
   name: (schema) => schema.name.min(3),
   email: (schema) => schema.email.email(),
 });

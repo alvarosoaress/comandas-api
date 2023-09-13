@@ -4,7 +4,6 @@ import path from 'path';
 import dotenv from 'dotenv';
 import {
   type userLoginType,
-  type createUserType,
   type getUserByIdType,
   type getUserByEmailType,
   type updateAccessTokenType,
@@ -15,18 +14,6 @@ dotenv.config({ path: path.resolve('./.env') });
 
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  async createUser(
-    req: Request<unknown, unknown, createUserType>,
-    res: Response,
-  ) {
-    const newUser = await this.userService.create(req.body);
-
-    return res.status(200).json({
-      error: false,
-      data: newUser,
-    });
-  }
 
   async getUsers(req: Request, res: Response) {
     const users = await this.userService.list();

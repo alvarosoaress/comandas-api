@@ -4,7 +4,6 @@
 
 import app from '../../../app';
 import request from 'supertest';
-import { type createShopType } from '../../shop/shop.schema';
 import { type createAddressType } from '../../address/address.schema';
 import { type createUserType } from '../../user/user.schema';
 import { type createItemType } from '../item.schema';
@@ -21,7 +20,6 @@ beforeAll(async () => {
     name: 'Francesco Virgulini',
     email: 'maquinabeloz@tute.italia',
     password: 'supersafepasswordnobodywillnowhihi123',
-    role: 'client' as const,
   };
   const addressInfo: createAddressType = {
     number: 69,
@@ -31,14 +29,8 @@ beforeAll(async () => {
     state: 'Tute',
     country: 'Italia',
   };
-  const shopInfo: createShopType = {
-    userId: 1,
-    addressId: 1,
-  };
 
-  await request(app).post('/user/create').send(userInfo);
-  await request(app).post('/address/create').send(addressInfo);
-  await request(app).post('/shop/create').send(shopInfo);
+  await request(app).post('/shop/create').send({ userInfo, addressInfo });
 });
 
 describe('Item Controller Integration', () => {
