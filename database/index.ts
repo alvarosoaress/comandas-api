@@ -1,13 +1,11 @@
-import { drizzle } from 'drizzle-orm/mysql2';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import * as schema from './schema';
-import mysql from 'mysql2/promise';
+import postgres from 'postgres';
 import path from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-const connection = mysql.createPool({
-  uri: process.env.DATABASE_URL,
-});
+const client = postgres(process.env.DATABASE_URL as string);
 
-export const db = drizzle(connection, { schema, mode: 'default' });
+export const db = drizzle(client, { schema });

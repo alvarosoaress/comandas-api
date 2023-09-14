@@ -1,49 +1,55 @@
 import { relations } from 'drizzle-orm';
 import {
-  int,
-  mysqlEnum,
-  mysqlTable,
-  real,
+  integer,
+  pgTable,
+  serial,
   timestamp,
   varchar,
-} from 'drizzle-orm/mysql-core';
+  pgEnum,
+  primaryKey,
+  decimal,
+} from 'drizzle-orm/pg-core';
 
-export const user = mysqlTable('users', {
-  id: int('id').primaryKey().autoincrement(),
+export const roleEnum = pgEnum('role', ['client', 'shop']);
+
+export const temperatureEnum = pgEnum('temperature', ['cold', 'hot']);
+
+export const user = pgTable('users', {
+  id: serial('id').primaryKey(),
   name: varchar('name', { length: 256 }).notNull(),
   email: varchar('email', { length: 256 }).unique().notNull(),
   password: varchar('password', { length: 256 }).notNull(),
-  phoneNumber: int('phone_number'),
-  role: mysqlEnum('role', ['client', 'shop']),
+  phoneNumber: integer('phone_number'),
+  role: roleEnum('role'),
   refreshToken: varchar('refreshToken', { length: 256 }).unique(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const address = mysqlTable('addresses', {
-  id: int('id').primaryKey().autoincrement(),
+export const address = pgTable('addresses', {
+  id: serial('id').primaryKey(),
   street: varchar('street', { length: 256 }).notNull(),
-  number: int('number').notNull(),
+  number: integer('number').notNull(),
   neighborhood: varchar('neighborhood', { length: 256 }).notNull(),
   city: varchar('city', { length: 256 }).notNull(),
   state: varchar('state', { length: 256 }).notNull(),
   country: varchar('country', { length: 256 }).notNull(),
-  zipcode: int('zipcode'),
+  zipcode: integer('zipcode'),
   lat: varchar('lat', { length: 256 }),
   long: varchar('long', { length: 256 }),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const shop = mysqlTable('shops', {
+export const shop = pgTable('shops', {
   //   id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id')
+  userId: integer('user_id')
     .primaryKey()
     .references(() => user.id, {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  addressId: int('address_id')
+  addressId: integer('address_id')
     .notNull()
     .references(() => address.id, {
       onDelete: 'cascade',
@@ -66,9 +72,9 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
   menu: many(item),
 }));
 
-export const client = mysqlTable('clients', {
+export const client = pgTable('clients', {
   //   id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id')
+  userId: integer('user_id')
     .primaryKey()
     .references(() => user.id, {
       onDelete: 'cascade',
@@ -87,9 +93,9 @@ export const clientRelations = relations(client, ({ one, many }) => ({
   }),
 }));
 
-export const category = mysqlTable('categories', {
-  id: int('id').primaryKey().autoincrement(),
-  shopId: int('shop_id')
+export const category = pgTable('categories', {
+  id: serial('id').primaryKey(),
+  shopId: integer('shop_id')
     .references(() => shop.userId, { onDelete: 'cascade', onUpdate: 'cascade' })
     .notNull(),
   name: varchar('name', { length: 256 }).notNull(),
@@ -104,19 +110,19 @@ export const categoryRelations = relations(category, ({ one }) => ({
   }),
 }));
 
-export const item = mysqlTable('items', {
-  id: int('id').primaryKey().autoincrement(),
-  shopId: int('shop_id')
+export const item = pgTable('items', {
+  id: serial('id').primaryKey(),
+  shopId: integer('shop_id')
     .references(() => shop.userId, { onDelete: 'cascade', onUpdate: 'cascade' })
     .notNull(),
-  categoryId: int('category_id').references(() => category.id, {
+  categoryId: integer('category_id').references(() => category.id, {
     onDelete: 'cascade',
     onUpdate: 'cascade',
   }),
   name: varchar('name', { length: 256 }).notNull(),
   description: varchar('description', { length: 256 }),
-  price: real('price', { precision: 10, scale: 2 }).notNull(),
-  temperature: mysqlEnum('temperature', ['cold', 'hot']),
+  price: decimal('price', { precision: 2 }).notNull(),
+  temperature: temperatureEnum('temperature'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
@@ -132,29 +138,31 @@ export const itemRelations = relations(item, ({ one }) => ({
   }),
 }));
 
-export const cart = mysqlTable('cart', {
-  clientId: int('client_id')
-    .primaryKey()
-    .references(() => client.userId, {
+export const cart = pgTable(
+  'cart',
+  {
+    clientId: integer('client_id').references(() => client.userId, {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  shopId: int('shop_id')
-    .primaryKey()
-    .references(() => shop.userId, {
+    shopId: integer('shop_id').references(() => shop.userId, {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  itemId: int('item_id')
-    .primaryKey()
-    .references(() => item.id, {
+    itemId: integer('item_id').references(() => item.id, {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  quantity: int('quantity').notNull(),
-  // TotalPrice é para ser calculado no frontEnd
-  //   totalPrice: real('total_price', { precision: 10, scale: 2 }).notNull(),
-});
+    quantity: integer('quantity').notNull(),
+    // TotalPrice é para ser calculado no frontEnd
+    //   totalPrice: real('total_price', { precision: 10, scale: 2 }).notNull(),
+  },
+  (table) => {
+    return {
+      pk: primaryKey(table.clientId, table.itemId, table.shopId),
+    };
+  },
+);
 
 // TODO Inserir UpdatedAt em todas colunas
 
