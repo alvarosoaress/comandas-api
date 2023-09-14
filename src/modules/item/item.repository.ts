@@ -46,10 +46,12 @@ export class ItemRepository implements IItemRepository {
   }
 
   async update(newItemInfo: Item): Promise<Item | undefined> {
-    // O atributo createdAt é reconhecido como String
-    // mas o drizzle não consegue passar para date para o mysql
-    // então é preciso tratar o objeto antes
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+
+    // Não há motivos para sobreescrever o createdAt
     deleteObjKey(newItemInfo, 'createdAt');
+
+    newItemInfo.updatedAt = new Date();
 
     await db
       .update(item)
@@ -61,6 +63,8 @@ export class ItemRepository implements IItemRepository {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       where: eq(item.id, newItemInfo.id!),
     });
+
+    console.log(updatedItem);
 
     return updatedItem;
   }

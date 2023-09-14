@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm';
 import {
-  boolean,
   int,
   mysqlEnum,
   mysqlTable,
@@ -18,6 +17,7 @@ export const user = mysqlTable('users', {
   role: mysqlEnum('role', ['client', 'shop']),
   refreshToken: varchar('refreshToken', { length: 256 }).unique(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
 export const address = mysqlTable('addresses', {
@@ -32,6 +32,7 @@ export const address = mysqlTable('addresses', {
   lat: varchar('lat', { length: 256 }),
   long: varchar('long', { length: 256 }),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
 export const shop = mysqlTable('shops', {
@@ -49,6 +50,8 @@ export const shop = mysqlTable('shops', {
       onUpdate: 'cascade',
     }),
   qrCodeUrl: varchar('qrcode_url', { length: 256 }),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
 export const shopRelations = relations(shop, ({ one, many }) => ({
@@ -73,6 +76,8 @@ export const client = mysqlTable('clients', {
     }),
   photoUrl: varchar('photo_url', { length: 256 }),
   birthday: timestamp('birthday'),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
 export const clientRelations = relations(client, ({ one, many }) => ({
@@ -89,6 +94,7 @@ export const category = mysqlTable('categories', {
     .notNull(),
   name: varchar('name', { length: 256 }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
 export const categoryRelations = relations(category, ({ one }) => ({
@@ -111,8 +117,8 @@ export const item = mysqlTable('items', {
   description: varchar('description', { length: 256 }),
   price: real('price', { precision: 10, scale: 2 }).notNull(),
   temperature: mysqlEnum('temperature', ['cold', 'hot']),
-  vegan: boolean('vegan'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
 export const itemRelations = relations(item, ({ one }) => ({
@@ -125,6 +131,30 @@ export const itemRelations = relations(item, ({ one }) => ({
     references: [category.id],
   }),
 }));
+
+export const cart = mysqlTable('cart', {
+  clientId: int('client_id')
+    .primaryKey()
+    .references(() => client.userId, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  shopId: int('shop_id')
+    .primaryKey()
+    .references(() => shop.userId, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  itemId: int('item_id')
+    .primaryKey()
+    .references(() => item.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  quantity: int('quantity').notNull(),
+  // TotalPrice é para ser calculado no frontEnd
+  //   totalPrice: real('total_price', { precision: 10, scale: 2 }).notNull(),
+});
 
 // TODO Inserir UpdatedAt em todas colunas
 

@@ -64,7 +64,6 @@ describe('Item Controller Integration', () => {
           createdAt: expect.any(String),
           description: null,
           temperature: null,
-          vegan: null,
         },
       ];
 
@@ -91,7 +90,6 @@ describe('Item Controller Integration', () => {
         createdAt: expect.any(String),
         description: null,
         temperature: null,
-        vegan: null,
       };
 
       const response = await request(app).get('/item/1');
@@ -111,16 +109,14 @@ describe('Item Controller Integration', () => {
         name: 'Bolo de murango',
         price: 69.99,
         shopId: 1,
-        categoryId: null,
-        createdAt: expect.any(String),
-        description: null,
-        temperature: null,
-        vegan: null,
+        temperature: 'cold',
       };
 
       const response = await request(app)
         .post('/item/update')
         .send(itemUpdated);
+
+      console.log(response.body);
 
       expect(response.status).toBe(200);
 
