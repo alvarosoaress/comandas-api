@@ -1,4 +1,8 @@
-import { type Shop, type Client, type User } from '../../../../database/schema';
+import {
+  type ShopExtended,
+  type CustomerExtended,
+  type User,
+} from '../../../../database/schema';
 import {
   ConflictError,
   InternalServerError,
@@ -131,7 +135,7 @@ describe('User Service', () => {
 
   describe('GetById User', () => {
     it('should return the CLIENT with the specified ID', async () => {
-      const userInfo: Client = {
+      const userInfo: CustomerExtended = {
         userId: 1,
         userInfo: {
           name: 'Francesco Virgulini',
@@ -147,7 +151,7 @@ describe('User Service', () => {
 
       expect(userRepositoryMock.getById).toHaveBeenCalledWith('1');
 
-      expect(userFound).toEqual<Client>(userInfo);
+      expect(userFound).toEqual<CustomerExtended>(userInfo);
 
       expect(userFound.userInfo.role).toEqual('client');
 
@@ -156,7 +160,8 @@ describe('User Service', () => {
     });
 
     it('should return the SHOP with the specified ID', async () => {
-      const userInfo: Shop = {
+      const userInfo: ShopExtended = {
+        userId: 1,
         addressId: 1,
         addressInfo: {
           number: 69,
@@ -180,7 +185,7 @@ describe('User Service', () => {
 
       expect(userRepositoryMock.getById).toHaveBeenCalledWith('1');
 
-      expect(userFound).toEqual<Shop>(userInfo);
+      expect(userFound).toEqual<ShopExtended>(userInfo);
 
       expect(userFound.userInfo.role).toEqual('shop');
 
@@ -199,7 +204,7 @@ describe('User Service', () => {
 
   describe('GetByEmail User', () => {
     it('should return the CLIENT with the specified Email', async () => {
-      const userInfo: Client = {
+      const userInfo: CustomerExtended = {
         userId: 1,
         userInfo: {
           name: 'Francesco Virgulini',
@@ -219,7 +224,7 @@ describe('User Service', () => {
         'maquinabeloz@tute.italia',
       );
 
-      expect(userFound).toEqual<Client>(userInfo);
+      expect(userFound).toEqual<CustomerExtended>(userInfo);
 
       expect(userFound.userInfo.role).toEqual('client');
 
@@ -228,7 +233,8 @@ describe('User Service', () => {
     });
 
     it('should return the SHOP with the specified Email', async () => {
-      const userInfo: Shop = {
+      const userInfo: ShopExtended = {
+        userId: 1,
         addressId: 1,
         addressInfo: {
           number: 69,
@@ -256,7 +262,7 @@ describe('User Service', () => {
         'maquinabeloz@tute.italia',
       );
 
-      expect(userFound).toEqual<Shop>(userInfo);
+      expect(userFound).toEqual<ShopExtended>(userInfo);
 
       expect(userFound.userInfo.role).toEqual('shop');
 
@@ -275,7 +281,7 @@ describe('User Service', () => {
 
   describe('Login User', () => {
     it('should login the user with the specified Email and Password', async () => {
-      const userFound: Client = {
+      const userFound: CustomerExtended = {
         userId: 1,
         userInfo: {
           name: 'Francesco Virgulini',
@@ -331,7 +337,7 @@ describe('User Service', () => {
     });
 
     it('should throw a error if user found credentials not match the provided credentials', async () => {
-      const userFound: Client = {
+      const userFound: CustomerExtended = {
         userId: 1,
         userInfo: {
           name: 'Francesco Virgulini',
@@ -358,7 +364,7 @@ describe('User Service', () => {
     });
 
     it('should throw a error if database fails to update user refreshToken', async () => {
-      const userFound: Client = {
+      const userFound: CustomerExtended = {
         userId: 1,
         userInfo: {
           name: 'Francesco Virgulini',

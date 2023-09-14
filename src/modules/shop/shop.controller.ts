@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type Request, type Response } from 'express';
-import { type createShopType, type getShopMenuType } from './shop.schema';
+import {
+  type updateShopType,
+  type createShopType,
+  type getShopMenuType,
+} from './shop.schema';
 import { type ShopService } from './shop.service';
 
 export class ShopController {
@@ -10,10 +14,12 @@ export class ShopController {
     req: Request<unknown, unknown, createShopType>,
     res: Response,
   ) {
-    const newShop = await this.shopService.create(
-      req.body.userInfo,
-      req.body.addressInfo,
-    );
+    const info: createShopType = {
+      shopInfo: req.body.shopInfo,
+      userInfo: req.body.userInfo,
+      addressInfo: req.body.addressInfo,
+    };
+    const newShop = await this.shopService.create(info);
 
     return res.status(200).json({
       error: false,
@@ -36,6 +42,18 @@ export class ShopController {
     return res.status(200).json({
       error: false,
       data: shopMenu,
+    });
+  }
+
+  async updateShop(
+    req: Request<unknown, unknown, updateShopType>,
+    res: Response,
+  ) {
+    const updatedShop = await this.shopService.update(req.body);
+
+    return res.status(200).json({
+      error: false,
+      data: updatedShop,
     });
   }
 }

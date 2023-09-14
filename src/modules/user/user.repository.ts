@@ -2,12 +2,12 @@ import { eq } from 'drizzle-orm';
 import { db } from '../../../database';
 import { type IUserRepository } from './Iuser.repository';
 import {
-  type Client,
-  type Shop,
+  type CustomerExtended,
+  type ShopExtended,
   user,
   type User,
   shop,
-  client,
+  customer,
 } from '../../../database/schema';
 
 export class UserRepository implements IUserRepository {
@@ -35,7 +35,9 @@ export class UserRepository implements IUserRepository {
     return userInfo;
   }
 
-  async getByEmail(email: string): Promise<Shop | Client | undefined> {
+  async getByEmail(
+    email: string,
+  ): Promise<ShopExtended | CustomerExtended | undefined> {
     const userFound = await db.query.user.findFirst({
       where: eq(user.email, email),
     });
@@ -49,23 +51,22 @@ export class UserRepository implements IUserRepository {
           addressInfo: true,
           userInfo: true,
         },
-        columns: {
-          userId: false,
-        },
       });
 
       return shopFound;
     } else {
-      const clientFound = await db.query.client.findFirst({
-        where: eq(client.userId, userFound.id),
+      const customerFound = await db.query.customer.findFirst({
+        where: eq(customer.userId, userFound.id),
         with: { userInfo: true },
       });
 
-      return clientFound;
+      return customerFound;
     }
   }
 
-  async getById(id: string | number): Promise<Shop | Client | undefined> {
+  async getById(
+    id: string | number,
+  ): Promise<ShopExtended | CustomerExtended | undefined> {
     const userFound = await db.query.user.findFirst({
       where: eq(user.id, Number(id)),
     });
@@ -79,19 +80,16 @@ export class UserRepository implements IUserRepository {
           addressInfo: true,
           userInfo: true,
         },
-        columns: {
-          userId: false,
-        },
       });
 
       return shopFound;
     } else {
-      const clientFound = await db.query.client.findFirst({
-        where: eq(client.userId, userFound.id),
+      const customerFound = await db.query.customer.findFirst({
+        where: eq(customer.userId, userFound.id),
         with: { userInfo: true },
       });
 
-      return clientFound;
+      return customerFound;
     }
   }
 

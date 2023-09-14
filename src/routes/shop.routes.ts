@@ -3,6 +3,7 @@ import validate from '../middleware/validateResource';
 import {
   createShopSchema,
   getShopMenuSchema,
+  updateShopSchema,
 } from '../modules/shop/shop.schema';
 import { shopFactory } from '../modules/shop/shop.factory';
 
@@ -24,6 +25,13 @@ router
   .get(
     validate(getShopMenuSchema),
     async (req, res) => await shopFactory().getShopMenu(req, res),
+  );
+
+router
+  .route('/update')
+  .put(
+    validate(updateShopSchema),
+    async (req, res) => await shopFactory().updateShop(req, res),
   );
 
 export default router;

@@ -64,8 +64,6 @@ export class ItemRepository implements IItemRepository {
       where: eq(item.id, newItemInfo.id!),
     });
 
-    console.log(updatedItem);
-
     return updatedItem;
   }
 }

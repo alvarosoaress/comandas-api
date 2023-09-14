@@ -1,8 +1,10 @@
 import { relations } from 'drizzle-orm';
 import {
+  boolean,
   int,
   mysqlEnum,
   mysqlTable,
+  primaryKey,
   real,
   timestamp,
   varchar,
@@ -35,8 +37,18 @@ export const address = mysqlTable('addresses', {
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
+export const shopCategory = mysqlTable('shop_categories', {
+  id: int('id').primaryKey().autoincrement(),
+  name: varchar('name', { length: 256 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+});
+
+export const shopCategoryRelations = relations(shopCategory, ({ many }) => ({
+  shops: many(shop),
+}));
+
 export const shop = mysqlTable('shops', {
-  //   id: int('id').primaryKey().autoincrement(),
   userId: int('user_id')
     .primaryKey()
     .references(() => user.id, {
@@ -49,7 +61,11 @@ export const shop = mysqlTable('shops', {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  qrCodeUrl: varchar('qrcode_url', { length: 256 }),
+  categoryId: int('category_id').references(() => shopCategory.id, {
+    onDelete: 'cascade',
+    onUpdate: 'cascade',
+  }),
+  tables: int('tables'),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
@@ -63,11 +79,36 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
     fields: [shop.addressId],
     references: [address.id],
   }),
+  category: one(shopCategory, {
+    fields: [shop.categoryId],
+    references: [shopCategory.id],
+  }),
   menu: many(item),
+  qrCodes: many(qrCode),
+  itemCategories: many(itemCategory),
 }));
 
-export const client = mysqlTable('clients', {
-  //   id: int('id').primaryKey().autoincrement(),
+export const qrCode = mysqlTable('shops_qrcodes', {
+  id: int('id').primaryKey().autoincrement(),
+  shopId: int('shop_id')
+    .notNull()
+    .references(() => shop.userId, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  qrcodeUrl: varchar('qrcode_url', { length: 256 }).notNull().unique(),
+  table: int('table_number').notNull(),
+  isOccupied: boolean('is_occupied').default(false).notNull(),
+});
+
+export const qrCodeRelations = relations(qrCode, ({ one }) => ({
+  shop: one(shop, {
+    fields: [qrCode.shopId],
+    references: [shop.userId],
+  }),
+}));
+
+export const customer = mysqlTable('customer', {
   userId: int('user_id')
     .primaryKey()
     .references(() => user.id, {
@@ -80,14 +121,14 @@ export const client = mysqlTable('clients', {
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const clientRelations = relations(client, ({ one, many }) => ({
+export const costumerRelations = relations(customer, ({ one, many }) => ({
   userInfo: one(user, {
-    fields: [client.userId],
+    fields: [customer.userId],
     references: [user.id],
   }),
 }));
 
-export const category = mysqlTable('categories', {
+export const itemCategory = mysqlTable('item_categories', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
     .references(() => shop.userId, { onDelete: 'cascade', onUpdate: 'cascade' })
@@ -97,9 +138,9 @@ export const category = mysqlTable('categories', {
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const categoryRelations = relations(category, ({ one }) => ({
+export const itemCategoryRelations = relations(itemCategory, ({ one }) => ({
   shop: one(shop, {
-    fields: [category.shopId],
+    fields: [itemCategory.shopId],
     references: [shop.userId],
   }),
 }));
@@ -109,7 +150,7 @@ export const item = mysqlTable('items', {
   shopId: int('shop_id')
     .references(() => shop.userId, { onDelete: 'cascade', onUpdate: 'cascade' })
     .notNull(),
-  categoryId: int('category_id').references(() => category.id, {
+  categoryId: int('category_id').references(() => itemCategory.id, {
     onDelete: 'cascade',
     onUpdate: 'cascade',
   }),
@@ -122,39 +163,77 @@ export const item = mysqlTable('items', {
 });
 
 export const itemRelations = relations(item, ({ one }) => ({
+  category: one(itemCategory, {
+    fields: [item.categoryId],
+    references: [itemCategory.id],
+  }),
   shop: one(shop, {
     fields: [item.shopId],
     references: [shop.userId],
   }),
-  category: one(category, {
-    fields: [item.categoryId],
-    references: [category.id],
-  }),
 }));
 
-export const cart = mysqlTable('cart', {
-  clientId: int('client_id')
-    .primaryKey()
-    .references(() => client.userId, {
-      onDelete: 'cascade',
-      onUpdate: 'cascade',
-    }),
-  shopId: int('shop_id')
-    .primaryKey()
-    .references(() => shop.userId, {
-      onDelete: 'cascade',
-      onUpdate: 'cascade',
-    }),
-  itemId: int('item_id')
-    .primaryKey()
-    .references(() => item.id, {
-      onDelete: 'cascade',
-      onUpdate: 'cascade',
-    }),
-  quantity: int('quantity').notNull(),
-  // TotalPrice é para ser calculado no frontEnd
-  //   totalPrice: real('total_price', { precision: 10, scale: 2 }).notNull(),
-});
+// export const cart = mysqlTable(
+//   'cart',
+//   {
+//     clientId: int('client_id').references(() => client.userId, {
+//       onDelete: 'cascade',
+//       onUpdate: 'cascade',
+//     }),
+//     shopId: int('shop_id').references(() => shop.userId, {
+//       onDelete: 'cascade',
+//       onUpdate: 'cascade',
+//     }),
+//     itemId: int('item_id').references(() => item.id, {
+//       onDelete: 'cascade',
+//       onUpdate: 'cascade',
+//     }),
+//     quantity: int('quantity').notNull(),
+//     updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+//     // TotalPrice é para ser calculado no frontEnd
+//     //   totalPrice: real('total_price', { precision: 10, scale: 2 }).notNull(),
+//   },
+//   (table) => {
+//     return { pk: primaryKey(table.clientId, table.itemId, table.shopId) };
+//   },
+// );
+
+export const order = mysqlTable(
+  'orders',
+  {
+    clientId: int('client_id')
+      .references(() => customer.userId, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      })
+      .notNull(),
+    shopId: int('shop_id')
+      .references(() => shop.userId, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      })
+      .notNull(),
+    itemId: int('item_id')
+      .references(() => item.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      })
+      .notNull(),
+    quantity: int('quantity').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => {
+    return { pk: primaryKey(table.clientId, table.itemId, table.shopId) };
+  },
+);
+
+export const ordersRelations = relations(order, ({ one }) => ({
+  item: one(item, {
+    fields: [order.itemId],
+    references: [item.id],
+  }),
+}));
 
 // TODO Inserir UpdatedAt em todas colunas
 
@@ -163,20 +242,35 @@ export type UserSafe = Omit<User, 'password' | 'refreshToken'>;
 
 export type Address = typeof address.$inferInsert;
 
-export type Client = typeof client.$inferInsert & {
+export type Customer = typeof customer.$inferInsert;
+export type CustomerWithoutId = Omit<Customer, 'userId'>;
+export type CustomerExtended = typeof customer.$inferInsert & {
   userInfo: User;
 };
-export type ClientSafe = typeof client.$inferInsert & {
+export type CustomerExtendedSafe = typeof customer.$inferInsert & {
   userInfo: UserSafe;
 };
 
-export type Shop = Omit<typeof shop.$inferInsert, 'userId'> & {
+export type Shop = typeof shop.$inferInsert;
+export type ShopWithoutId = { addressId?: number } & Omit<
+  Shop,
+  'userId' | 'addressId'
+>;
+export type ShopExtended = typeof shop.$inferInsert & {
   userInfo: User;
   addressInfo: Address;
 };
-export type ShopSafe = Omit<typeof shop.$inferInsert, 'userId'> & {
+export type ShopExtendedSafe = typeof shop.$inferInsert & {
   userInfo: UserSafe;
   addressInfo: Address;
 };
 
 export type Item = typeof item.$inferInsert;
+
+export type ItemCategory = typeof itemCategory.$inferInsert;
+
+export type ShopCategory = typeof shopCategory.$inferInsert;
+
+export type QrCode = typeof qrCode.$inferInsert;
+
+export type Order = typeof order.$inferSelect;

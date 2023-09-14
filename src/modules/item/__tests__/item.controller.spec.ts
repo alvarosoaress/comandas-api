@@ -4,10 +4,9 @@
 
 import app from '../../../app';
 import request from 'supertest';
-import { type createAddressType } from '../../address/address.schema';
-import { type createUserType } from '../../user/user.schema';
 import { type createItemType } from '../item.schema';
 import { type Item } from '../../../../database/schema';
+import { type createShopType } from '../../shop/shop.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -16,21 +15,26 @@ jest.setTimeout(10000);
 beforeAll(async () => {
   // Pré criando informações necessárias para
   // o item poder existir
-  const userInfo: createUserType = {
-    name: 'Francesco Virgulini',
-    email: 'maquinabeloz@tute.italia',
-    password: 'supersafepasswordnobodywillnowhihi123',
-  };
-  const addressInfo: createAddressType = {
-    number: 69,
-    street: 'Virgulini',
-    neighborhood: 'Francesco',
-    city: 'City Test',
-    state: 'Tute',
-    country: 'Italia',
+  const info: createShopType = {
+    shopInfo: {
+      tables: 5,
+    },
+    userInfo: {
+      name: 'Francesco Virgulini',
+      email: 'maquinabeloz@tute.italia',
+      password: 'supersafepasswordnobodywillnowhihi123',
+    },
+    addressInfo: {
+      number: 69,
+      street: 'Virgulini',
+      neighborhood: 'Francesco',
+      city: 'City Test',
+      state: 'Tute',
+      country: 'Italia',
+    },
   };
 
-  await request(app).post('/shop/create').send({ userInfo, addressInfo });
+  await request(app).post('/shop/create').send(info);
 });
 
 describe('Item Controller Integration', () => {
@@ -115,8 +119,6 @@ describe('Item Controller Integration', () => {
       const response = await request(app)
         .post('/item/update')
         .send(itemUpdated);
-
-      console.log(response.body);
 
       expect(response.status).toBe(200);
 

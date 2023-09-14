@@ -1,7 +1,7 @@
 import {
   type User,
-  type ClientSafe,
-  type ShopSafe,
+  type CustomerExtendedSafe,
+  type ShopExtendedSafe,
   type UserSafe,
 } from '../../../database/schema';
 import {
@@ -58,7 +58,7 @@ export class UserService {
     return userList;
   }
 
-  async getById(id: string): Promise<ShopSafe | ClientSafe> {
+  async getById(id: string): Promise<ShopExtendedSafe | CustomerExtendedSafe> {
     const userFound = await this.userRepository.getById(id);
 
     if (!userFound) throw new NotFoundError('No user found');
@@ -69,7 +69,9 @@ export class UserService {
     return userFound;
   }
 
-  async getByEmail(email: string): Promise<ShopSafe | ClientSafe> {
+  async getByEmail(
+    email: string,
+  ): Promise<ShopExtendedSafe | CustomerExtendedSafe> {
     const userFound = await this.userRepository.getByEmail(email);
 
     if (!userFound) throw new NotFoundError('No user found');

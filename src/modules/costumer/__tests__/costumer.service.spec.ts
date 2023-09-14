@@ -1,78 +1,54 @@
-import { type Item, type ShopExtended } from '../../../../database/schema';
+import { type CustomerExtended } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
-import { type IShopRepository } from '../Ishop.repository';
-import { type createShopType } from '../shop.schema';
-import { ShopService } from '../shop.service';
+import { type ICustomerRepository } from '../Icustomer.repository';
+import { createCustomerType } from '../customer.schema';
+import { CustomerService } from '../customer.service';
 
-describe('Shop Service', () => {
-  let shopService: ShopService;
-  let shopRepositoryMock: jest.Mocked<IShopRepository>;
+describe('Customer Service', () => {
+  let customerService: CustomerService;
+  let customerRepositoryMock: jest.Mocked<ICustomerRepository>;
 
   beforeEach(() => {
-    shopRepositoryMock = {
+    customerRepositoryMock = {
       create: jest.fn(),
       list: jest.fn(),
-      getMenu: jest.fn(),
       update: jest.fn(),
     };
 
-    shopService = new ShopService(shopRepositoryMock);
+    customerService = new CustomerService(customerRepositoryMock);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
+  const customerInfo: createCustomerType= {
+    customerInfo:{
+
+    }
+    userInfo: {
+      id: 1,
+      name: 'Francesco Virgulini',
+      email: 'maquinabeloz@tute.italia',
+      password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+      role: 'shop' as const,
+      refreshToken: 'nothingsafeandencryptedrefreshtokenold',
+    },
+  };
+
   describe('Create Shop', () => {
-    // TODO Incluir verificação para categoryId e addressId
-    const shopInfo: ShopExtended = {
-      tables: 5,
-      userId: 1,
-      addressId: 1,
-      userInfo: {
-        email: 'maquinabeloz@tute.italia',
-        id: 1,
-        name: 'Francesco Virgulini',
-        password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-        role: 'shop' as const,
-        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-      },
-      addressInfo: {
-        city: 'City Test',
-        neighborhood: 'Francesco',
-        number: 69,
-        street: 'Virgulini',
-        state: 'Tute',
-        country: 'Italia',
-      },
-    };
-
-    const newShopInfo: createShopType = {
-      shopInfo: {
-        tables: 5,
-        categoryId: 1,
-      },
-      userInfo: {
-        name: 'Francesco Virgulini',
-        email: 'maquinabeloz@tute.italia',
-        password: 'supersafepasswordnobodywillnowhihi123',
-      },
-      addressInfo: {
-        number: 69,
-        street: 'Virgulini',
-        neighborhood: 'Francesco',
-        city: 'City Test',
-        state: 'Tute',
-        country: 'Italia',
-      },
-    };
-
     it('should create a shop', async () => {
-      shopRepositoryMock.create.mockResolvedValue(shopInfo);
+      customerRepositoryMock.create.mockResolvedValue(customerInfo);
 
-      const newShop = await shopService.create(newShopInfo);
+      const newShop = await customerService.create(
+        customerInfo.userInfo,
+        customerInfo.addressInfo,
+      );
 
-      expect(shopRepositoryMock.create).toBeCalledWith(newShopInfo);
+      expect(customerRepositoryMock.create).toBeCalledWith(
+        customerInfo.userInfo,
+        customerInfo.addressInfo,
+      );
 
       expect(newShop).not.toHaveProperty('password');
       expect(newShop).not.toHaveProperty('refreshToken');
@@ -80,10 +56,9 @@ describe('Shop Service', () => {
 
     describe('List Shop', () => {
       it('should return a list of shops', async () => {
-        const shopList: ShopExtended[] = [
+        const shopList: CustomerExtended[] = [
           {
             userId: 1,
-            tables: 4,
             userInfo: {
               id: 1,
               name: 'Francesco Virgulini',
@@ -125,20 +100,24 @@ describe('Shop Service', () => {
             },
           },
         ];
-        shopRepositoryMock.list.mockResolvedValue(shopList);
+        customerRepositoryMock.list.mockResolvedValue(shopList);
 
-        const shops = await shopService.list();
+        const shops = await customerService.list();
 
-        expect(shopRepositoryMock.list).toHaveBeenCalled();
+        expect(customerRepositoryMock.list).toHaveBeenCalled();
 
         expect(shops.length).toBeGreaterThanOrEqual(2);
 
         expect(shops).toBeInstanceOf(Array);
-        expect(shops).toEqual(expect.arrayContaining<ShopExtended>(shopList));
+        expect(shops).toEqual(
+          expect.arrayContaining<CustomerExtended>(shopList),
+        );
 
         shops.forEach((shop) => {
-          expect(shop.userInfo).not.toHaveProperty<ShopExtended>('password');
-          expect(shop.userInfo).not.toHaveProperty<ShopExtended>(
+          expect(shop.userInfo).not.toHaveProperty<CustomerExtended>(
+            'password',
+          );
+          expect(shop.userInfo).not.toHaveProperty<CustomerExtended>(
             'refreshToken',
           );
           expect(shop.userInfo.role).toEqual('shop');
@@ -146,11 +125,13 @@ describe('Shop Service', () => {
       });
 
       it('should throw a error if no shops found', async () => {
-        shopRepositoryMock.list.mockResolvedValue([]);
+        customerRepositoryMock.list.mockResolvedValue([]);
 
-        await expect(shopService.list()).rejects.toThrowError(NotFoundError);
+        await expect(customerService.list()).rejects.toThrowError(
+          NotFoundError,
+        );
 
-        expect(shopRepositoryMock.list).toHaveBeenCalled();
+        expect(customerRepositoryMock.list).toHaveBeenCalled();
       });
     });
 
@@ -173,35 +154,35 @@ describe('Shop Service', () => {
           },
         ];
 
-        shopRepositoryMock.getMenu.mockResolvedValue(shopMenu);
+        customerRepositoryMock.getMenu.mockResolvedValue(shopMenu);
 
-        const shopMenuFound = await shopService.getMenu('1');
+        const shopMenuFound = await customerService.getMenu('1');
 
-        expect(shopRepositoryMock.getMenu).toHaveBeenCalledWith('1');
+        expect(customerRepositoryMock.getMenu).toHaveBeenCalledWith('1');
 
         expect(shopMenuFound).toEqual(shopMenu);
       });
 
       it('should throw a error if no shop found', async () => {
-        shopRepositoryMock.getMenu.mockResolvedValue(undefined);
+        customerRepositoryMock.getMenu.mockResolvedValue(undefined);
 
-        await expect(shopService.getMenu('1')).rejects.toThrowError(
+        await expect(customerService.getMenu('1')).rejects.toThrowError(
           NotFoundError,
         );
 
-        expect(shopRepositoryMock.getMenu).toHaveBeenCalledWith('1');
+        expect(customerRepositoryMock.getMenu).toHaveBeenCalledWith('1');
       });
 
       it('should throw a error if the shop has no menu', async () => {
         const shopMenu = undefined;
 
-        shopRepositoryMock.getMenu.mockResolvedValue(shopMenu);
+        customerRepositoryMock.getMenu.mockResolvedValue(shopMenu);
 
-        await expect(shopService.getMenu('1')).rejects.toThrowError(
+        await expect(customerService.getMenu('1')).rejects.toThrowError(
           NotFoundError,
         );
 
-        expect(shopRepositoryMock.getMenu).toHaveBeenCalledWith('1');
+        expect(customerRepositoryMock.getMenu).toHaveBeenCalledWith('1');
       });
     });
   });
