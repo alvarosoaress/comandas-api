@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type Request, type Response } from 'express';
-import { type getAddressType, type createAddressType } from './address.schema';
+import { type AddressGetType, type AddressCreateType } from './address.schema';
 import { type AddressService } from './address.service';
 
 export class AddressController {
@@ -16,7 +16,7 @@ export class AddressController {
   }
 
   async createAddress(
-    req: Request<unknown, unknown, createAddressType>,
+    req: Request<unknown, unknown, AddressCreateType>,
     res: Response,
   ) {
     const newAddress = await this.addressService.create(req.body);
@@ -27,7 +27,7 @@ export class AddressController {
     });
   }
 
-  async getAddressById(req: Request<getAddressType>, res: Response) {
+  async getAddressById(req: Request<AddressGetType>, res: Response) {
     const { id } = req.params;
 
     const addressFound = await this.addressService.getById(parseInt(id));
