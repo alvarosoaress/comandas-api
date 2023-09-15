@@ -1,7 +1,11 @@
-import { type CustomerExtended } from '../../../../database/schema';
+import {
+  type CustomerExtendedSafe,
+  type CustomerExtended,
+  type Customer,
+} from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type ICustomerRepository } from '../Icustomer.repository';
-import { createCustomerType } from '../customer.schema';
+import { type CustomerCreateType } from '../customer.schema';
 import { CustomerService } from '../customer.service';
 
 describe('Customer Service', () => {
@@ -10,6 +14,7 @@ describe('Customer Service', () => {
 
   beforeEach(() => {
     customerRepositoryMock = {
+      exists: jest.fn(),
       create: jest.fn(),
       list: jest.fn(),
       update: jest.fn(),
@@ -22,168 +27,134 @@ describe('Customer Service', () => {
     jest.clearAllMocks();
   });
 
-  const customerInfo: createCustomerType= {
-    customerInfo:{
+  const customerInfo: CustomerCreateType = {
+    customerInfo: {
+      photoUrl: 'https://animesisfun.eww',
+    },
+    userInfo: {
+      name: 'Francesco Virgulini',
+      email: 'maquinabeloz@tute.italia',
+      password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+      role: 'customer' as const,
+    },
+  };
 
-    }
+  const customerResult: CustomerExtendedSafe = {
+    userId: 1,
+    photoUrl: 'https://animesisfun.eww',
     userInfo: {
       id: 1,
       name: 'Francesco Virgulini',
       email: 'maquinabeloz@tute.italia',
-      password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-      role: 'shop' as const,
-      refreshToken: 'nothingsafeandencryptedrefreshtokenold',
+      role: 'customer' as const,
     },
   };
 
-  describe('Create Shop', () => {
-    it('should create a shop', async () => {
-      customerRepositoryMock.create.mockResolvedValue(customerInfo);
+  describe('Create Customer', () => {
+    it('should create a customer', async () => {
+      customerRepositoryMock.create.mockResolvedValue(customerResult);
 
-      const newShop = await customerService.create(
-        customerInfo.userInfo,
-        customerInfo.addressInfo,
-      );
+      const newCustomer = await customerService.create(customerInfo);
 
-      expect(customerRepositoryMock.create).toBeCalledWith(
-        customerInfo.userInfo,
-        customerInfo.addressInfo,
-      );
+      expect(customerRepositoryMock.create).toBeCalledWith(customerInfo);
 
-      expect(newShop).not.toHaveProperty('password');
-      expect(newShop).not.toHaveProperty('refreshToken');
+      expect(newCustomer).not.toHaveProperty('password');
+      expect(newCustomer).not.toHaveProperty('refreshToken');
     });
+  });
 
-    describe('List Shop', () => {
-      it('should return a list of shops', async () => {
-        const shopList: CustomerExtended[] = [
-          {
-            userId: 1,
-            userInfo: {
-              id: 1,
-              name: 'Francesco Virgulini',
-              email: 'maquinabeloz@tute.italia',
-              password:
-                'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-              role: 'shop' as const,
-              refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-            },
-            addressId: 1,
-            addressInfo: {
-              city: 'City Test',
-              neighborhood: 'Francesco',
-              number: 69,
-              street: 'Virgulini',
-              state: 'Tute',
-              country: 'Italia',
-            },
-          },
-          {
-            userId: 2,
-            userInfo: {
-              id: 2,
-              name: 'Francesco Virgulini',
-              email: 'maquinabeloz@tute.italia',
-              password:
-                'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-              role: 'shop' as const,
-              refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-            },
-            addressId: 2,
-            addressInfo: {
-              city: 'City Test',
-              neighborhood: 'Francesco',
-              number: 69,
-              street: 'Virgulini',
-              state: 'Tute',
-              country: 'Italia',
-            },
-          },
-        ];
-        customerRepositoryMock.list.mockResolvedValue(shopList);
-
-        const shops = await customerService.list();
-
-        expect(customerRepositoryMock.list).toHaveBeenCalled();
-
-        expect(shops.length).toBeGreaterThanOrEqual(2);
-
-        expect(shops).toBeInstanceOf(Array);
-        expect(shops).toEqual(
-          expect.arrayContaining<CustomerExtended>(shopList),
-        );
-
-        shops.forEach((shop) => {
-          expect(shop.userInfo).not.toHaveProperty<CustomerExtended>(
-            'password',
-          );
-          expect(shop.userInfo).not.toHaveProperty<CustomerExtended>(
-            'refreshToken',
-          );
-          expect(shop.userInfo.role).toEqual('shop');
-        });
-      });
-
-      it('should throw a error if no shops found', async () => {
-        customerRepositoryMock.list.mockResolvedValue([]);
-
-        await expect(customerService.list()).rejects.toThrowError(
-          NotFoundError,
-        );
-
-        expect(customerRepositoryMock.list).toHaveBeenCalled();
-      });
-    });
-
-    describe('Shop Menu', () => {
-      it('should return shop id, name and menu', async () => {
-        const shopMenu: Item[] = [
-          {
+  describe('List Customer', () => {
+    it('should return a list of customers', async () => {
+      const customerList: CustomerExtended[] = [
+        {
+          userId: 1,
+          photoUrl: 'https://animesisfun.eww',
+          userInfo: {
             id: 1,
-            name: 'Bolinea de Gorfe',
-            shopId: 1,
-            price: 9.89,
+            name: 'Francesco Virgulini',
+            email: 'maquinabeloz@tute.italia',
+            role: 'customer' as const,
+            password:
+              'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+            refreshToken: 'nothingsafeandencryptedrefreshtokenold',
           },
-          {
+        },
+        {
+          userId: 2,
+          photoUrl: 'https://getalife.pls',
+          userInfo: {
             id: 2,
-            name: 'Acugas',
-            shopId: 1,
-            price: 1.89,
-            description: 'Sparkling water',
-            temperature: 'cold' as const,
+            name: 'Francesco Virgulini',
+            email: 'maquinabeloz@tute.italia',
+            role: 'customer' as const,
+            password:
+              'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+            refreshToken: 'nothingsafeandencryptedrefreshtokenold',
           },
-        ];
+        },
+      ];
+      customerRepositoryMock.list.mockResolvedValue(customerList);
 
-        customerRepositoryMock.getMenu.mockResolvedValue(shopMenu);
+      const customers = await customerService.list();
 
-        const shopMenuFound = await customerService.getMenu('1');
+      expect(customerRepositoryMock.list).toHaveBeenCalled();
 
-        expect(customerRepositoryMock.getMenu).toHaveBeenCalledWith('1');
+      expect(customers.length).toBeGreaterThanOrEqual(2);
 
-        expect(shopMenuFound).toEqual(shopMenu);
-      });
+      expect(customers).toBeInstanceOf(Array);
+      expect(customers).toEqual(
+        expect.arrayContaining<CustomerExtended>(customerList),
+      );
 
-      it('should throw a error if no shop found', async () => {
-        customerRepositoryMock.getMenu.mockResolvedValue(undefined);
-
-        await expect(customerService.getMenu('1')).rejects.toThrowError(
-          NotFoundError,
+      customers.forEach((customer) => {
+        expect(customer.userInfo).not.toHaveProperty<CustomerExtended>(
+          'password',
         );
-
-        expect(customerRepositoryMock.getMenu).toHaveBeenCalledWith('1');
-      });
-
-      it('should throw a error if the shop has no menu', async () => {
-        const shopMenu = undefined;
-
-        customerRepositoryMock.getMenu.mockResolvedValue(shopMenu);
-
-        await expect(customerService.getMenu('1')).rejects.toThrowError(
-          NotFoundError,
+        expect(customer.userInfo).not.toHaveProperty<CustomerExtended>(
+          'refreshToken',
         );
-
-        expect(customerRepositoryMock.getMenu).toHaveBeenCalledWith('1');
+        expect(customer.userInfo.role).toEqual('customer');
       });
+    });
+
+    it('should throw a error if no customers found', async () => {
+      customerRepositoryMock.list.mockResolvedValue([]);
+
+      await expect(customerService.list()).rejects.toThrowError(NotFoundError);
+
+      expect(customerRepositoryMock.list).toHaveBeenCalled();
+    });
+  });
+
+  describe('Update Customer', () => {
+    const newCostumerInfo: Customer = {
+      userId: 1,
+      photoUrl: 'https://animeisnotfun.anymore',
+    };
+    it('should return the updated customer', async () => {
+      const updatedCustomer: Customer = {
+        userId: 1,
+        photoUrl: 'https://animeisnotfun.anymore',
+        birthday: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: new Date(),
+      };
+      customerRepositoryMock.exists.mockResolvedValue(true);
+      customerRepositoryMock.update.mockResolvedValue(updatedCustomer);
+
+      const updateResult = await customerService.update(newCostumerInfo);
+
+      expect(customerRepositoryMock.update).toBeCalledWith(newCostumerInfo);
+
+      expect(updateResult).toHaveProperty('updatedAt');
+    });
+
+    it('should trhow a error if no customer found', async () => {
+      customerRepositoryMock.exists.mockResolvedValue(false);
+
+      await expect(
+        customerService.update(newCostumerInfo),
+      ).rejects.toThrowError(NotFoundError);
     });
   });
 });

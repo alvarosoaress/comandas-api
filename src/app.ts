@@ -5,6 +5,7 @@ import UserRoutes from './routes/user.routes';
 import AddressRoutes from './routes/address.routes';
 import ShopRoutes from './routes/shop.routes';
 import ItemRoutes from './routes/item.routes';
+import CustomerRoutes from './routes/customer.routes';
 import { errorMiddleware } from './middleware/error';
 
 const app = express();
@@ -25,8 +26,8 @@ app.use('/user', UserRoutes);
 app.use('/address', AddressRoutes);
 app.use('/shop', ShopRoutes);
 app.use('/item', ItemRoutes);
+app.use('/customer', CustomerRoutes); // Middleware para tratamento de erros
 
-// Middleware para tratamento de erros
 app.use(errorMiddleware);
 
 export default app;

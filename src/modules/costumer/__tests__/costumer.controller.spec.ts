@@ -2,72 +2,66 @@
  * @jest-environment ./database/drizzle.environment.jest
  */
 
-import { type Item, type ShopExtendedSafe } from '../../../../database/schema';
+import { type CustomerExtendedSafe } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
-import { type createItemType } from '../../item/item.schema';
+import {
+  type CustomerUpdateType,
+  type CustomerCreateType,
+} from '../customer.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
 jest.setTimeout(10000);
 
-describe('Shop Controller Integration', () => {
-  describe('POST /shop/create', () => {
-    it('should create a shop', async () => {
-      const newShopInfo = {
+describe('Customer Controller Integration', () => {
+  describe('POST /customer/create', () => {
+    it('should create a customer', async () => {
+      const newCustomerInfo: CustomerCreateType = {
+        customerInfo: {
+          photoUrl: 'https://animesisfun.eww',
+        },
         userInfo: {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
-          password: 'supersafepasswordnobodywillnowhihi123',
-        },
-        addressInfo: {
-          number: 69,
-          street: 'Virgulini',
-          neighborhood: 'Francesco',
-          city: 'City Test',
-          state: 'Tute',
-          country: 'Italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'customer' as const,
         },
       };
 
       const response = await request(app)
-        .post('/shop/create')
-        .send(newShopInfo);
+        .post('/customer/create')
+        .send(newCustomerInfo);
 
       expect(response.status).toBe(200);
 
       expect(response.body.data).toHaveProperty('userInfo');
-      expect(response.body.data.userInfo.role).toEqual('shop');
+      expect(response.body.data).toHaveProperty('userId');
+      expect(response.body.data.userInfo.role).toEqual('customer');
     });
   });
 
-  describe('GET /shop/list', () => {
-    it('should return a list of shops', async () => {
-      const shopList: ShopExtendedSafe[] = [
+  describe('GET /customer/list', () => {
+    it('should return a list of customers', async () => {
+      const customerList: CustomerExtendedSafe[] = [
         {
           userId: 1,
-          addressId: 1,
+          photoUrl: 'https://animesisfun.eww',
+          birthday: null,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
           userInfo: {
             name: 'Francesco Virgulini',
             email: 'maquinabeloz@tute.italia',
-            role: 'shop',
+            role: 'customer',
             id: expect.any(Number),
             phoneNumber: null,
             createdAt: expect.any(String),
           },
-          addressInfo: {
-            id: 1,
-            city: 'City Test',
-            neighborhood: 'Francesco',
-            number: 69,
-            street: 'Virgulini',
-            state: 'Tute',
-            country: 'Italia',
-          },
         },
       ];
 
-      const response = await request(app).get('/shop/list');
+      const response = await request(app).get('/customer/list');
 
       expect(response.status).toBe(200);
 
@@ -75,62 +69,32 @@ describe('Shop Controller Integration', () => {
 
       expect(response.body.data.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(shopList);
+      expect(response.body.data).toMatchObject(customerList);
 
-      response.body.data.forEach((shop: ShopExtendedSafe) => {
-        expect(shop.userInfo.role).toEqual('shop');
+      response.body.data.forEach((customer: CustomerExtendedSafe) => {
+        expect(customer.userInfo.role).toEqual('customer');
       });
     });
   });
 
-  describe('GET /shop/:id/menu', () => {
-    beforeAll(async () => {
-      const newItemInfo: createItemType = {
-        shopId: 1,
-        name: 'Bolinea de Gorfwe',
-        price: 6.99,
+  describe('PUT /customer/update', () => {
+    it('should return a updated customer', async () => {
+      const newCostumerInfo: CustomerUpdateType = {
+        userId: 1,
+        photoUrl: 'https://animeisnotfun.anymore',
       };
 
-      await request(app).post('/item/create').send(newItemInfo);
-    });
-
-    it('should return the menu of the shop with the specified ID', async () => {
-      const itemList: Item[] = [
-        {
-          id: 1,
-          name: 'Bolinea de Gorfwe',
-          price: 6.99,
-          shopId: 1,
-          categoryId: null,
-          createdAt: expect.any(String),
-          description: null,
-          temperature: null,
-        },
-      ];
-
-      const response = await request(app).get('/shop/1/menu');
+      const response = await request(app)
+        .put('/customer/update')
+        .send(newCostumerInfo);
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body.data).toHaveProperty('updatedAt');
 
-      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
-
-      expect(response.body.data).toMatchObject(itemList);
+      expect(response.body.data.photoUrl).toEqual(
+        'https://animeisnotfun.anymore',
+      );
     });
   });
-  // TODO Criar o endPoint de adicionar items para poder testar o getMenu
-  //   describe('GET /shop/:id/menu', () => {
-  //     it('should return a shop with the specified ID', async () => {
-  //       const response = await request(app).get('/shop/1/menu');
-
-  //       expect(response.status).toBe(200);
-
-  //       expect(response.body.data.id).toEqual(1);
-
-  //       expect(response.body.data.items).toBeInstanceOf(Array);
-
-  //       expect(response.body.data.items.length).toEqual(0);
-  //     });
-  //   });
 });

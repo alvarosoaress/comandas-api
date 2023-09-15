@@ -5,12 +5,15 @@ import {
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 import deleteObjKey from '../../utils';
 import { type ICustomerRepository } from './Icustomer.repository';
-import { type createCustomerType } from './customer.schema';
+import {
+  type CustomerUpdateType,
+  type CustomerCreateType,
+} from './customer.schema';
 
 export class CustomerService {
   constructor(private readonly customerRepository: ICustomerRepository) {}
 
-  async create(info: createCustomerType): Promise<CustomerExtendedSafe> {
+  async create(info: CustomerCreateType): Promise<CustomerExtendedSafe> {
     const newCustomer = await this.customerRepository.create(info);
 
     if (!newCustomer) throw new InternalServerError();
@@ -32,11 +35,19 @@ export class CustomerService {
     return customers;
   }
 
-  async update(newCustomerInfo: Customer): Promise<Customer | undefined> {
+  async update(
+    newCustomerInfo: CustomerUpdateType,
+  ): Promise<Customer | undefined> {
+    const customerExists = await this.customerRepository.exists(
+      newCustomerInfo.userId,
+    );
+
+    if (!customerExists) throw new NotFoundError('No customer found');
+
     const updatedCustomer =
       await this.customerRepository.update(newCustomerInfo);
 
-    if (!updatedCustomer) throw new NotFoundError('No customer found');
+    if (!updatedCustomer) throw new InternalServerError();
 
     return updatedCustomer;
   }

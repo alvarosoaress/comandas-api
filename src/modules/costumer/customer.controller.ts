@@ -2,18 +2,18 @@
 import { type Request, type Response } from 'express';
 import { type CustomerService } from './customer.service';
 import {
-  type updateCustomerType,
-  type createCustomerType,
+  type CustomerUpdateType,
+  type CustomerCreateType,
 } from './customer.schema';
 
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   async createCustomer(
-    req: Request<unknown, unknown, createCustomerType>,
+    req: Request<unknown, unknown, CustomerCreateType>,
     res: Response,
   ) {
-    const info: createCustomerType = {
+    const info: CustomerCreateType = {
       customerInfo: req.body.customerInfo,
       userInfo: req.body.userInfo,
     };
@@ -36,7 +36,7 @@ export class CustomerController {
   }
 
   async updateCustomer(
-    req: Request<unknown, unknown, updateCustomerType>,
+    req: Request<unknown, unknown, CustomerUpdateType>,
     res: Response,
   ) {
     const updatedCustomer = await this.customerService.update(req.body);

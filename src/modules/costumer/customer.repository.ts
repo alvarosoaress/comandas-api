@@ -9,17 +9,28 @@ import {
 import { type UserService } from '../user/user.service';
 import deleteObjKey from '../../utils';
 import { type ICustomerRepository } from './Icustomer.repository';
-import { type createCustomerType } from './customer.schema';
+import {
+  type CustomerUpdateType,
+  type CustomerCreateType,
+} from './customer.schema';
 
 export class CustomerRepository implements ICustomerRepository {
   constructor(private readonly userService: UserService) {}
 
+  async exists(userId: number): Promise<boolean> {
+    const foundCustomer = await db.query.customer.findFirst({
+      where: eq(customer.userId, userId),
+    });
+
+    return !!foundCustomer;
+  }
+
   async create(
-    info: createCustomerType,
+    info: CustomerCreateType,
   ): Promise<CustomerExtendedSafe | undefined> {
     const newUser = await this.userService.create({
       ...info.userInfo,
-      role: 'client',
+      role: 'customer',
     });
 
     if (!newUser) return undefined;
@@ -46,23 +57,24 @@ export class CustomerRepository implements ICustomerRepository {
     return customers;
   }
 
-  async update(newCostumerInfo: Customer): Promise<Customer | undefined> {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-
-    // Não há motivos para sobreescrever o createdAt
-    if (newCostumerInfo.createdAt) deleteObjKey(newCostumerInfo, 'createdAt');
-
+  async update(
+    newCostumerInfo: CustomerUpdateType,
+  ): Promise<Customer | undefined> {
     newCostumerInfo.updatedAt = new Date();
+
+    // Salvando e retirando userId de newCostumerInfo
+    // para evitar o usuário atualizar o id do customer no BD
+    const userId = newCostumerInfo.userId;
+
+    deleteObjKey(newCostumerInfo, 'userId');
 
     await db
       .update(customer)
       .set(newCostumerInfo)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .where(eq(customer.userId, newCostumerInfo.userId!));
+      .where(eq(customer.userId, userId));
 
     const updatedCustomer = await db.query.customer.findFirst({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      where: eq(customer.userId, newCostumerInfo.userId!),
+      where: eq(customer.userId, userId),
     });
 
     return updatedCustomer;

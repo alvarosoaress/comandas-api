@@ -3,12 +3,18 @@ import {
   type CustomerExtendedSafe,
   type CustomerExtended,
 } from '../../../database/schema';
-import { type createCustomerType } from './customer.schema';
+import {
+  type CustomerUpdateType,
+  type CustomerCreateType,
+} from './customer.schema';
 
 export type ICustomerRepository = {
+  exists: (userId: number) => Promise<boolean>;
   create: (
-    info: createCustomerType,
+    info: CustomerCreateType,
   ) => Promise<CustomerExtendedSafe | undefined>;
   list: () => Promise<CustomerExtended[]>;
-  update: (newCustomerInfo: Customer) => Promise<Customer | undefined>;
+  update: (
+    newCustomerInfo: CustomerUpdateType,
+  ) => Promise<Customer | undefined>;
 };

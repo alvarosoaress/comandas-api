@@ -5,29 +5,30 @@ import { customer } from '../../../database/schema';
 
 export const customerSchema = createInsertSchema(customer);
 
-export const customerSchemaWithoutId = createInsertSchema(customer, {
-  userId: z.number().optional(),
-});
-
-export const createCustomerSchema = z.object({
+export const customerCreateSchema = z.object({
   body: z.object({
-    customerInfo: customerSchemaWithoutId.optional(),
-    userInfo: userSchema,
+    customerInfo: customerSchema.omit({ userId: true }).optional(),
+    userInfo: userSchema.omit({
+      createdAt: true,
+      id: true,
+      updatedAt: true,
+      refreshToken: true,
+    }),
   }),
 });
 
 // id Se torna uma string pois os params vem na url
 // tudo na url é string
-export const getCustomerSchema = z.object({
+export const customerGetSchema = z.object({
   params: z.object({
     id: z.string(),
   }),
 });
 
-export const updateCustomerSchema = z.object({
-  body: customerSchema,
+export const customerUpdateSchema = z.object({
+  body: customerSchema.omit({ createdAt: true }),
 });
 
-export type createCustomerType = z.infer<typeof createCustomerSchema>['body'];
-export type getCustomerType = z.infer<typeof getCustomerSchema>['params'];
-export type updateCustomerType = z.infer<typeof updateCustomerSchema>['body'];
+export type CustomerCreateType = z.infer<typeof customerCreateSchema>['body'];
+export type CustomerGetType = z.infer<typeof customerGetSchema>['params'];
+export type CustomerUpdateType = z.infer<typeof customerUpdateSchema>['body'];
