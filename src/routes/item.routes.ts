@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import validate from '../middleware/validateResource';
-import { createItemSchema, getItemSchema } from '../modules/item/item.schema';
+import { itemCreateSchema, itemGetSchema } from '../modules/item/item.schema';
 import { ItemFactory } from '../modules/item/item.factory';
 
 const router = Router();
 router
   .route('/create')
   .post(
-    validate(createItemSchema),
+    validate(itemCreateSchema),
     async (req, res) => await ItemFactory().createItem(req, res),
   );
 
@@ -18,7 +18,7 @@ router
 router
   .route('/:id')
   .get(
-    validate(getItemSchema),
+    validate(itemGetSchema),
     async (req, res) => await ItemFactory().getItemById(req, res),
   );
 

@@ -3,6 +3,7 @@ import { db } from '../../../database';
 import { type Item, item, user } from '../../../database/schema';
 import { type IItemRepository } from './Iitem.repository';
 import deleteObjKey from '../../utils';
+import { type ItemUpdateType } from './item.schema';
 
 export class ItemRepository implements IItemRepository {
   async exists(itemId: number): Promise<boolean> {
@@ -45,23 +46,19 @@ export class ItemRepository implements IItemRepository {
     return items;
   }
 
-  async update(newItemInfo: Item): Promise<Item | undefined> {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-
-    // Não há motivos para sobreescrever o createdAt
-    deleteObjKey(newItemInfo, 'createdAt');
-
+  async update(newItemInfo: ItemUpdateType): Promise<Item | undefined> {
     newItemInfo.updatedAt = new Date();
 
-    await db
-      .update(item)
-      .set(newItemInfo)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .where(eq(item.id, newItemInfo.id!));
+    // Salvando e retirando id e shopId de newItemInfo
+    // para evitar o usuário atualizar o id e o shopId do item no BD
+    const itemId = newItemInfo.id as number;
+
+    deleteObjKey(newItemInfo, 'id');
+
+    await db.update(item).set(newItemInfo).where(eq(item.id, itemId));
 
     const updatedItem = await db.query.item.findFirst({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      where: eq(item.id, newItemInfo.id!),
+      where: eq(item.id, itemId),
     });
 
     return updatedItem;

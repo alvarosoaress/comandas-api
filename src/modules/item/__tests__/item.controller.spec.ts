@@ -4,9 +4,9 @@
 
 import app from '../../../app';
 import request from 'supertest';
-import { type createItemType } from '../item.schema';
+import { type ItemCreateType } from '../item.schema';
 import { type Item } from '../../../../database/schema';
-import { type createShopType } from '../../shop/shop.schema';
+import { type ShopCreateType } from '../../shop/shop.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -15,7 +15,7 @@ jest.setTimeout(10000);
 beforeAll(async () => {
   // Pré criando informações necessárias para
   // o item poder existir
-  const info: createShopType = {
+  const info: ShopCreateType = {
     shopInfo: {
       tables: 5,
     },
@@ -40,7 +40,7 @@ beforeAll(async () => {
 describe('Item Controller Integration', () => {
   describe('POST /item/create', () => {
     it('should create a item', async () => {
-      const newItemInfo: createItemType = {
+      const newItemInfo: ItemCreateType = {
         shopId: 1,
         name: 'Bolinea de Gorfwe',
         price: 6.99,

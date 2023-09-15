@@ -1,4 +1,5 @@
 import { type Item } from '../../../database/schema';
+import { type ItemUpdateType } from './item.schema';
 
 export type IItemRepository = {
   exists: (shopId: number, name: string) => Promise<boolean>;
@@ -6,5 +7,5 @@ export type IItemRepository = {
   create: (itemInfo: Item) => Promise<Item | undefined>;
   getById: (itemId: string) => Promise<Item | undefined>;
   list: () => Promise<Item[]>;
-  update: (newItemInfo: Item) => Promise<Item | undefined>;
+  update: (newItemInfo: ItemUpdateType) => Promise<Item | undefined>;
 };

@@ -5,6 +5,7 @@ import {
   NotFoundError,
 } from '../../helpers/api.erros';
 import { type IItemRepository } from './Iitem.repository';
+import { type ItemUpdateType } from './item.schema';
 
 export class ItemService {
   constructor(private readonly itemRepository: IItemRepository) {}
@@ -45,7 +46,7 @@ export class ItemService {
     return items;
   }
 
-  async update(newItemInfo: Item): Promise<Item | undefined> {
+  async update(newItemInfo: ItemUpdateType): Promise<Item | undefined> {
     const updatedItem = await this.itemRepository.update(newItemInfo);
 
     if (!updatedItem) throw new InternalServerError();
