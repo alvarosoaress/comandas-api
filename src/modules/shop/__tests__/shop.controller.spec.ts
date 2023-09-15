@@ -5,8 +5,8 @@
 import { type Item, type ShopExtendedSafe } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
-import { type createItemType } from '../../item/item.schema';
-import { type createShopType } from '../shop.schema';
+import { type ItemCreateType } from '../../item/item.schema';
+import { type ShopCreateType } from '../shop.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -15,7 +15,7 @@ jest.setTimeout(10000);
 describe('Shop Controller Integration', () => {
   describe('POST /shop/create', () => {
     it('should create a shop', async () => {
-      const newShopInfo: createShopType = {
+      const newShopInfo: ShopCreateType = {
         shopInfo: {
           tables: 5,
         },
@@ -37,8 +37,6 @@ describe('Shop Controller Integration', () => {
       const response = await request(app)
         .post('/shop/create')
         .send(newShopInfo);
-
-      console.log(response.body);
 
       expect(response.status).toBe(200);
 
@@ -92,7 +90,7 @@ describe('Shop Controller Integration', () => {
 
   describe('GET /shop/:id/menu', () => {
     beforeAll(async () => {
-      const newItemInfo: createItemType = {
+      const newItemInfo: ItemCreateType = {
         shopId: 1,
         name: 'Bolinea de Gorfwe',
         price: 6.99,

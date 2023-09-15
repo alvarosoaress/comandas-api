@@ -1,7 +1,7 @@
 import { type Item, type ShopExtended } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
-import { type createShopType } from '../shop.schema';
+import { type ShopCreateType } from '../shop.schema';
 import { ShopService } from '../shop.service';
 
 describe('Shop Service', () => {
@@ -47,7 +47,7 @@ describe('Shop Service', () => {
       },
     };
 
-    const newShopInfo: createShopType = {
+    const newShopInfo: ShopCreateType = {
       shopInfo: {
         tables: 5,
         categoryId: 1,

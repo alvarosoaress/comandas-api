@@ -1,9 +1,9 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
 import {
-  createShopSchema,
-  getShopMenuSchema,
-  updateShopSchema,
+  shopCreateSchema,
+  shopGetMenuSchema,
+  shopUpdateSchema,
 } from '../modules/shop/shop.schema';
 import { shopFactory } from '../modules/shop/shop.factory';
 
@@ -12,7 +12,7 @@ const router = express.Router();
 router
   .route('/create')
   .post(
-    validate(createShopSchema),
+    validate(shopCreateSchema),
     async (req, res) => await shopFactory().createShop(req, res),
   );
 
@@ -23,14 +23,14 @@ router
 router
   .route('/:id/menu')
   .get(
-    validate(getShopMenuSchema),
+    validate(shopGetMenuSchema),
     async (req, res) => await shopFactory().getShopMenu(req, res),
   );
 
 router
   .route('/update')
   .put(
-    validate(updateShopSchema),
+    validate(shopUpdateSchema),
     async (req, res) => await shopFactory().updateShop(req, res),
   );
 

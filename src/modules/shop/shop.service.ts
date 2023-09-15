@@ -7,12 +7,12 @@ import {
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 import deleteObjKey from '../../utils';
 import { type IShopRepository } from './Ishop.repository';
-import { type createShopType } from './shop.schema';
+import { type ShopUpdateType, type ShopCreateType } from './shop.schema';
 
 export class ShopService {
   constructor(private readonly shopRepository: IShopRepository) {}
 
-  async create(info: createShopType): Promise<ShopExtendedSafe> {
+  async create(info: ShopCreateType): Promise<ShopExtendedSafe> {
     const newShop = await this.shopRepository.create(info);
 
     if (!newShop) throw new InternalServerError();
@@ -44,7 +44,7 @@ export class ShopService {
     return shopMenu;
   }
 
-  async update(newShopInfo: Shop): Promise<Shop | undefined> {
+  async update(newShopInfo: ShopUpdateType): Promise<Shop | undefined> {
     const updatedShop = await this.shopRepository.update(newShopInfo);
 
     if (!updatedShop) throw new NotFoundError('No shop found');

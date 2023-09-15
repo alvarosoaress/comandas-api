@@ -4,11 +4,11 @@ import {
   type ShopExtendedSafe,
   type Shop,
 } from '../../../database/schema';
-import { type createShopType } from './shop.schema';
+import { type ShopUpdateType, type ShopCreateType } from './shop.schema';
 
 export type IShopRepository = {
-  create: (info: createShopType) => Promise<ShopExtendedSafe | undefined>;
+  create: (info: ShopCreateType) => Promise<ShopExtendedSafe | undefined>;
   list: () => Promise<ShopExtended[]>;
   getMenu: (userId: string) => Promise<Item[] | undefined>;
-  update: (newShopInfo: Shop) => Promise<Shop | undefined>;
+  update: (newShopInfo: ShopUpdateType) => Promise<Shop | undefined>;
 };
