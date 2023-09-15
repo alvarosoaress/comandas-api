@@ -16,7 +16,7 @@ export const user = mysqlTable('users', {
   email: varchar('email', { length: 256 }).unique().notNull(),
   password: varchar('password', { length: 256 }).notNull(),
   phoneNumber: int('phone_number'),
-  role: mysqlEnum('role', ['client', 'shop']),
+  role: mysqlEnum('role', ['customer', 'shop']),
   refreshToken: varchar('refreshToken', { length: 256 }).unique(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
