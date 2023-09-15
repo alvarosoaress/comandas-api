@@ -2,6 +2,7 @@ const mysql = require('mysql2/promise');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const path = require('path');
+const { existsSync } = require('fs');
 
 require('dotenv').config({
   path: path.resolve(process.cwd(), '.test.env'),
@@ -21,10 +22,18 @@ exports.createTestDatabase = async function (dbName) {
     await con.execute(`CREATE DATABASE ${dbName}`);
 
     try {
-      const { stdout, stderr } = await exec(
-        `drizzle-kit generate:mysql --config=./drizzle.config.ts && ts-node-dev database/migrate.ts`,
-      );
-      console.log('Migration completed:', stdout);
+      if (!existsSync(process.cwd(), 'database/migrations')) {
+        const { stdout, stderr } = await exec(
+          `drizzle-kit generate:mysql --config=./drizzle.config.ts && ts-node-dev database/migrate.ts`,
+        );
+
+        console.log('Migration completed:', stdout);
+      } else {
+        const { stdout, stderr } = await exec(
+          `ts-node-dev database/migrate.ts`,
+        );
+        console.log('Migration completed:', stdout);
+      }
     } catch (error) {
       console.error('Migration failed:', error);
     }
