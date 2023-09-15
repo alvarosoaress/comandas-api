@@ -52,7 +52,7 @@ describe('User Service', () => {
       name: 'Francesco Virgulini',
       email: 'maquinabeloz@tute.italia',
       password: 'supersafepasswordnobodywillnowhihi123',
-      role: 'client' as const,
+      role: 'customer' as const,
     };
     it('should create a user', async () => {
       userRepositoryMock.exists.mockResolvedValue(false);
@@ -92,7 +92,7 @@ describe('User Service', () => {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
           phoneNumber: 4578784,
         },
         {
@@ -107,7 +107,7 @@ describe('User Service', () => {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
         },
       ];
 
@@ -134,14 +134,14 @@ describe('User Service', () => {
   });
 
   describe('GetById User', () => {
-    it('should return the CLIENT with the specified ID', async () => {
+    it('should return the customer with the specified ID', async () => {
       const userInfo: CustomerExtended = {
         userId: 1,
         userInfo: {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
         },
       };
 
@@ -153,7 +153,7 @@ describe('User Service', () => {
 
       expect(userFound).toEqual<CustomerExtended>(userInfo);
 
-      expect(userFound.userInfo.role).toEqual('client');
+      expect(userFound.userInfo.role).toEqual('customer');
 
       expect(userFound).not.toHaveProperty<User>('password');
       expect(userFound).not.toHaveProperty<User>('refreshToken');
@@ -203,14 +203,14 @@ describe('User Service', () => {
   });
 
   describe('GetByEmail User', () => {
-    it('should return the CLIENT with the specified Email', async () => {
+    it('should return the customer with the specified Email', async () => {
       const userInfo: CustomerExtended = {
         userId: 1,
         userInfo: {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
         },
       };
 
@@ -226,7 +226,7 @@ describe('User Service', () => {
 
       expect(userFound).toEqual<CustomerExtended>(userInfo);
 
-      expect(userFound.userInfo.role).toEqual('client');
+      expect(userFound.userInfo.role).toEqual('customer');
 
       expect(userFound).not.toHaveProperty<User>('password');
       expect(userFound).not.toHaveProperty<User>('refreshToken');
@@ -287,7 +287,7 @@ describe('User Service', () => {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
         },
       };
 
@@ -343,7 +343,7 @@ describe('User Service', () => {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
         },
       };
 
@@ -370,7 +370,7 @@ describe('User Service', () => {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
         },
       };
 

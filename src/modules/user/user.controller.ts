@@ -3,10 +3,10 @@ import { type Request, type Response } from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import {
-  type userLoginType,
-  type getUserByIdType,
-  type getUserByEmailType,
-  type updateAccessTokenType,
+  type UserLoginType,
+  type UserGetByIdType,
+  type UserGetByEmailType,
+  type UserUpdateAccessTokenType,
 } from './user.schema';
 import { type UserService } from './user.service';
 
@@ -24,7 +24,7 @@ export class UserController {
     });
   }
 
-  async getUserById(req: Request<getUserByIdType>, res: Response) {
+  async getUserById(req: Request<UserGetByIdType>, res: Response) {
     const userFound = await this.userService.getById(req.params.id);
 
     return res.status(200).json({
@@ -33,7 +33,7 @@ export class UserController {
     });
   }
 
-  async getUserByEmail(req: Request<getUserByEmailType>, res: Response) {
+  async getUserByEmail(req: Request<UserGetByEmailType>, res: Response) {
     const userFound = await this.userService.getByEmail(req.params.email);
 
     return res.status(200).json({
@@ -42,7 +42,7 @@ export class UserController {
     });
   }
 
-  async logIn(req: Request<unknown, unknown, userLoginType>, res: Response) {
+  async logIn(req: Request<unknown, unknown, UserLoginType>, res: Response) {
     const userInfo = await this.userService.logIn(
       req.body.email,
       req.body.password,
@@ -55,7 +55,7 @@ export class UserController {
   }
 
   async updateAccessToken(
-    req: Request<unknown, unknown, updateAccessTokenType>,
+    req: Request<unknown, unknown, UserUpdateAccessTokenType>,
     res: Response,
   ) {
     const newAccessToken = await this.userService.updateAccessToken(

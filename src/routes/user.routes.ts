@@ -1,8 +1,8 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
 import {
-  getUserByIdSchema,
-  updateAccessSchema,
+  userGetByIdSchema,
+  userUpdateAccessSchema,
   userLoginSchema,
 } from '../modules/user/user.schema';
 import { userFactory } from '../modules/user/user.factory';
@@ -16,7 +16,7 @@ router
 router
   .route('/:id')
   .get(
-    validate(getUserByIdSchema),
+    validate(userGetByIdSchema),
     async (req, res) => await userFactory().getUserById(req, res),
   );
 
@@ -30,7 +30,7 @@ router
 router
   .route('/updateToken')
   .post(
-    validate(updateAccessSchema),
+    validate(userUpdateAccessSchema),
     async (req, res) => await userFactory().updateAccessToken(req, res),
   );
 

@@ -4,8 +4,8 @@
 
 import app from '../../../app';
 import request from 'supertest';
-import { type createUserType } from '../user.schema';
-import { type createAddressType } from '../../address/address.schema';
+import { type UserCreateType } from '../user.schema';
+import { type AddressCreateType } from '../../address/address.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -14,12 +14,12 @@ jest.setTimeout(10000);
 beforeAll(async () => {
   // Pré criando informações necessárias para
   // um user poder existir
-  const userInfo: createUserType = {
+  const userInfo: UserCreateType = {
     name: 'Francesco Virgulini',
     email: 'maquinabeloz@tute.italia',
     password: 'supersafepasswordnobodywillnowhihi123',
   };
-  const addressInfo: createAddressType = {
+  const addressInfo: AddressCreateType = {
     number: 69,
     street: 'Virgulini',
     neighborhood: 'Francesco',
