@@ -11,7 +11,6 @@ import { shop } from '../../../database/schema';
 
 export const shopSchema = createInsertSchema(shop, {
   tables: z.number().optional(),
-  categoryId: z.number().optional(),
 }).omit({
   addressId: true,
   createdAt: true,
@@ -50,11 +49,19 @@ export const shopGetMenuSchema = z.object({
   }),
 });
 
+const teste = createInsertSchema(shop).omit({
+  addressId: true,
+  createdAt: true,
+});
+
 export const shopUpdateSchema = z.object({
-  body: createInsertSchema(shop).omit({
-    addressId: true,
-    createdAt: true,
-  }),
+  body: z
+    .object({
+      categories: z
+        .array(z.object({ id: z.number(), name: z.string() }))
+        .optional(),
+    })
+    .merge(teste),
 });
 
 export type ShopCreateType = z.infer<typeof shopCreateSchema>['body'];

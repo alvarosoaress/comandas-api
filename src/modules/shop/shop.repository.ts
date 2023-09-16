@@ -7,6 +7,9 @@ import {
   type Item,
   type ShopExtendedSafe,
   type Shop,
+  generalCategory,
+  shopCategory,
+  type ShopWithCategories,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
@@ -38,13 +41,29 @@ export class ShopRepository implements IShopRepository {
       userId: newUser.id!,
     });
 
-    return {
-      ...info.shopInfo,
-      userId: newUser.id as number,
-      addressInfo: newAddress,
-      userInfo: newUser,
-      addressId: newAddress.id as number,
+    const newShop = await db.query.shop.findFirst({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      where: eq(shop.userId, newUser.id!),
+      with: {
+        addressInfo: true,
+        userInfo: true,
+        categories: {
+          with: { categories: { columns: { name: true, id: true } } },
+        },
+      },
+    });
+
+    if (!newShop) return undefined;
+
+    const newShopTreated = {
+      ...newShop,
+      categories: newShop?.categories.map((category) => ({
+        name: category.categories.name,
+        id: category.categories.id,
+      })),
     };
+
+    return newShopTreated;
   }
 
   async list(): Promise<ShopExtended[]> {
@@ -52,10 +71,21 @@ export class ShopRepository implements IShopRepository {
       with: {
         addressInfo: true,
         userInfo: true,
+        categories: {
+          with: { categories: { columns: { name: true, id: true } } },
+        },
       },
     });
 
-    return shops;
+    const shopsTreated = shops.map((shop) => ({
+      ...shop,
+      categories: shop.categories.map((category) => ({
+        name: category.categories.name,
+        id: category.categories.id,
+      })),
+    }));
+
+    return shopsTreated;
   }
 
   async getMenu(shopId: string): Promise<Item[] | undefined> {
@@ -72,7 +102,21 @@ export class ShopRepository implements IShopRepository {
     return Object.values(shopMenu.menu);
   }
 
-  async update(newShopInfo: ShopUpdateType): Promise<Shop | undefined> {
+  async existsGeneralCategory(generalCategoryId: number): Promise<boolean> {
+    const generalCategoryExists = await db.query.generalCategory.findFirst({
+      where: eq(generalCategory.id, generalCategoryId),
+    });
+
+    return !!generalCategoryExists;
+  }
+
+  async update(
+    newShopInfo: ShopUpdateType,
+  ): Promise<Shop | ShopWithCategories | undefined> {
+    // TODO ADICIONAR OPÇÃO PARA MODIFICAR CATEGORIAS
+    // PARA ISSO PRECISA CRIAR MODULE GENERAL CATEGORY
+    // E DPS USAR OS METODOS DELE AQUI PARA PODER DAR INSERT
+    // NA TABELA ASSOCIATIVA SHOPS_CATEGORIES
     newShopInfo.updatedAt = new Date();
 
     // Salvando e retirando userId de newShopInfo
@@ -82,6 +126,40 @@ export class ShopRepository implements IShopRepository {
     deleteObjKey(newShopInfo, 'userId');
 
     await db.update(shop).set(newShopInfo).where(eq(shop.userId, userId));
+
+    // Se o usuário enviar categorias para serem atualizadas
+    if (newShopInfo.categories && newShopInfo.categories.length >= 1) {
+      // ?HACK Temporario para adicioar categorias
+      await db.transaction(async (tx) => {
+        newShopInfo.categories?.forEach(async (category) => {
+          await tx.insert(shopCategory).values({
+            shopId: userId,
+            generalCategoryId: category.id,
+          });
+        });
+      });
+
+      const updatedShop = await db.query.shop.findFirst({
+        where: eq(shop.userId, userId),
+        with: {
+          categories: {
+            with: { categories: { columns: { name: true, id: true } } },
+          },
+        },
+      });
+
+      if (!updatedShop) return undefined;
+
+      const updatedShopTreated: ShopWithCategories = {
+        ...updatedShop,
+        categories: updatedShop?.categories.map((category) => ({
+          name: category.categories.name,
+          id: category.categories.id,
+        })),
+      };
+
+      return updatedShopTreated;
+    }
 
     const updatedShop = await db.query.shop.findFirst({
       where: eq(shop.userId, userId),

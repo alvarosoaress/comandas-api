@@ -37,16 +37,19 @@ export const address = mysqlTable('addresses', {
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const shopCategory = mysqlTable('shop_categories', {
+export const generalCategory = mysqlTable('general_categories', {
   id: int('id').primaryKey().autoincrement(),
   name: varchar('name', { length: 256 }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const shopCategoryRelations = relations(shopCategory, ({ many }) => ({
-  shops: many(shop),
-}));
+export const generalCategoryRelations = relations(
+  generalCategory,
+  ({ many }) => ({
+    shops: many(shopCategory),
+  }),
+);
 
 export const shop = mysqlTable('shops', {
   userId: int('user_id')
@@ -61,10 +64,6 @@ export const shop = mysqlTable('shops', {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  categoryId: int('category_id').references(() => shopCategory.id, {
-    onDelete: 'cascade',
-    onUpdate: 'cascade',
-  }),
   tables: int('tables'),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
@@ -79,13 +78,32 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
     fields: [shop.addressId],
     references: [address.id],
   }),
-  category: one(shopCategory, {
-    fields: [shop.categoryId],
-    references: [shopCategory.id],
-  }),
+  categories: many(shopCategory),
   menu: many(item),
   qrCodes: many(qrCode),
   itemCategories: many(itemCategory),
+}));
+
+export const shopCategory = mysqlTable('shop_categories', {
+  shopId: int('shop_id')
+    .notNull()
+    .references(() => shop.userId),
+  generalCategoryId: int('general_category_id')
+    .notNull()
+    .references(() => generalCategory.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+});
+
+export const shopCategoryRelations = relations(shopCategory, ({ one }) => ({
+  shops: one(shop, {
+    fields: [shopCategory.shopId],
+    references: [shop.userId],
+  }),
+  categories: one(generalCategory, {
+    fields: [shopCategory.generalCategoryId],
+    references: [generalCategory.id],
+  }),
 }));
 
 export const qrCode = mysqlTable('shops_qrcodes', {
@@ -237,6 +255,13 @@ export const ordersRelations = relations(order, ({ one }) => ({
 
 // TODO Inserir UpdatedAt em todas colunas
 
+export type GeneralCategory = typeof generalCategory.$inferInsert;
+export type ShopCategory = typeof shopCategory.$inferInsert;
+
+export type ShopCategories = {
+  categories?: Array<{ id: number; name: string }>;
+};
+
 export type User = typeof user.$inferInsert;
 export type UserSafe = Omit<User, 'password' | 'refreshToken'>;
 
@@ -252,15 +277,21 @@ export type CustomerExtendedSafe = typeof customer.$inferInsert & {
 };
 
 export type Shop = typeof shop.$inferInsert;
+export type ShopWithCategories = typeof shop.$inferInsert & {
+  categories?: Array<{ id: number; name: string }>;
+};
 export type ShopWithoutId = { addressId?: number } & Omit<
   Shop,
   'userId' | 'addressId'
 >;
 export type ShopExtended = typeof shop.$inferInsert & {
+  categories?: Array<{ id: number; name: string }>;
   userInfo: User;
   addressInfo: Address;
 };
+
 export type ShopExtendedSafe = typeof shop.$inferInsert & {
+  categories?: Array<{ id: number; name: string }>;
   userInfo: UserSafe;
   addressInfo: Address;
 };
@@ -268,8 +299,6 @@ export type ShopExtendedSafe = typeof shop.$inferInsert & {
 export type Item = typeof item.$inferInsert;
 
 export type ItemCategory = typeof itemCategory.$inferInsert;
-
-export type ShopCategory = typeof shopCategory.$inferInsert;
 
 export type QrCode = typeof qrCode.$inferInsert;
 
