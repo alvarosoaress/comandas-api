@@ -69,6 +69,7 @@ describe('Shop Controller Integration', () => {
             state: 'Tute',
             country: 'Italia',
           },
+          categories: [],
         },
       ];
 
@@ -124,18 +125,4 @@ describe('Shop Controller Integration', () => {
       expect(response.body.data).toMatchObject(itemList);
     });
   });
-  // TODO Criar o endPoint de adicionar items para poder testar o getMenu
-  //   describe('GET /shop/:id/menu', () => {
-  //     it('should return a shop with the specified ID', async () => {
-  //       const response = await request(app).get('/shop/1/menu');
-
-  //       expect(response.status).toBe(200);
-
-  //       expect(response.body.data.id).toEqual(1);
-
-  //       expect(response.body.data.items).toBeInstanceOf(Array);
-
-  //       expect(response.body.data.items.length).toEqual(0);
-  //     });
-  //   });
 });

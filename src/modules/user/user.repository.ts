@@ -79,10 +79,23 @@ export class UserRepository implements IUserRepository {
         with: {
           addressInfo: true,
           userInfo: true,
+          categories: {
+            with: { categories: { columns: { name: true, id: true } } },
+          },
         },
       });
 
-      return shopFound;
+      if (!shopFound) return undefined;
+
+      const shopFoundTreated = {
+        ...shopFound,
+        categories: shopFound?.categories.map((category) => ({
+          name: category.categories.name,
+          id: category.categories.id,
+        })),
+      };
+
+      return shopFoundTreated;
     } else {
       const customerFound = await db.query.customer.findFirst({
         where: eq(customer.userId, userFound.id),

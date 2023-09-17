@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const NodeEnvironment = require('jest-environment-node').TestEnvironment;
 const { v4: uuid } = require('uuid');
 const path = require('path');
-const testDb = require('./testDb');
+const testDb = require('./testDb.js');
 
 require('dotenv').config({
   path: path.resolve(process.cwd(), '.test.env'),

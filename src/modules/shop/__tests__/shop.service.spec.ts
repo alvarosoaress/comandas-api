@@ -10,6 +10,7 @@ describe('Shop Service', () => {
 
   beforeEach(() => {
     shopRepositoryMock = {
+      existsGeneralCategory: jest.fn(),
       create: jest.fn(),
       list: jest.fn(),
       getMenu: jest.fn(),
@@ -50,7 +51,6 @@ describe('Shop Service', () => {
     const newShopInfo: ShopCreateType = {
       shopInfo: {
         tables: 5,
-        categoryId: 1,
       },
       userInfo: {
         name: 'Francesco Virgulini',
@@ -102,6 +102,7 @@ describe('Shop Service', () => {
               state: 'Tute',
               country: 'Italia',
             },
+            categories: [],
           },
           {
             userId: 2,
@@ -123,6 +124,7 @@ describe('Shop Service', () => {
               state: 'Tute',
               country: 'Italia',
             },
+            categories: [],
           },
         ];
         shopRepositoryMock.list.mockResolvedValue(shopList);
@@ -142,6 +144,8 @@ describe('Shop Service', () => {
             'refreshToken',
           );
           expect(shop.userInfo.role).toEqual('shop');
+          expect(shop).toHaveProperty('categories');
+          expect(shop.categories).toBeInstanceOf(Array);
         });
       });
 

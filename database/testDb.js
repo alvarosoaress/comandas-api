@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const mysql = require('mysql2/promise');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -22,7 +24,7 @@ exports.createTestDatabase = async function (dbName) {
     await con.execute(`CREATE DATABASE ${dbName}`);
 
     try {
-      if (!existsSync(process.cwd(), 'database/migrations')) {
+      if (!existsSync(`${process.cwd()}/database/migrations/`)) {
         const { stdout, stderr } = await exec(
           `drizzle-kit generate:mysql --config=./drizzle.config.ts && ts-node-dev database/migrate.ts`,
         );

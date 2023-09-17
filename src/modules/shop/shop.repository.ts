@@ -8,7 +8,6 @@ import {
   type ShopExtendedSafe,
   type Shop,
   generalCategory,
-  shopCategory,
   type ShopWithCategories,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
@@ -128,38 +127,38 @@ export class ShopRepository implements IShopRepository {
     await db.update(shop).set(newShopInfo).where(eq(shop.userId, userId));
 
     // Se o usuário enviar categorias para serem atualizadas
-    if (newShopInfo.categories && newShopInfo.categories.length >= 1) {
-      // ?HACK Temporario para adicioar categorias
-      await db.transaction(async (tx) => {
-        newShopInfo.categories?.forEach(async (category) => {
-          await tx.insert(shopCategory).values({
-            shopId: userId,
-            generalCategoryId: category.id,
-          });
-        });
-      });
+    // if (newShopInfo.categories && newShopInfo.categories.length >= 1) {
+    //   // ?HACK Temporario para adicioar categorias
+    //   await db.transaction(async (tx) => {
+    //     newShopInfo.categories?.forEach(async (category) => {
+    //       await tx.insert(shopCategory).values({
+    //         shopId: userId,
+    //         generalCategoryId: category.id,
+    //       });
+    //     });
+    //   });
 
-      const updatedShop = await db.query.shop.findFirst({
-        where: eq(shop.userId, userId),
-        with: {
-          categories: {
-            with: { categories: { columns: { name: true, id: true } } },
-          },
-        },
-      });
+    //   const updatedShop = await db.query.shop.findFirst({
+    //     where: eq(shop.userId, userId),
+    //     with: {
+    //       categories: {
+    //         with: { categories: { columns: { name: true, id: true } } },
+    //       },
+    //     },
+    //   });
 
-      if (!updatedShop) return undefined;
+    //   if (!updatedShop) return undefined;
 
-      const updatedShopTreated: ShopWithCategories = {
-        ...updatedShop,
-        categories: updatedShop?.categories.map((category) => ({
-          name: category.categories.name,
-          id: category.categories.id,
-        })),
-      };
+    //   const updatedShopTreated: ShopWithCategories = {
+    //     ...updatedShop,
+    //     categories: updatedShop?.categories.map((category) => ({
+    //       name: category.categories.name,
+    //       id: category.categories.id,
+    //     })),
+    //   };
 
-      return updatedShopTreated;
-    }
+    //   return updatedShopTreated;
+    // }
 
     const updatedShop = await db.query.shop.findFirst({
       where: eq(shop.userId, userId),
