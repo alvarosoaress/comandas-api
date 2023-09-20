@@ -5,7 +5,11 @@ import {
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
-import { type ShopUpdateType, type ShopCreateType } from '../shop.schema';
+import {
+  type ShopUpdateType,
+  type ShopCreateType,
+  type ShopListResType,
+} from '../shop.schema';
 import { ShopService } from '../shop.service';
 
 describe('Shop Service', () => {
@@ -84,51 +88,26 @@ describe('Shop Service', () => {
 
   describe('List Shop', () => {
     it('should return a list of shops', async () => {
-      const shopList: ShopExtended[] = [
+      const shopList: ShopListResType[] = [
         {
-          userId: 1,
-          tables: 4,
-          userInfo: {
-            id: 1,
-            name: 'Francesco Virgulini',
-            email: 'maquinabeloz@tute.italia',
-            password:
-              'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-            role: 'shop' as const,
-            refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-          },
-          addressId: 1,
-          addressInfo: {
-            city: 'City Test',
-            neighborhood: 'Francesco',
-            number: 69,
-            street: 'Virgulini',
-            state: 'Tute',
-            country: 'Italia',
-          },
-          categories: [],
-        },
-        {
-          userId: 2,
-          userInfo: {
-            id: 2,
-            name: 'Francesco Virgulini',
-            email: 'maquinabeloz@tute.italia',
-            password:
-              'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-            role: 'shop' as const,
-            refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-          },
-          addressId: 2,
-          addressInfo: {
-            city: 'City Test',
-            neighborhood: 'Francesco',
-            number: 69,
-            street: 'Virgulini',
-            state: 'Tute',
-            country: 'Italia',
-          },
-          categories: [],
+          tables: 5,
+          user_id: 1,
+          createdAt: '2023-09-19 10:55:22',
+          updatedAt: '2023-09-19 10:55:22',
+          address_id: 1,
+          city: 'Ciudade',
+          state: 'Italia',
+          street: 'Pizza',
+          country: 'Holanda',
+          lat: '13,78.4',
+          long: '12,75.8',
+          neighborhood: 'Bolinea',
+          number: 75,
+          email: 'maquinabeloz@tute.italia',
+          phone_number: 15488,
+          name: 'Virgulini',
+          category_name: 'Fiaaaun',
+          category_id: 7,
         },
       ];
       shopRepositoryMock.list.mockResolvedValue(shopList);
@@ -137,18 +116,10 @@ describe('Shop Service', () => {
 
       expect(shopRepositoryMock.list).toHaveBeenCalled();
 
-      expect(shops.length).toBeGreaterThanOrEqual(2);
+      expect(shops.length).toBeGreaterThanOrEqual(1);
 
       expect(shops).toBeInstanceOf(Array);
-      expect(shops).toEqual(expect.arrayContaining<ShopExtended>(shopList));
-
-      shops.forEach((shop) => {
-        expect(shop.userInfo).not.toHaveProperty<ShopExtended>('password');
-        expect(shop.userInfo).not.toHaveProperty<ShopExtended>('refreshToken');
-        expect(shop.userInfo.role).toEqual('shop');
-        expect(shop).toHaveProperty('categories');
-        expect(shop.categories).toBeInstanceOf(Array);
-      });
+      expect(shops).toEqual(expect.arrayContaining(shopList));
     });
 
     it('should throw a error if no shops found', async () => {

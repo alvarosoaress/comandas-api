@@ -72,6 +72,7 @@ export const shopListSchema = z.object({
 });
 
 export type ShopListResType = {
+  name: string;
   tables: number;
   user_id: number;
   createdAt: string;
@@ -87,6 +88,8 @@ export type ShopListResType = {
   number: number;
   email: string;
   phone_number: number;
+  category_name: string;
+  category_id: number;
 };
 export type ShopCreateType = z.infer<typeof shopCreateSchema>['body'];
 export type ShopGetType = z.infer<typeof shopGetSchema>['params'];

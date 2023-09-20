@@ -16,7 +16,7 @@ import {
   type ShopListType,
   type ShopListResType,
 } from './shop.schema';
-import { MySqlDialect } from 'drizzle-orm/mysql-core';
+// import { MySqlDialect } from 'drizzle-orm/mysql-core';
 
 export class ShopRepository implements IShopRepository {
   constructor(
@@ -147,6 +147,7 @@ export class ShopRepository implements IShopRepository {
         sqlChunks.push(sql`s.tables = ${parseInt(query.tables)}`);
       }
       if (query.limit) {
+        if (sqlChunks.length <= 2) sqlChunks.pop();
         sqlChunks.push(sql`LIMIT ${parseInt(query.limit)}`);
       }
     }
