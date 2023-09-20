@@ -25,6 +25,9 @@ beforeEach(() => {
     delete: jest.fn(),
     shopExists: jest.fn(),
     set: jest.fn(),
+    generalCategoryRelationExists: jest.fn(),
+    remove: jest.fn(),
+    getShopListCategories: jest.fn(),
   };
 
   generalCategoryService = new GeneralCategoryService(
@@ -250,6 +253,130 @@ describe('General Category Service', () => {
       expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
       expect(generalCategoryRepositoryMock.existsById).toBeCalled();
       expect(generalCategoryRepositoryMock.set).not.toBeCalled();
+    });
+  });
+
+  describe('Remove General Category', () => {
+    const generalCategories: GeneralCategorySetType = {
+      shopId: 1,
+      generalCategoryId: [1, 3],
+    };
+
+    const generalCategoriesRemaining = [{ id: 2, name: 'RomCom' }];
+    it('should return all the general categories remaining', async () => {
+      generalCategoryRepositoryMock.shopExists.mockResolvedValue(true);
+      generalCategoryRepositoryMock.existsById.mockResolvedValue(true);
+      generalCategoryRepositoryMock.generalCategoryRelationExists.mockResolvedValue(
+        true,
+      );
+      generalCategoryRepositoryMock.remove.mockResolvedValue(
+        generalCategoriesRemaining,
+      );
+
+      const shpoCategoriesList =
+        await generalCategoryService.remove(generalCategories);
+
+      expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
+      expect(generalCategoryRepositoryMock.existsById).toBeCalled();
+      expect(generalCategoryRepositoryMock.remove).toBeCalled();
+
+      expect(shpoCategoriesList).toEqual(
+        expect.arrayContaining(generalCategoriesRemaining),
+      );
+    });
+
+    it('should throw a error if no shop found with the specified id', async () => {
+      generalCategoryRepositoryMock.shopExists.mockResolvedValue(false);
+
+      await expect(
+        generalCategoryService.remove(generalCategories),
+      ).rejects.toThrowError(NotFoundError);
+
+      expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
+      expect(generalCategoryRepositoryMock.existsById).not.toBeCalled();
+      expect(generalCategoryRepositoryMock.remove).not.toBeCalled();
+    });
+
+    it('should throw a error if no general category found with the specified id', async () => {
+      generalCategoryRepositoryMock.shopExists.mockResolvedValue(true);
+      generalCategoryRepositoryMock.existsById.mockResolvedValue(false);
+
+      await expect(
+        generalCategoryService.remove(generalCategories),
+      ).rejects.toThrowError(NotFoundError);
+
+      expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
+      expect(generalCategoryRepositoryMock.existsById).toBeCalled();
+      expect(generalCategoryRepositoryMock.remove).not.toBeCalled();
+    });
+
+    it('should throw a error if no relation between general category and shopId found with the specified shopId', async () => {
+      generalCategoryRepositoryMock.shopExists.mockResolvedValue(true);
+      generalCategoryRepositoryMock.existsById.mockResolvedValue(true);
+      generalCategoryRepositoryMock.generalCategoryRelationExists.mockResolvedValue(
+        false,
+      );
+
+      await expect(
+        generalCategoryService.remove(generalCategories),
+      ).rejects.toThrowError(ConflictError);
+
+      expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
+      expect(generalCategoryRepositoryMock.existsById).toBeCalled();
+      expect(
+        generalCategoryRepositoryMock.generalCategoryRelationExists,
+      ).toBeCalled();
+      expect(generalCategoryRepositoryMock.remove).not.toBeCalled();
+    });
+  });
+
+  describe('List Shop General Categories', () => {
+    const generalCategoriesList = [
+      { id: 1, name: 'kpop' },
+      { id: 2, name: 'RomCom' },
+      { id: 3, name: 'jpop' },
+    ];
+    it('should return all the general categories shop has', async () => {
+      generalCategoryRepositoryMock.shopExists.mockResolvedValue(true);
+      generalCategoryRepositoryMock.getShopListCategories.mockResolvedValue(
+        generalCategoriesList,
+      );
+
+      const shopCategories =
+        await generalCategoryService.getShopListCategories('1');
+
+      expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
+      expect(
+        generalCategoryRepositoryMock.getShopListCategories,
+      ).toBeCalledWith('1');
+
+      expect(shopCategories).toBeInstanceOf(Array);
+      expect(shopCategories).toMatchObject(generalCategoriesList);
+    });
+
+    it('should throw a error if no shop found with the specified id', async () => {
+      generalCategoryRepositoryMock.shopExists.mockResolvedValue(false);
+
+      await expect(
+        generalCategoryService.getShopListCategories('1'),
+      ).rejects.toThrowError(NotFoundError);
+
+      expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
+      expect(
+        generalCategoryRepositoryMock.getShopListCategories,
+      ).not.toBeCalled();
+    });
+
+    it('should throw a error if no general categories found for specified shop id', async () => {
+      generalCategoryRepositoryMock.shopExists.mockResolvedValue(true);
+      generalCategoryRepositoryMock.getShopListCategories.mockResolvedValue([]);
+
+      await expect(
+        generalCategoryService.getShopListCategories('1'),
+      ).rejects.toThrowError(NotFoundError);
+
+      expect(generalCategoryRepositoryMock.shopExists).toBeCalledWith(1);
+      expect(generalCategoryRepositoryMock.getShopListCategories).toBeCalled();
     });
   });
 });

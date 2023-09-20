@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { db } from '../../../database';
 import deleteObjKey from '../../utils';
 import { type IGeneralCategoryRepository } from './IgeneralCategory.repository';
@@ -12,6 +12,7 @@ import {
   type GeneralCategoryUpdateType,
   type GeneralCategoryCreateType,
   type GeneralCategorySetType,
+  type GeneralCategoryShopType,
 } from './generalCategory.schema';
 
 export class GeneralCategoryRepository implements IGeneralCategoryRepository {
@@ -112,15 +113,44 @@ export class GeneralCategoryRepository implements IGeneralCategoryRepository {
     return !!shopFound;
   }
 
+  async generalCategoryRelationExists(
+    shopId: number,
+    generalCategoryId: number,
+  ): Promise<boolean> {
+    const relatoinExists = await db.query.shopCategory.findFirst({
+      where: and(
+        eq(shopCategory.shopId, shopId),
+        eq(shopCategory.generalCategoryId, generalCategoryId),
+      ),
+    });
+
+    return !!relatoinExists;
+  }
+
+  async getShopListCategories(
+    shopId: string,
+  ): Promise<GeneralCategoryShopType | undefined> {
+    const shopCategories = await db.query.shopCategory.findMany({
+      columns: {},
+      where: and(eq(shopCategory.shopId, parseInt(shopId))),
+      with: { categories: { columns: { name: true, id: true } } },
+    });
+
+    if (!shopCategories) return undefined;
+
+    const shopCategoriesTretead = shopCategories.map((cat) => {
+      return {
+        name: cat.categories.name,
+        id: cat.categories.id,
+      };
+    });
+
+    return shopCategoriesTretead;
+  }
+
   async set(
     categorySetInfo: GeneralCategorySetType,
-  ): Promise<Array<{ name: string; id: number } | undefined> | undefined> {
-    // O set limpa todas as categorias do shop e depois seta as novas
-    // Limpando todas as categorias do shop primeiro
-    await db.execute(
-      sql`DELETE FROM ${shopCategory} WHERE ${shopCategory.shopId} = ${categorySetInfo.shopId};`,
-    );
-
+  ): Promise<GeneralCategoryShopType | undefined> {
     await db.transaction(async (tx) => {
       categorySetInfo.generalCategoryId.forEach(async (category) => {
         await tx.insert(shopCategory).values({
@@ -129,17 +159,51 @@ export class GeneralCategoryRepository implements IGeneralCategoryRepository {
         });
       });
     });
-    const result = await Promise.all(
-      categorySetInfo.generalCategoryId.map(async (category) => {
-        return await db.query.generalCategory.findFirst({
-          where: eq(generalCategory.id, category),
-          columns: { name: true, id: true },
-        });
-      }),
-    );
 
-    if (!result) return undefined;
+    const settledCategories = await db.query.shopCategory.findMany({
+      columns: {},
+      where: and(eq(shopCategory.shopId, categorySetInfo.shopId)),
+      with: { categories: { columns: { name: true, id: true } } },
+    });
 
-    return result;
+    if (!settledCategories) return undefined;
+
+    const settledCategoriesTretead = settledCategories.map((cat) => {
+      return {
+        name: cat.categories.name,
+        id: cat.categories.id,
+      };
+    });
+
+    return settledCategoriesTretead;
+  }
+
+  async remove(
+    categorySetInfo: GeneralCategorySetType,
+  ): Promise<GeneralCategoryShopType | undefined> {
+    await db.transaction(async (tx) => {
+      categorySetInfo.generalCategoryId.forEach(async (category) => {
+        await db.execute(
+          sql`DELETE FROM ${shopCategory} WHERE ${shopCategory.shopId} = ${categorySetInfo.shopId} AND ${shopCategory.generalCategoryId}  = ${category};`,
+        );
+      });
+    });
+
+    const remainingCategories = await db.query.shopCategory.findMany({
+      columns: {},
+      where: and(eq(shopCategory.shopId, categorySetInfo.shopId)),
+      with: { categories: { columns: { name: true, id: true } } },
+    });
+
+    if (!remainingCategories) return undefined;
+
+    const remainingCategoriesTretead = remainingCategories.map((cat) => {
+      return {
+        name: cat.categories.name,
+        id: cat.categories.id,
+      };
+    });
+
+    return remainingCategoriesTretead;
   }
 }

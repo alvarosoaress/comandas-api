@@ -6,7 +6,7 @@ import { type Item, type ShopExtendedSafe } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
 import { type ItemCreateType } from '../../item/item.schema';
-import { type ShopCreateType } from '../shop.schema';
+import { type ShopUpdateType, type ShopCreateType } from '../shop.schema';
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -123,6 +123,23 @@ describe('Shop Controller Integration', () => {
       expect(response.body.data.length).toBeGreaterThanOrEqual(1);
 
       expect(response.body.data).toMatchObject(itemList);
+    });
+  });
+
+  describe('PUT /shop/update', () => {
+    it('should return the updated shop', async () => {
+      const newShopInfo: ShopUpdateType = {
+        userId: 1,
+        tables: 85,
+      };
+
+      const response = await request(app).put('/shop/update').send(newShopInfo);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body.data).toHaveProperty('updatedAt');
+
+      expect(response.body.data.userId).toEqual(1);
     });
   });
 });

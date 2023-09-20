@@ -84,16 +84,22 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
   itemCategories: many(itemCategory),
 }));
 
-export const shopCategory = mysqlTable('shop_categories', {
-  shopId: int('shop_id')
-    .notNull()
-    .references(() => shop.userId),
-  generalCategoryId: int('general_category_id')
-    .notNull()
-    .references(() => generalCategory.id),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
-});
+export const shopCategory = mysqlTable(
+  'shop_categories',
+  {
+    shopId: int('shop_id')
+      .notNull()
+      .references(() => shop.userId),
+    generalCategoryId: int('general_category_id')
+      .notNull()
+      .references(() => generalCategory.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+  },
+  (table) => {
+    return { pk: primaryKey(table.shopId, table.generalCategoryId) };
+  },
+);
 
 export const shopCategoryRelations = relations(shopCategory, ({ one }) => ({
   shops: one(shop, {

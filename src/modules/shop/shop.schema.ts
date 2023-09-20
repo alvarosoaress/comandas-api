@@ -49,22 +49,47 @@ export const shopGetMenuSchema = z.object({
   }),
 });
 
-const teste = createInsertSchema(shop).omit({
-  addressId: true,
-  createdAt: true,
-});
-
 export const shopUpdateSchema = z.object({
-  body: z
-    .object({
-      categories: z
-        .array(z.object({ id: z.number(), name: z.string() }))
-        .optional(),
-    })
-    .merge(teste),
+  body: createInsertSchema(shop).omit({
+    addressId: true,
+    createdAt: true,
+  }),
 });
 
+export const shopListSchema = z.object({
+  query: z
+    .object({
+      limit: z.string().nonempty().optional(),
+      state: z.string().nonempty().optional(),
+      country: z.string().nonempty().optional(),
+      city: z.string().nonempty().optional(),
+      categories: z.array(z.string().nonempty()).optional(),
+      tables: z.string().nonempty().optional(),
+      mintables: z.string().nonempty().optional(),
+      maxtables: z.string().nonempty().optional(),
+    })
+    .optional(),
+});
+
+export type ShopListResType = {
+  tables: number;
+  user_id: number;
+  createdAt: string;
+  updatedAt: string;
+  address_id: number;
+  city: string;
+  state: string;
+  street: string;
+  country: string;
+  lat: string;
+  long: string;
+  neighborhood: string;
+  number: number;
+  email: string;
+  phone_number: number;
+};
 export type ShopCreateType = z.infer<typeof shopCreateSchema>['body'];
 export type ShopGetType = z.infer<typeof shopGetSchema>['params'];
 export type ShopGetMenuType = z.infer<typeof shopGetMenuSchema>['params'];
 export type ShopUpdateType = z.infer<typeof shopUpdateSchema>['body'];
+export type ShopListType = z.infer<typeof shopListSchema>['query'];

@@ -7,7 +7,12 @@ import {
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 import deleteObjKey from '../../utils';
 import { type IShopRepository } from './Ishop.repository';
-import { type ShopUpdateType, type ShopCreateType } from './shop.schema';
+import {
+  type ShopUpdateType,
+  type ShopCreateType,
+  type ShopListType,
+  type ShopListResType,
+} from './shop.schema';
 
 export class ShopService {
   constructor(private readonly shopRepository: IShopRepository) {}
@@ -20,15 +25,15 @@ export class ShopService {
     return newShop;
   }
 
-  async list(): Promise<ShopExtendedSafe[]> {
-    const shops = await this.shopRepository.list();
+  async list(query?: ShopListType): Promise<ShopListResType[]> {
+    const shops = await this.shopRepository.list(query);
 
     if (!shops || shops.length < 1) throw new NotFoundError('No shops found');
 
-    shops.forEach((shop: ShopExtended) => {
-      deleteObjKey(shop.userInfo, 'password');
-      deleteObjKey(shop.userInfo, 'refreshToken');
-    });
+    // shops.forEach((shop: ShopExtended) => {
+    //   deleteObjKey(shop.userInfo, 'password');
+    //   deleteObjKey(shop.userInfo, 'refreshToken');
+    // });
 
     return shops;
   }
@@ -45,9 +50,13 @@ export class ShopService {
   }
 
   async update(newShopInfo: ShopUpdateType): Promise<Shop | undefined> {
+    const shopExists = await this.shopRepository.exists(newShopInfo.userId);
+
+    if (!shopExists) throw new NotFoundError('No shop found');
+
     const updatedShop = await this.shopRepository.update(newShopInfo);
 
-    if (!updatedShop) throw new NotFoundError('No shop found');
+    if (!updatedShop) throw new InternalServerError();
 
     return updatedShop;
   }

@@ -4,6 +4,7 @@ import {
   type ShopUpdateType,
   type ShopCreateType,
   type ShopGetMenuType,
+  type ShopListType,
 } from './shop.schema';
 import { type ShopService } from './shop.service';
 
@@ -27,8 +28,11 @@ export class ShopController {
     });
   }
 
-  async getShops(req: Request, res: Response) {
-    const shops = await this.shopService.list();
+  async getShops(
+    req: Request<unknown, unknown, unknown, ShopListType>,
+    res: Response,
+  ) {
+    const shops = await this.shopService.list(req.query);
 
     return res.status(200).json({
       error: false,

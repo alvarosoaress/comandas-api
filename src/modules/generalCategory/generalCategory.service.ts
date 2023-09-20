@@ -9,6 +9,7 @@ import {
   type GeneralCategoryUpdateType,
   type GeneralCategoryCreateType,
   type GeneralCategorySetType,
+  type GeneralCategoryShopType,
 } from './generalCategory.schema';
 
 export class GeneralCategoryService {
@@ -78,7 +79,7 @@ export class GeneralCategoryService {
 
   async set(
     categorySetInfo: GeneralCategorySetType,
-  ): Promise<Array<{ name: string; id: number } | undefined> | undefined> {
+  ): Promise<GeneralCategoryShopType | undefined> {
     const shopExists = await this.generalCategoryRepository.shopExists(
       categorySetInfo.shopId,
     );
@@ -94,9 +95,71 @@ export class GeneralCategoryService {
         throw new NotFoundError(`Category id ${category} not found`);
     }
 
+    for (const category of categorySetInfo.generalCategoryId) {
+      const categoryRelationFound =
+        await this.generalCategoryRepository.generalCategoryRelationExists(
+          categorySetInfo.shopId,
+          category,
+        );
+      if (categoryRelationFound)
+        throw new ConflictError(
+          `Category id ${category} already settled for shop`,
+        );
+    }
+
     const settledCategories =
       await this.generalCategoryRepository.set(categorySetInfo);
 
     return settledCategories;
+  }
+
+  async remove(
+    categorySetInfo: GeneralCategorySetType,
+  ): Promise<GeneralCategoryShopType | undefined> {
+    const shopExists = await this.generalCategoryRepository.shopExists(
+      categorySetInfo.shopId,
+    );
+
+    if (!shopExists) throw new NotFoundError('No shop found');
+
+    for (const category of categorySetInfo.generalCategoryId) {
+      const categoryFound =
+        await this.generalCategoryRepository.existsById(category);
+      if (!categoryFound)
+        throw new NotFoundError(`Category id ${category} not found`);
+    }
+
+    for (const category of categorySetInfo.generalCategoryId) {
+      const categoryRelationFound =
+        await this.generalCategoryRepository.generalCategoryRelationExists(
+          categorySetInfo.shopId,
+          category,
+        );
+      if (!categoryRelationFound)
+        throw new ConflictError(`Category id ${category} not set for shop`);
+    }
+
+    const settledCategories =
+      await this.generalCategoryRepository.remove(categorySetInfo);
+
+    return settledCategories;
+  }
+
+  async getShopListCategories(
+    shopId: string,
+  ): Promise<GeneralCategoryShopType | undefined> {
+    const shopExists = await this.generalCategoryRepository.shopExists(
+      parseInt(shopId),
+    );
+
+    if (!shopExists) throw new NotFoundError('No shop found');
+
+    const shopCategories =
+      await this.generalCategoryRepository.getShopListCategories(shopId);
+
+    if (!shopCategories || shopCategories.length <= 0)
+      throw new NotFoundError('No categories found for this shop');
+
+    return shopCategories;
   }
 }

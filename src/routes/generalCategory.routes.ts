@@ -6,6 +6,7 @@ import {
   generalCategoryUpdateSchema,
   generalCategorySetSchema,
   generalCategoryDeleteSchema,
+  generalCategoryShpoListSchema,
 } from '../modules/generalCategory/generalCategory.schema';
 import { generalCategoryFactory } from '../modules/generalCategory/generalCategory.factory';
 
@@ -43,6 +44,14 @@ router
   );
 
 router
+  .route('/delete/:id')
+  .delete(
+    validate(generalCategoryDeleteSchema),
+    async (req, res) =>
+      await generalCategoryFactory().deleteGeneralCategory(req, res),
+  );
+
+router
   .route('/set')
   .post(
     validate(generalCategorySetSchema),
@@ -51,11 +60,19 @@ router
   );
 
 router
-  .route('/delete/:id')
+  .route('/remove')
   .delete(
-    validate(generalCategoryDeleteSchema),
+    validate(generalCategorySetSchema),
     async (req, res) =>
-      await generalCategoryFactory().deleteGeneralCategory(req, res),
+      await generalCategoryFactory().removeGeneralCategory(req, res),
+  );
+
+router
+  .route('/shop/:id')
+  .get(
+    validate(generalCategoryShpoListSchema),
+    async (req, res) =>
+      await generalCategoryFactory().getShopListCategories(req, res),
   );
 
 export default router;

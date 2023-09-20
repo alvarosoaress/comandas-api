@@ -3,6 +3,7 @@ import {
   type GeneralCategoryUpdateType,
   type GeneralCategoryCreateType,
   type GeneralCategorySetType,
+  type GeneralCategoryShopType,
 } from './generalCategory.schema';
 
 export type IGeneralCategoryRepository = {
@@ -18,7 +19,17 @@ export type IGeneralCategoryRepository = {
   ) => Promise<GeneralCategory | undefined>;
   delete: (id: string) => Promise<GeneralCategory | undefined>;
   shopExists: (shopId: number) => Promise<boolean>;
+  generalCategoryRelationExists: (
+    shopId: number,
+    generalCategoryId: number,
+  ) => Promise<boolean>;
   set: (
     categorySetInfo: GeneralCategorySetType,
-  ) => Promise<Array<{ name: string; id: number } | undefined> | undefined>;
+  ) => Promise<GeneralCategoryShopType | undefined>;
+  remove: (
+    categorySetInfo: GeneralCategorySetType,
+  ) => Promise<GeneralCategoryShopType | undefined>;
+  getShopListCategories: (
+    shopId: string,
+  ) => Promise<GeneralCategoryShopType | undefined>;
 };

@@ -6,6 +6,7 @@ import {
   type GeneralCategoryGetType,
   type GeneralCategorySetType,
   type GeneralCategoryDeleteType,
+  type GeneralCategoryShopListType,
 } from './generalCategory.schema';
 import { type GeneralCategoryService } from './generalCategory.service';
 
@@ -66,6 +67,33 @@ export class GeneralCategoryController {
     });
   }
 
+  async deleteGeneralCategory(
+    req: Request<GeneralCategoryDeleteType>,
+    res: Response,
+  ) {
+    const deletedCategory = await this.generalCategoryService.delete(
+      req.params.id,
+    );
+
+    return res.status(200).json({
+      error: false,
+      data: deletedCategory,
+    });
+  }
+
+  async getShopListCategories(
+    req: Request<GeneralCategoryShopListType>,
+    res: Response,
+  ) {
+    const shopCategories =
+      await this.generalCategoryService.getShopListCategories(req.params.id);
+
+    return res.status(200).json({
+      error: false,
+      data: shopCategories,
+    });
+  }
+
   async setGeneralCategory(
     req: Request<unknown, unknown, GeneralCategorySetType>,
     res: Response,
@@ -80,17 +108,17 @@ export class GeneralCategoryController {
     });
   }
 
-  async deleteGeneralCategory(
-    req: Request<GeneralCategoryDeleteType>,
+  async removeGeneralCategory(
+    req: Request<unknown, unknown, GeneralCategorySetType>,
     res: Response,
   ) {
-    const deletedCategory = await this.generalCategoryService.delete(
-      req.params.id,
+    const generalCategoryRemaining = await this.generalCategoryService.remove(
+      req.body,
     );
 
     return res.status(200).json({
       error: false,
-      data: deletedCategory,
+      data: generalCategoryRemaining,
     });
   }
 }

@@ -138,7 +138,6 @@ describe('General Category Controller Integration', () => {
         .post('/generalcategory/set')
         .send(generalCategorySet);
 
-      console.log(response.body);
       expect(response.status).toBe(200);
 
       expect(response.body.data).toBeInstanceOf(Array);

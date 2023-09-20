@@ -30,6 +30,12 @@ export const generalCategoryDeleteSchema = z.object({
   }),
 });
 
+export const generalCategoryShpoListSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
 export const generalCategorySetSchema = z.object({
   body: z.object({
     shopId: z.number().positive(),
@@ -52,3 +58,10 @@ export type GeneralCategoryDeleteType = z.infer<
 export type GeneralCategorySetType = z.infer<
   typeof generalCategorySetSchema
 >['body'];
+export type GeneralCategoryShopListType = z.infer<
+  typeof generalCategoryShpoListSchema
+>['params'];
+export type GeneralCategoryShopType = Array<{
+  name: string;
+  id: number;
+}>;
