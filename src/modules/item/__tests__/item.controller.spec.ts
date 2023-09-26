@@ -106,7 +106,7 @@ describe('Item Controller Integration', () => {
     });
   });
 
-  describe('POST /item/update', () => {
+  describe('PUT /item/update', () => {
     it('should return a Updated Item', async () => {
       const itemUpdated: Item = {
         id: 1,
@@ -116,9 +116,7 @@ describe('Item Controller Integration', () => {
         temperature: 'cold',
       };
 
-      const response = await request(app)
-        .post('/item/update')
-        .send(itemUpdated);
+      const response = await request(app).put('/item/update').send(itemUpdated);
 
       expect(response.status).toBe(200);
 

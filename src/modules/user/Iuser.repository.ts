@@ -3,9 +3,11 @@ import {
   type ShopExtended,
   type User,
 } from '../../../database/schema';
+import { type UserUpdateType } from './user.schema';
 
 export type IUserRepository = {
   exists: (email: string) => Promise<boolean>;
+  existsById: (id: number) => Promise<boolean>;
   create: (userInfo: User) => Promise<User>;
   list: () => Promise<User[]>;
   getByEmail: (
@@ -15,5 +17,6 @@ export type IUserRepository = {
     id: string | number,
   ) => Promise<ShopExtended | CustomerExtended | undefined>;
   getRefreshToken: (id: number) => Promise<string | null | undefined>;
-  update: (newUserInfo: User) => Promise<number>;
+  updateRefreshToken: (newUserInfo: User) => Promise<number>;
+  update: (newUserInfo: UserUpdateType) => Promise<User | undefined>;
 };

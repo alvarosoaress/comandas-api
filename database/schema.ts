@@ -244,6 +244,8 @@ export const order = mysqlTable(
       })
       .notNull(),
     quantity: int('quantity').notNull(),
+    total: int('total').notNull(),
+    isCompleted: boolean('is_completed').default(false).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },

@@ -37,8 +37,10 @@ describe('User Service', () => {
       list: jest.fn(),
       getByEmail: jest.fn(),
       getById: jest.fn(),
-      update: jest.fn(),
+      updateRefreshToken: jest.fn(),
       getRefreshToken: jest.fn(),
+      update: jest.fn(),
+      existsById: jest.fn(),
     };
     userService = new UserService(userRepositoryMock);
   });
@@ -293,7 +295,7 @@ describe('User Service', () => {
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
       bcryptMock.compare.mockResolvedValue(true);
-      userRepositoryMock.update.mockResolvedValue(1);
+      userRepositoryMock.updateRefreshToken.mockResolvedValue(1);
 
       const userLoginRes = await userService.logIn(
         'maquinabeloz@tute.italia',
@@ -376,7 +378,7 @@ describe('User Service', () => {
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
       bcryptMock.compare.mockResolvedValue(true);
-      userRepositoryMock.update.mockResolvedValue(0);
+      userRepositoryMock.updateRefreshToken.mockResolvedValue(0);
       // Retun Value pois o jwt não é await (não retorna promise)
       jwtMock.sign.mockReturnValue('supersafeandencryptedrefreshtoken');
 
@@ -392,7 +394,7 @@ describe('User Service', () => {
         'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
       );
 
-      expect(userRepositoryMock.update).toHaveBeenCalledWith({
+      expect(userRepositoryMock.updateRefreshToken).toHaveBeenCalledWith({
         ...userFound.userInfo,
         refreshToken: 'supersafeandencryptedrefreshtoken',
       });

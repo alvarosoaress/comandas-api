@@ -69,7 +69,7 @@ export class GeneralCategoryRepository implements IGeneralCategoryRepository {
 
     // Salvando e retirando id
     // para evitar o usuário atualizar o id no BD
-    const cateogryId = newCategoryInfo.id as number;
+    const cateogryId = newCategoryInfo.id;
 
     deleteObjKey(newCategoryInfo, 'id');
 

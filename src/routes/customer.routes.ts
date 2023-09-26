@@ -1,10 +1,10 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
-import { customerFactory } from '../modules/costumer/customer.factory';
+import { customerFactory } from '../modules/customer/customer.factory';
 import {
   customerCreateSchema,
   customerUpdateSchema,
-} from '../modules/costumer/customer.schema';
+} from '../modules/customer/customer.schema';
 
 const router = express.Router();
 

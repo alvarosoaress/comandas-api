@@ -17,7 +17,12 @@ export const itemCreateSchema = z.object({
 });
 
 export const itemUpdateSchema = z.object({
-  body: itemSchema.omit({ createdAt: true, shopId: true }),
+  body: createInsertSchema(item, {
+    price: (schema) => schema.price.optional(),
+    name: (schema) => schema.name.optional(),
+  })
+    .omit({ createdAt: true, shopId: true })
+    .merge(z.object({ id: z.number().positive() })),
 });
 
 export type ItemGetType = z.infer<typeof itemGetSchema>['params'];

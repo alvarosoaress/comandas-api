@@ -1,9 +1,14 @@
 import { Router } from 'express';
 import validate from '../middleware/validateResource';
-import { itemCreateSchema, itemGetSchema } from '../modules/item/item.schema';
+import {
+  itemCreateSchema,
+  itemGetSchema,
+  itemUpdateSchema,
+} from '../modules/item/item.schema';
 import { ItemFactory } from '../modules/item/item.factory';
 
 const router = Router();
+
 router
   .route('/create')
   .post(
@@ -24,6 +29,9 @@ router
 
 router
   .route('/update')
-  .post(async (req, res) => await ItemFactory().updateItem(req, res));
+  .put(
+    validate(itemUpdateSchema),
+    async (req, res) => await ItemFactory().updateItem(req, res),
+  );
 
 export default router;

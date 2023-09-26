@@ -21,7 +21,11 @@ export const generalCategoryCreateSchema = z.object({
 });
 
 export const generalCategoryUpdateSchema = z.object({
-  body: generalCategorySchema.omit({ createdAt: true }),
+  body: createInsertSchema(generalCategory, {
+    name: (schema) => schema.name.min(3).optional(),
+  })
+    .omit({ createdAt: true })
+    .merge(z.object({ id: z.number().positive() })),
 });
 
 export const generalCategoryDeleteSchema = z.object({

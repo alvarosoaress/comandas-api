@@ -16,6 +16,7 @@ import bcrypt from 'bcryptjs';
 import path from 'path';
 import dotenv from 'dotenv';
 import jwt, { type Secret } from 'jsonwebtoken';
+import { type UserUpdateType } from './user.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -44,7 +45,7 @@ export class UserService {
     return newUser;
   }
 
-  async list(): Promise<User[]> {
+  async list(): Promise<UserSafe[]> {
     const userList = await this.userRepository.list();
 
     if (!userList || userList.length < 1)
@@ -108,7 +109,7 @@ export class UserService {
 
     userFound.userInfo.refreshToken = refreshToken;
 
-    const refreshTokenRes = await this.userRepository.update(
+    const refreshTokenRes = await this.userRepository.updateRefreshToken(
       userFound.userInfo,
     );
 
@@ -134,7 +135,7 @@ export class UserService {
 
     // Se a diff for negativa, o tempo de validade do token expirou
     if (diff < 1) {
-      return false;
+      throw new UnauthorizedError('Refresh token expried');
     } else {
       // Gerar novo Access Token
       const newAccessToken = jwt.sign(
@@ -145,5 +146,15 @@ export class UserService {
 
       return newAccessToken;
     }
+  }
+
+  async update(newUserInfo: UserUpdateType): Promise<UserSafe | undefined> {
+    const userExists = await this.userRepository.existsById(newUserInfo.id);
+
+    if (!userExists) throw new NotFoundError('User not found');
+
+    const userUpdated = await this.userRepository.update(newUserInfo);
+
+    return userUpdated;
   }
 }

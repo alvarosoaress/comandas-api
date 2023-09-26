@@ -7,6 +7,7 @@ import {
   type UserGetByIdType,
   type UserGetByEmailType,
   type UserUpdateAccessTokenType,
+  type UserUpdateType,
 } from './user.schema';
 import { type UserService } from './user.service';
 
@@ -65,6 +66,18 @@ export class UserController {
     return res.status(200).json({
       error: false,
       data: newAccessToken,
+    });
+  }
+
+  async updateUser(
+    req: Request<unknown, unknown, UserUpdateType>,
+    res: Response,
+  ) {
+    const updatedUser = await this.userService.update(req.body);
+
+    return res.status(200).json({
+      error: false,
+      data: updatedUser,
     });
   }
 }

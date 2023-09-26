@@ -51,7 +51,7 @@ export class ItemRepository implements IItemRepository {
 
     // Salvando e retirando id e shopId de newItemInfo
     // para evitar o usuário atualizar o id e o shopId do item no BD
-    const itemId = newItemInfo.id as number;
+    const itemId = newItemInfo.id;
 
     deleteObjKey(newItemInfo, 'id');
 

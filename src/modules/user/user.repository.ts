@@ -9,6 +9,8 @@ import {
   shop,
   customer,
 } from '../../../database/schema';
+import { type UserUpdateType } from './user.schema';
+import deleteObjKey from '../../utils';
 
 export class UserRepository implements IUserRepository {
   async exists(email: string): Promise<boolean> {
@@ -23,6 +25,14 @@ export class UserRepository implements IUserRepository {
     const users = await db.query.user.findMany();
 
     return users;
+  }
+
+  async existsById(id: number): Promise<boolean> {
+    const userExists = await db.query.user.findFirst({
+      where: eq(user.id, id),
+    });
+
+    return !!userExists;
   }
 
   async create(userInfo: User): Promise<User> {
@@ -106,7 +116,27 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async update(newUserInfo: User): Promise<number> {
+  async update(newUserInfo: UserUpdateType): Promise<User | undefined> {
+    newUserInfo.updatedAt = new Date();
+
+    // Salvando e retirando id de newUserInfo
+    // para evitar o usuário atualizar o id no BD
+    const userId = newUserInfo.id;
+
+    deleteObjKey(newUserInfo, 'id');
+
+    await db.update(user).set(newUserInfo).where(eq(user.id, userId));
+
+    const updatedUser = await db.query.user.findFirst({
+      where: eq(user.id, userId),
+    });
+
+    if (!updatedUser) return undefined;
+
+    return updatedUser;
+  }
+
+  async updateRefreshToken(newUserInfo: User): Promise<number> {
     const updatedUser = await db
       .update(user)
       .set(newUserInfo)

@@ -1,0 +1,2834 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Comandas app REST API Docs",
+    "version": "1.0"
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Address",
+      "description": "Operations about address"
+    },
+    {
+      "name": "User",
+      "description": "Operations about user"
+    },
+    {
+      "name": "GeneralCategory",
+      "description": "Operations about general category for shops"
+    },
+    {
+      "name": "Shop",
+      "description": "Operations about shop"
+    },
+    {
+      "name": "Customer",
+      "description": "Operations about customer"
+    },
+    {
+      "name": "Item",
+      "description": "Operations about item"
+    }
+  ],
+  "paths": {
+    "/address/create": {
+      "post": {
+        "tags": ["Address"],
+        "summary": "Create a new address",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Address created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressCreateRes"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Address already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address/list": {
+      "get": {
+        "tags": ["Address"],
+        "summary": "List all addresses",
+        "responses": {
+          "200": {
+            "description": "Addresses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No addresses not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address/{addressId}": {
+      "get": {
+        "tags": ["Address"],
+        "summary": "Get a specific address",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "addressId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the address to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressGetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Address not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/list": {
+      "get": {
+        "tags": ["User"],
+        "summary": "List all users",
+        "responses": {
+          "200": {
+            "description": "users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No users not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get a specific user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the user to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserGetShopRes"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UserGetCustomerRes"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Login a user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials do not match",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/updatetoken": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Update user access token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateTokenSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User access token updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserUpdateTokenRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Refresh token expried",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/create": {
+      "post": {
+        "tags": ["GeneralCategory"],
+        "summary": "Create a new general category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneralCategoryCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "General category created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategoryCreateRes"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "General category already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/list": {
+      "get": {
+        "tags": ["GeneralCategory"],
+        "summary": "Get all general categories",
+        "responses": {
+          "200": {
+            "description": "General categories found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategoryListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "General category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/{generalCategoryId}": {
+      "get": {
+        "tags": ["GeneralCategory"],
+        "summary": "Get a specific general category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "generalCategoryId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the general category to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "General category found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategoryGetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "General category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/update": {
+      "put": {
+        "tags": ["GeneralCategory"],
+        "summary": "Updates a general category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneralCategoryUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "General category updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategoryUpdateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "General category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/delete/{generalCategoryId}": {
+      "delete": {
+        "tags": ["GeneralCategory"],
+        "summary": "Delete a specific general category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "generalCategoryId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the general category to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "General category deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategoryDeleteRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "General category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/set": {
+      "put": {
+        "tags": ["GeneralCategory"],
+        "summary": "Set general categories for specific shop",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneralCategorySetSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "General categories settled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategorySetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "General category not found OR Shop not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/remove": {
+      "put": {
+        "tags": ["GeneralCategory"],
+        "summary": "Remove general categories for specific shop",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneralCategoryRemoveSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "General categories removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategoryRemoveRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "General category not found OR Shop not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generalcategory/shop/{shopId}": {
+      "get": {
+        "tags": ["GeneralCategory"],
+        "summary": "Get all general categories from a specific shop",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shopId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the shop to get general categories."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "General categories found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralCategoryShopListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/create": {
+      "post": {
+        "tags": ["Customer"],
+        "summary": "Create a new customer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerCreateRes"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Customer already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/list": {
+      "get": {
+        "tags": ["Customer"],
+        "summary": "List all customers",
+        "responses": {
+          "200": {
+            "description": "Customers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customers not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/update": {
+      "put": {
+        "tags": ["Customer"],
+        "summary": "Update a specific customer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerUpdateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/create": {
+      "post": {
+        "tags": ["Shop"],
+        "summary": "Create a new shop",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShopCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Shop created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopCreateRes"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Shop already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/list": {
+      "get": {
+        "tags": ["Shop"],
+        "summary": "Get menu from shop id",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "example": 3
+            },
+            "required": false,
+            "description": "Amount of shops."
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string",
+              "example": "virgulini"
+            },
+            "required": false,
+            "description": "State which shop is located about."
+          },
+          {
+            "in": "query",
+            "name": "country",
+            "schema": {
+              "type": "string",
+              "example": "brazil"
+            },
+            "required": false,
+            "description": "Country which shop is located about."
+          },
+          {
+            "in": "query",
+            "name": "city",
+            "schema": {
+              "type": "string",
+              "example": "veneza"
+            },
+            "required": false,
+            "description": "City which shop is located about."
+          },
+          {
+            "in": "query",
+            "name": "tables",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "required": false,
+            "description": "Exact quantity of tables."
+          },
+          {
+            "in": "query",
+            "name": "mintables",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "required": false,
+            "description": "Minimum quantity of tables."
+          },
+          {
+            "in": "query",
+            "name": "maxtables",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "required": false,
+            "description": "Maximum quantity of tables."
+          },
+          {
+            "in": "query",
+            "name": "categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "example": 1
+              }
+            },
+            "required": false,
+            "description": "Shops with specific general categories."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shop menu found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No shops not foud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/{shopId}/menu": {
+      "get": {
+        "tags": ["Shop"],
+        "summary": "Get menu from shop id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shopId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Shop ID of the menu to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shop menu found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopGetMenuRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not foud OR Shop has no menu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/update": {
+      "put": {
+        "tags": ["Shop"],
+        "summary": "Update a specific shop",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShopUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopUpdateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/item/create": {
+      "post": {
+        "tags": ["Item"],
+        "summary": "Create a new item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCreateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not found OR Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/item/list": {
+      "get": {
+        "tags": ["Item"],
+        "summary": "List all items",
+        "responses": {
+          "200": {
+            "description": "Items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No shops not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/item/{itemId}": {
+      "get": {
+        "tags": ["Item"],
+        "summary": "Get a specific item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the item to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemGetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/item/update": {
+      "put": {
+        "tags": ["Item"],
+        "summary": "Update a specific item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemUpadteRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found OR categoryId not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "AddressCreateSchema": {
+        "type": "object",
+        "required": ["number", "street", "state", "city", "country"],
+        "properties": {
+          "number": {
+            "type": "integer",
+            "example": 71
+          },
+          "street": {
+            "type": "string",
+            "example": "Veneza"
+          },
+          "neighborhood": {
+            "type": "string",
+            "example": "Virgulini"
+          },
+          "city": {
+            "type": "string",
+            "example": "Italia"
+          },
+          "state": {
+            "type": "string",
+            "example": "Idont know"
+          },
+          "country": {
+            "type": "string",
+            "example": "Brazil"
+          },
+          "zipcode": {
+            "type": "number",
+            "example": 35772598
+          },
+          "lat": {
+            "type": "string",
+            "example": "35.702206"
+          },
+          "long": {
+            "type": "string",
+            "example": "139.774139"
+          }
+        }
+      },
+      "AddressCreateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "number": {
+                "type": "integer",
+                "example": 71
+              },
+              "street": {
+                "type": "string",
+                "example": "Veneza"
+              },
+              "neighborhood": {
+                "type": "string",
+                "example": "Virgulini"
+              },
+              "city": {
+                "type": "string",
+                "example": "Italia"
+              },
+              "state": {
+                "type": "string",
+                "example": "Idont know"
+              },
+              "country": {
+                "type": "string",
+                "example": "Brazil"
+              },
+              "zipcode": {
+                "type": "number",
+                "example": 35772598
+              },
+              "lat": {
+                "type": "string",
+                "example": "35.702206"
+              },
+              "long": {
+                "type": "string",
+                "example": "139.774139"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "AddressGetRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "number": {
+                "type": "integer",
+                "example": 71
+              },
+              "street": {
+                "type": "string",
+                "example": "Veneza"
+              },
+              "city": {
+                "type": "string",
+                "example": "Italia"
+              },
+              "state": {
+                "type": "string",
+                "example": "Idont know"
+              },
+              "country": {
+                "type": "string",
+                "example": "Brazil"
+              },
+              "zipcode": {
+                "type": "number",
+                "example": 35772598
+              },
+              "lat": {
+                "type": "string",
+                "example": "35.702206"
+              },
+              "long": {
+                "type": "string",
+                "example": "139.774139"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "AddressListRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "number": {
+                  "type": "integer",
+                  "example": 71
+                },
+                "street": {
+                  "type": "string",
+                  "example": "Veneza"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "Italia"
+                },
+                "state": {
+                  "type": "string",
+                  "example": "Idont know"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "Brazil"
+                },
+                "zipcode": {
+                  "type": "number",
+                  "example": 35772598
+                },
+                "lat": {
+                  "type": "string",
+                  "example": "35.702206"
+                },
+                "long": {
+                  "type": "string",
+                  "example": "139.774139"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserListRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Fernando Virgulini"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "maquinabeloz@tute.italia"
+                },
+                "phoneNumber": {
+                  "type": "number",
+                  "example": 988887777
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["customer", "shop"],
+                  "example": "customer"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserGetCustomerRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "photoUrl": {
+                "type": "string",
+                "example": "Fernando Virgulini"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "2002-04-03T00:25:32.189Z"
+              },
+              "userId": {
+                "type": "number",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "userInfo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Fernando Virgulini"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "maquinabeloz@tute.italia"
+                  },
+                  "phoneNumber": {
+                    "type": "number",
+                    "example": 988887777
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["customer", "shop"],
+                    "default": "customer"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserGetShopRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "tables": {
+                "type": "integer",
+                "example": 8
+              },
+              "userId": {
+                "type": "integer",
+                "example": 1
+              },
+              "addressId": {
+                "type": "integer",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "categories": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Pizzaria"
+                    }
+                  }
+                }
+              },
+              "userInfo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Fernando Virgulini"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "maquinabeloz@tute.italia"
+                  },
+                  "phoneNumber": {
+                    "type": "number",
+                    "example": 988887777
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["customer", "shop"],
+                    "default": "shop"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              },
+              "addressInfo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "number": {
+                    "type": "integer",
+                    "example": 71
+                  },
+                  "street": {
+                    "type": "string",
+                    "example": "Veneza"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "Italia"
+                  },
+                  "state": {
+                    "type": "string",
+                    "example": "Idont know"
+                  },
+                  "country": {
+                    "type": "string",
+                    "example": "Brazil"
+                  },
+                  "zipcode": {
+                    "type": "number",
+                    "example": 35772598
+                  },
+                  "lat": {
+                    "type": "string",
+                    "example": "35.702206"
+                  },
+                  "long": {
+                    "type": "string",
+                    "example": "139.774139"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserLoginSchema": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "maquinabeloz@tute.italia"
+          },
+          "password": {
+            "type": "string",
+            "example": "safeppaswordnobodywillknowhihi"
+          }
+        }
+      },
+      "UserLoginRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "accessToken": {
+                "type": "string",
+                "example": "superencryptedandsafeaccestokenhihi"
+              },
+              "userInfo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Fernando Virgulini"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "maquinabeloz@tute.italia"
+                  },
+                  "phoneNumber": {
+                    "type": "number",
+                    "example": 988887777
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["customer", "shop"],
+                    "example": "customer"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserUpdateTokenSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": 1
+          }
+        }
+      },
+      "UserUpdateTokenRes": {
+        "title": "New Access Token",
+        "type": "string",
+        "example": "newAccessToken"
+      },
+      "GeneralCategoryCreateSchema": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Pizzaria"
+          }
+        }
+      },
+      "GeneralCategoryCreateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Pizzaria"
+              },
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "GeneralCategoryListRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Pizzaria"
+                },
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "GeneralCategoryGetRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Pizzaria"
+              },
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "GeneralCategoryUpdateSchema": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Pizzaria"
+          },
+          "id": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "GeneralCategoryUpdateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Pizzaria"
+              },
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "GeneralCategoryDeleteRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Pizzaria"
+              },
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "GeneralCategorySetSchema": {
+        "type": "object",
+        "properties": {
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "generalCategoryId": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": [1]
+            }
+          }
+        }
+      },
+      "GeneralCategorySetRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Pizzaria"
+                },
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "GeneralCategoryRemoveSchema": {
+        "type": "object",
+        "properties": {
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "generalCategoryId": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": [1]
+            }
+          }
+        }
+      },
+      "GeneralCategoryRemoveRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Pizzaria"
+                },
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "GeneralCategoryShopListRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Pizzaria"
+                },
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerCreateSchema": {
+        "type": "object",
+        "required": ["userInfo"],
+        "properties": {
+          "userInfo": {
+            "type": "object",
+            "required": ["name", "email", "password"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Fernando Virgulini"
+              },
+              "email": {
+                "type": "string",
+                "example": "maquinabeloz@tute.italia"
+              },
+              "password": {
+                "type": "string",
+                "example": "safeppaswordnobodywillknowhihi"
+              },
+              "phoneNumber": {
+                "type": "number",
+                "example": 988887777
+              },
+              "role": {
+                "type": "string",
+                "enum": ["customer", "shop"],
+                "default": "customer"
+              }
+            }
+          },
+          "customerInfo": {
+            "type": "object",
+            "properties": {
+              "photoUrl": {
+                "type": "string",
+                "example": "Fernando Virgulini"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "2002-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "CustomerCreateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "photoUrl": {
+                "type": "string",
+                "example": "Fernando Virgulini"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "2002-04-03T00:25:32.189Z"
+              },
+              "userId": {
+                "type": "number",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "userInfo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Fernando Virgulini"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "maquinabeloz@tute.italia"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "safeppaswordnobodywillknowhihi"
+                  },
+                  "phoneNumber": {
+                    "type": "number",
+                    "example": 988887777
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["customer", "shop"],
+                    "default": "customer"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerListRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "photoUrl": {
+                  "type": "string",
+                  "example": "https://some.link"
+                },
+                "birthday": {
+                  "type": "string",
+                  "example": "2002-04-03T00:25:32.189Z"
+                },
+                "userId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "userInfo": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Fernando Virgulini"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "maquinabeloz@tute.italia"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "safeppaswordnobodywillknowhihi"
+                    },
+                    "phoneNumber": {
+                      "type": "number",
+                      "example": 988887777
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": ["customer", "shop"],
+                      "default": "customer"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-04-03T00:25:32.189Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-04-03T00:25:32.189Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerUpdateSchema": {
+        "type": "object",
+        "required": ["userId"],
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "example": 1
+          },
+          "photoUrl": {
+            "type": "string",
+            "example": "https://idont.know"
+          },
+          "birthday": {
+            "type": "string",
+            "example": "2002-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "CustomerUpdateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "integer",
+                "example": 1
+              },
+              "photoUrl": {
+                "type": "string",
+                "example": "https://idont.know"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "2002-04-03T00:25:32.189Z"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "ShopCreateSchema": {
+        "type": "object",
+        "required": ["userInfo, addressInfo"],
+        "properties": {
+          "userInfo": {
+            "type": "object",
+            "required": ["name", "email", "password"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Fernando Virgulini"
+              },
+              "email": {
+                "type": "string",
+                "example": "maquinabeloz@tute.italia"
+              },
+              "password": {
+                "type": "string",
+                "example": "safeppaswordnobodywillknowhihi"
+              },
+              "phoneNumber": {
+                "type": "number",
+                "example": 988887777
+              },
+              "role": {
+                "type": "string",
+                "enum": ["customer", "shop"],
+                "default": "shop"
+              }
+            }
+          },
+          "shopInfo": {
+            "type": "object",
+            "properties": {
+              "tables": {
+                "type": "integer",
+                "nullable": true,
+                "example": 8
+              }
+            }
+          },
+          "addressInfo": {
+            "type": "object",
+            "properties": {
+              "prop": {
+                "$ref": "#/components/schemas/AddressCreateSchema"
+              }
+            }
+          }
+        }
+      },
+      "ShopCreateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "userInfo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Fernando Virgulini"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "maquinabeloz@tute.italia"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "safeppaswordnobodywillknowhihi"
+                  },
+                  "phoneNumber": {
+                    "type": "number",
+                    "example": 988887777
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["customer", "shop"],
+                    "default": "shop"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              },
+              "shopInfo": {
+                "type": "object",
+                "properties": {
+                  "tables": {
+                    "type": "integer",
+                    "example": 8
+                  },
+                  "userId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "addressId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              },
+              "addressInfo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "number": {
+                    "type": "integer",
+                    "example": 71
+                  },
+                  "street": {
+                    "type": "string",
+                    "example": "Veneza"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "Italia"
+                  },
+                  "state": {
+                    "type": "string",
+                    "example": "Idont know"
+                  },
+                  "country": {
+                    "type": "string",
+                    "example": "Brazil"
+                  },
+                  "zipcode": {
+                    "type": "number",
+                    "example": 35772598
+                  },
+                  "lat": {
+                    "type": "string",
+                    "example": "35.702206"
+                  },
+                  "long": {
+                    "type": "string",
+                    "example": "139.774139"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-04-03T00:25:32.189Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ShopListRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Fernando Virgulini"
+                },
+                "user_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "address_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "tables": {
+                  "type": "integer",
+                  "example": 8
+                },
+                "number": {
+                  "type": "integer",
+                  "example": 71
+                },
+                "street": {
+                  "type": "string",
+                  "example": "Veneza"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "Italia"
+                },
+                "neighborhood": {
+                  "type": "string",
+                  "example": "Virgulini"
+                },
+                "state": {
+                  "type": "string",
+                  "example": "Idont know"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "Brazil"
+                },
+                "lat": {
+                  "type": "string",
+                  "example": "35.702206"
+                },
+                "long": {
+                  "type": "string",
+                  "example": "139.774139"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "maquinabeloz@tute.italia"
+                },
+                "phone_number": {
+                  "type": "number",
+                  "example": 99997777
+                },
+                "category_name": {
+                  "type": "string",
+                  "example": "Pizzaria"
+                },
+                "category_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ShopGetMenuRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Jane Doe"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 1.99
+                },
+                "shopId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "categoryId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Bolo de murango"
+                },
+                "temperature": {
+                  "type": "string",
+                  "enum": ["cold", "hot"]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ShopUpdateSchema": {
+        "type": "object",
+        "required": ["userId"],
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "example": 1
+          },
+          "tables": {
+            "type": "integer",
+            "example": 8
+          }
+        }
+      },
+      "ShopUpdateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "tables": {
+                "type": "integer",
+                "example": 8
+              },
+              "userId": {
+                "type": "integer",
+                "example": 1
+              },
+              "addressId": {
+                "type": "integer",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "ItemCreateSchema": {
+        "type": "object",
+        "required": ["name", "shopId", "price"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "price": {
+            "type": "number",
+            "example": 1.99
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "categoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "example": "Bolo de murango"
+          },
+          "temperature": {
+            "type": "string",
+            "enum": ["cold", "hot"]
+          }
+        }
+      },
+      "ItemCreateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Jane Doe"
+              },
+              "price": {
+                "type": "number",
+                "example": 1.99
+              },
+              "categoryId": {
+                "type": "integer",
+                "example": 1
+              },
+              "description": {
+                "type": "string",
+                "example": "Bolinho de murango"
+              },
+              "temperature": {
+                "type": "string",
+                "example": "cold"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "ItemListRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Jane Doe"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 1.99
+                },
+                "shopId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "categoryId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Bolo de murango"
+                },
+                "temperature": {
+                  "type": "string",
+                  "enum": ["cold", "hot"]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ItemUpdateSchema": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "price": {
+            "type": "number",
+            "example": 1.99
+          },
+          "categoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "example": "Bolo de murango"
+          },
+          "temperature": {
+            "type": "string",
+            "enum": ["cold", "hot"]
+          }
+        }
+      },
+      "ItemUpadteRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Jane Doe"
+              },
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "price": {
+                "type": "number",
+                "example": 1.99
+              },
+              "categoryId": {
+                "type": "number",
+                "example": 1
+              },
+              "description": {
+                "type": "string",
+                "example": "Bolo de murango"
+              },
+              "temperature": {
+                "type": "string",
+                "enum": ["cold", "hot"]
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "ItemGetRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Jane Doe"
+              },
+              "price": {
+                "type": "number",
+                "example": 1.99
+              },
+              "categoryId": {
+                "type": "integer",
+                "example": 1
+              },
+              "description": {
+                "type": "string",
+                "example": "Bolinho de murango"
+              },
+              "temperature": {
+                "type": "string",
+                "example": "cold"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Not found"
+          }
+        }
+      },
+      "ConflictError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Already exists"
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Not authorized"
+          }
+        }
+      }
+    }
+  }
+}

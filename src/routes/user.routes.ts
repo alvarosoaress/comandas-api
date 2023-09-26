@@ -4,6 +4,7 @@ import {
   userGetByIdSchema,
   userUpdateAccessSchema,
   userLoginSchema,
+  userUpdateSchema,
 } from '../modules/user/user.schema';
 import { userFactory } from '../modules/user/user.factory';
 
@@ -32,6 +33,13 @@ router
   .post(
     validate(userUpdateAccessSchema),
     async (req, res) => await userFactory().updateAccessToken(req, res),
+  );
+
+router
+  .route('/update')
+  .put(
+    validate(userUpdateSchema),
+    async (req, res) => await userFactory().updateUser(req, res),
   );
 
 export default router;
