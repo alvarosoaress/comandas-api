@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev ./src/server.ts",
+    "dev": "ts-node-dev ./src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc",
     "migrate": "drizzle-kit generate:mysql --config=./drizzle.config.ts && ts-node-dev database/migrate.ts",
-    "test": "jest"
+    "test": "jest",
+    "vercel-build": "echo hello"
   },
   "keywords": [],
   "author": "",
