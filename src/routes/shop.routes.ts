@@ -1,18 +1,19 @@
 import express from 'express';
 import validate from '../middleware/validateResource';
 import {
-  createShopSchema,
-  getShopMenuSchema,
-  getShopSchema,
+  shopCreateSchema,
+  shopGetMenuSchema,
+  shopUpdateSchema,
 } from '../modules/shop/shop.schema';
 import { shopFactory } from '../modules/shop/shop.factory';
+import verifyToken from '../middleware/verifyToken';
 
 const router = express.Router();
 
 router
   .route('/create')
   .post(
-    validate(createShopSchema),
+    validate(shopCreateSchema),
     async (req, res) => await shopFactory().createShop(req, res),
   );
 
@@ -21,17 +22,18 @@ router
   .get(async (req, res) => await shopFactory().getShops(req, res));
 
 router
-  .route('/:id')
+  .route('/:id/menu')
   .get(
-    validate(getShopSchema),
-    async (req, res) => await shopFactory().getShopById(req, res),
+    validate(shopGetMenuSchema),
+    async (req, res) => await shopFactory().getShopMenu(req, res),
   );
 
 router
-  .route('/:id/menu')
-  .get(
-    validate(getShopMenuSchema),
-    async (req, res) => await shopFactory().getShopMenu(req, res),
+  .route('/update')
+  .put(
+    verifyToken('shop'),
+    validate(shopUpdateSchema),
+    async (req, res) => await shopFactory().updateShop(req, res),
   );
 
 export default router;

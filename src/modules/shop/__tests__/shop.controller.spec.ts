@@ -2,82 +2,88 @@
  * @jest-environment ./database/drizzle.environment.jest
  */
 
-import { type ShopSafe } from '../../../../database/schema';
+import { type Item } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
-import { type createUserType } from '../../user/user.schema';
-import { type createAddressType } from '../../address/address.schema';
+import { type ItemCreateType } from '../../item/item.schema';
+import { type ShopUpdateType, type ShopCreateType } from '../shop.schema';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
 jest.setTimeout(10000);
 
-beforeAll(async () => {
-  // Pré criando informações necessárias para
-  // o shop poder existir
-  const userInfo: createUserType = {
-    name: 'Francesco Virgulini',
-    email: 'maquinabeloz@tute.italia',
-    password: 'supersafepasswordnobodywillnowhihi123',
-    role: 'client' as const,
-  };
-  const addressInfo: createAddressType = {
-    number: 69,
-    street: 'Virgulini',
-    neighborhood: 'Francesco',
-    city: 'City Test',
-    state: 'Tute',
-    country: 'Italia',
-  };
-
-  await request(app).post('/user/create').send(userInfo);
-  await request(app).post('/address/create').send(addressInfo);
-});
-
 describe('Shop Controller Integration', () => {
   describe('POST /shop/create', () => {
     it('should create a shop', async () => {
-      const newShopInfo = {
-        addressId: 1,
-        userId: 1,
+      const newShopInfo: ShopCreateType = {
+        shopInfo: {
+          tables: 5,
+        },
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'supersafepasswordnobodywillnowhihi123',
+        },
+        addressInfo: {
+          number: 69,
+          street: 'Virgulini',
+          neighborhood: 'Francesco',
+          city: 'City Test',
+          state: 'Tute',
+          country: 'Italia',
+        },
       };
 
       const response = await request(app)
         .post('/shop/create')
-        .send(newShopInfo);
+        .send(newShopInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('id');
-      expect(response.body.data.role).toEqual('shop');
+      expect(response.body.data).toHaveProperty('userInfo');
+      expect(response.body.data.userInfo.role).toEqual('shop');
     });
   });
 
-  describe('GET /shop/list', () => {
-    it('should return a list of shops', async () => {
-      const shopList: ShopSafe[] = [
+  describe('GET /shop/:id/menu', () => {
+    beforeAll(async () => {
+      const newItemInfo: ItemCreateType = {
+        shopId: 1,
+        name: 'Bolinea de Gorfwe',
+        price: 6.99,
+      };
+
+      await request(app)
+        .post('/item/create')
+        .send(newItemInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+    });
+
+    it('should return the menu of the shop with the specified ID', async () => {
+      const itemList: Item[] = [
         {
-          name: 'Francesco Virgulini',
-          email: 'maquinabeloz@tute.italia',
-          role: 'shop',
-          id: expect.any(Number),
-          phoneNumber: null,
-          photoUrl: null,
-          birthday: null,
+          id: 1,
+          name: 'Bolinea de Gorfwe',
+          price: 6.99,
+          shopId: 1,
+          categoryId: null,
           createdAt: expect.any(String),
-          address: {
-            id: 1,
-            city: 'City Test',
-            neighborhood: 'Francesco',
-            number: 69,
-            street: 'Virgulini',
-            state: 'Tute',
-            country: 'Italia',
-          },
+          description: null,
+          temperature: null,
         },
       ];
 
-      const response = await request(app).get('/shop/list');
+      const response = await request(app)
+        .get('/shop/1/menu')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -85,39 +91,28 @@ describe('Shop Controller Integration', () => {
 
       expect(response.body.data.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(shopList);
-
-      response.body.data.forEach((shop: ShopSafe) => {
-        expect(shop.role).toEqual('shop');
-        expect(shop).toHaveProperty('address');
-      });
+      expect(response.body.data).toMatchObject(itemList);
     });
   });
 
-  describe('GET /shop/:id', () => {
-    it('should return a shop with the specified ID', async () => {
-      const response = await request(app).get('/shop/1');
+  describe('PUT /shop/update', () => {
+    it('should return the updated shop', async () => {
+      const newShopInfo: ShopUpdateType = {
+        userId: 1,
+        tables: 85,
+      };
+
+      const response = await request(app)
+        .put('/shop/update')
+        .send(newShopInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.data).toHaveProperty('updatedAt');
 
-      expect(response.body.data).toHaveProperty('address');
+      expect(response.body.data.userId).toEqual(1);
     });
   });
-
-  // TODO Criar o endPoint de adicionar items para poder testar o getMenu
-  //   describe('GET /shop/:id/menu', () => {
-  //     it('should return a shop with the specified ID', async () => {
-  //       const response = await request(app).get('/shop/1/menu');
-
-  //       expect(response.status).toBe(200);
-
-  //       expect(response.body.data.id).toEqual(1);
-
-  //       expect(response.body.data.items).toBeInstanceOf(Array);
-
-  //       expect(response.body.data.items.length).toEqual(0);
-  //     });
-  //   });
 });

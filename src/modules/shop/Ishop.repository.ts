@@ -1,10 +1,18 @@
-import { type ShopMenu, type Shop } from '../../../database/schema';
+import {
+  type Item,
+  type ShopExtendedSafe,
+  type Shop,
+} from '../../../database/schema';
+import {
+  type ShopUpdateType,
+  type ShopCreateType,
+  type ShopListType,
+} from './shop.schema';
 
 export type IShopRepository = {
   exists: (userId: number) => Promise<boolean>;
-  existsAddress: (addressId: number) => Promise<boolean>;
-  create: (userId: number, addressId: number) => Promise<Shop | undefined>;
-  getById: (userId: string) => Promise<Shop | undefined>;
-  list: () => Promise<Shop[]>;
-  getMenu: (userId: string) => Promise<ShopMenu | undefined>;
+  create: (info: ShopCreateType) => Promise<ShopExtendedSafe | undefined>;
+  list: (query?: ShopListType) => Promise<any>;
+  getMenu: (userId: string) => Promise<Item[] | undefined>;
+  update: (newShopInfo: ShopUpdateType) => Promise<Shop | undefined>;
 };

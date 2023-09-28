@@ -1,6 +1,15 @@
-import { type ShopMenu, type Shop } from '../../../../database/schema';
-import { ConflictError, NotFoundError } from '../../../helpers/api.erros';
+import {
+  type Shop,
+  type Item,
+  type ShopExtended,
+} from '../../../../database/schema';
+import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
+import {
+  type ShopUpdateType,
+  type ShopCreateType,
+  type ShopListResType,
+} from '../shop.schema';
 import { ShopService } from '../shop.service';
 
 describe('Shop Service', () => {
@@ -9,12 +18,11 @@ describe('Shop Service', () => {
 
   beforeEach(() => {
     shopRepositoryMock = {
-      exists: jest.fn(),
-      existsAddress: jest.fn(),
       create: jest.fn(),
       list: jest.fn(),
-      getById: jest.fn(),
       getMenu: jest.fn(),
+      exists: jest.fn(),
+      update: jest.fn(),
     };
 
     shopService = new ShopService(shopRepositoryMock);
@@ -24,126 +32,82 @@ describe('Shop Service', () => {
     jest.clearAllMocks();
   });
 
-  const shopInfo: Shop = {
-    id: 1,
-    name: 'Francesco Virgulini',
-    email: 'maquinabeloz@tute.italia',
-    password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-    role: 'shop' as const,
-    refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-    address: {
-      id: 1,
-      city: 'City Test',
-      neighborhood: 'Francesco',
-      number: 69,
-      street: 'Virgulini',
-      state: 'Tute',
-      country: 'Italia',
-    },
-  };
-
   describe('Create Shop', () => {
+    const shopInfo: ShopExtended = {
+      tables: 5,
+      userId: 1,
+      addressId: 1,
+      userInfo: {
+        email: 'maquinabeloz@tute.italia',
+        id: 1,
+        name: 'Francesco Virgulini',
+        password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+        role: 'shop' as const,
+        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
+      },
+      addressInfo: {
+        city: 'City Test',
+        neighborhood: 'Francesco',
+        number: 69,
+        street: 'Virgulini',
+        state: 'Tute',
+        country: 'Italia',
+      },
+    };
+
+    const newShopInfo: ShopCreateType = {
+      shopInfo: {
+        tables: 5,
+      },
+      userInfo: {
+        name: 'Francesco Virgulini',
+        email: 'maquinabeloz@tute.italia',
+        password: 'supersafepasswordnobodywillnowhihi123',
+      },
+      addressInfo: {
+        number: 69,
+        street: 'Virgulini',
+        neighborhood: 'Francesco',
+        city: 'City Test',
+        state: 'Tute',
+        country: 'Italia',
+      },
+    };
+
     it('should create a shop', async () => {
-      shopRepositoryMock.exists.mockResolvedValue(false);
       shopRepositoryMock.create.mockResolvedValue(shopInfo);
-      shopRepositoryMock.existsAddress.mockResolvedValue(true);
 
-      const newShop = await shopService.create(1, 1);
+      const newShop = await shopService.create(newShopInfo);
 
-      expect(shopRepositoryMock.exists).toBeCalledWith(1);
-      expect(shopRepositoryMock.create).toBeCalledWith(1, 1);
+      expect(shopRepositoryMock.create).toBeCalledWith(newShopInfo);
 
       expect(newShop).not.toHaveProperty('password');
       expect(newShop).not.toHaveProperty('refreshToken');
-    });
-
-    it('should throw a error if the shop exists', async () => {
-      shopRepositoryMock.exists.mockResolvedValue(true);
-
-      await expect(shopService.create(1, 1)).rejects.toThrowError(
-        ConflictError,
-      );
-
-      expect(shopRepositoryMock.exists).toBeCalledWith(1);
-
-      expect(shopRepositoryMock.create).not.toBeCalled();
-    });
-
-    it('should throw a error if the address not exists', async () => {
-      shopRepositoryMock.exists.mockResolvedValue(false);
-      shopRepositoryMock.existsAddress.mockResolvedValue(false);
-
-      await expect(shopService.create(1, 2)).rejects.toThrowError(
-        NotFoundError,
-      );
-
-      expect(shopRepositoryMock.exists).toBeCalledWith(1);
-
-      expect(shopRepositoryMock.existsAddress).toBeCalledWith(2);
-
-      expect(shopRepositoryMock.create).not.toBeCalled();
-    });
-  });
-
-  describe('GetById Shop', () => {
-    it('should return the shop with the specified ID', async () => {
-      shopRepositoryMock.getById.mockResolvedValue(shopInfo);
-
-      const shopFound = await shopService.getById('1');
-
-      expect(shopRepositoryMock.getById).toHaveBeenCalledWith('1');
-
-      expect(shopFound).toEqual(shopInfo);
-
-      expect(shopFound).not.toHaveProperty('password');
-      expect(shopFound).not.toHaveProperty('refreshToken');
-    });
-
-    it('should throw a error if no shop found', async () => {
-      shopRepositoryMock.getById.mockResolvedValue(undefined);
-
-      await expect(shopService.getById('1')).rejects.toThrowError(
-        NotFoundError,
-      );
     });
   });
 
   describe('List Shop', () => {
     it('should return a list of shops', async () => {
-      const shopList: Shop[] = [
+      const shopList: ShopListResType[] = [
         {
-          id: 1,
-          name: 'Francesco Virgulini',
+          tables: 5,
+          user_id: 1,
+          createdAt: '2023-09-19 10:55:22',
+          updatedAt: '2023-09-19 10:55:22',
+          address_id: 1,
+          city: 'Ciudade',
+          state: 'Italia',
+          street: 'Pizza',
+          country: 'Holanda',
+          lat: '13,78.4',
+          long: '12,75.8',
+          neighborhood: 'Bolinea',
+          number: 75,
           email: 'maquinabeloz@tute.italia',
-          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'shop' as const,
-          refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-          address: {
-            id: 1,
-            city: 'City Test',
-            neighborhood: 'Francesco',
-            number: 69,
-            street: 'Virgulini',
-            state: 'Tute',
-            country: 'Italia',
-          },
-        },
-        {
-          id: 2,
-          name: 'Francesco Virgulini',
-          email: 'maquinabeloz@tute.italia',
-          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'shop' as const,
-          refreshToken: 'nothingsafeandencryptedrefreshtokenold',
-          address: {
-            id: 7,
-            city: 'City Test',
-            neighborhood: 'Francesco',
-            number: 69,
-            street: 'Virgulini',
-            state: 'Tute',
-            country: 'Italia',
-          },
+          phone_number: 15488,
+          name: 'Virgulini',
+          category_name: 'Fiaaaun',
+          category_id: 7,
         },
       ];
       shopRepositoryMock.list.mockResolvedValue(shopList);
@@ -152,15 +116,10 @@ describe('Shop Service', () => {
 
       expect(shopRepositoryMock.list).toHaveBeenCalled();
 
-      expect(shops.length).toBeGreaterThanOrEqual(2);
+      expect(shops.length).toBeGreaterThanOrEqual(1);
 
       expect(shops).toBeInstanceOf(Array);
-      expect(shops).toEqual(expect.arrayContaining<Shop>(shopList));
-
-      shops.forEach((Shop) => {
-        expect(Shop).not.toHaveProperty<Shop>('password');
-        expect(Shop).not.toHaveProperty<Shop>('refreshToken');
-      });
+      expect(shops).toEqual(expect.arrayContaining(shopList));
     });
 
     it('should throw a error if no shops found', async () => {
@@ -174,26 +133,22 @@ describe('Shop Service', () => {
 
   describe('Shop Menu', () => {
     it('should return shop id, name and menu', async () => {
-      const shopMenu: ShopMenu = {
-        id: 1,
-        name: 'Francesco Virgulini',
-        items: [
-          {
-            id: 1,
-            name: 'Bolinea de Gorfe',
-            shopId: 1,
-            price: 9.89,
-          },
-          {
-            id: 2,
-            name: 'Acugas',
-            shopId: 1,
-            price: 1.89,
-            description: 'Sparkling water',
-            temperature: 'cold' as const,
-          },
-        ],
-      };
+      const shopMenu: Item[] = [
+        {
+          id: 1,
+          name: 'Bolinea de Gorfe',
+          shopId: 1,
+          price: 9.89,
+        },
+        {
+          id: 2,
+          name: 'Acugas',
+          shopId: 1,
+          price: 1.89,
+          description: 'Sparkling water',
+          temperature: 'cold' as const,
+        },
+      ];
 
       shopRepositoryMock.getMenu.mockResolvedValue(shopMenu);
 
@@ -215,11 +170,8 @@ describe('Shop Service', () => {
     });
 
     it('should throw a error if the shop has no menu', async () => {
-      const shopMenu = {
-        id: 1,
-        name: 'Francesco Virgulini',
-        items: [],
-      };
+      const shopMenu = undefined;
+
       shopRepositoryMock.getMenu.mockResolvedValue(shopMenu);
 
       await expect(shopService.getMenu('1')).rejects.toThrowError(
@@ -227,6 +179,41 @@ describe('Shop Service', () => {
       );
 
       expect(shopRepositoryMock.getMenu).toHaveBeenCalledWith('1');
+    });
+  });
+
+  describe('Shop Update', () => {
+    const shopInfo: ShopUpdateType = {
+      userId: 1,
+      tables: 8,
+    };
+
+    const updatedShop: Shop = {
+      addressId: 1,
+      userId: 1,
+      tables: 5,
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+    };
+    it('should return the updated shop', async () => {
+      shopRepositoryMock.exists.mockResolvedValue(true);
+      shopRepositoryMock.update.mockResolvedValue(updatedShop);
+
+      const shopUpdate = await shopService.update(shopInfo);
+
+      expect(shopRepositoryMock.exists).toBeCalledWith(1);
+      expect(shopRepositoryMock.update).toBeCalledWith(shopInfo);
+      expect(shopUpdate).toHaveProperty('updatedAt');
+    });
+
+    it('should throw a error if no shop found with specified id', async () => {
+      shopRepositoryMock.exists.mockResolvedValue(false);
+
+      await expect(shopService.update(shopInfo)).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.update).not.toBeCalled();
     });
   });
 });

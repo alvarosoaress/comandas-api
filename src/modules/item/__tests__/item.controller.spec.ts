@@ -4,11 +4,13 @@
 
 import app from '../../../app';
 import request from 'supertest';
-import { type createShopType } from '../../shop/shop.schema';
-import { type createAddressType } from '../../address/address.schema';
-import { type createUserType } from '../../user/user.schema';
-import { type createItemType } from '../item.schema';
+import { type ItemCreateType } from '../item.schema';
 import { type Item } from '../../../../database/schema';
+import { type ShopCreateType } from '../../shop/shop.schema';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -17,34 +19,32 @@ jest.setTimeout(10000);
 beforeAll(async () => {
   // Pré criando informações necessárias para
   // o item poder existir
-  const userInfo: createUserType = {
-    name: 'Francesco Virgulini',
-    email: 'maquinabeloz@tute.italia',
-    password: 'supersafepasswordnobodywillnowhihi123',
-    role: 'client' as const,
-  };
-  const addressInfo: createAddressType = {
-    number: 69,
-    street: 'Virgulini',
-    neighborhood: 'Francesco',
-    city: 'City Test',
-    state: 'Tute',
-    country: 'Italia',
-  };
-  const shopInfo: createShopType = {
-    userId: 1,
-    addressId: 1,
+  const info: ShopCreateType = {
+    shopInfo: {
+      tables: 5,
+    },
+    userInfo: {
+      name: 'Francesco Virgulini',
+      email: 'maquinabeloz@tute.italia',
+      password: 'supersafepasswordnobodywillnowhihi123',
+    },
+    addressInfo: {
+      number: 69,
+      street: 'Virgulini',
+      neighborhood: 'Francesco',
+      city: 'City Test',
+      state: 'Tute',
+      country: 'Italia',
+    },
   };
 
-  await request(app).post('/user/create').send(userInfo);
-  await request(app).post('/address/create').send(addressInfo);
-  await request(app).post('/shop/create').send(shopInfo);
+  await request(app).post('/shop/create').send(info);
 });
 
 describe('Item Controller Integration', () => {
   describe('POST /item/create', () => {
     it('should create a item', async () => {
-      const newItemInfo: createItemType = {
+      const newItemInfo: ItemCreateType = {
         shopId: 1,
         name: 'Bolinea de Gorfwe',
         price: 6.99,
@@ -52,7 +52,9 @@ describe('Item Controller Integration', () => {
 
       const response = await request(app)
         .post('/item/create')
-        .send(newItemInfo);
+        .send(newItemInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -72,11 +74,13 @@ describe('Item Controller Integration', () => {
           createdAt: expect.any(String),
           description: null,
           temperature: null,
-          vegan: null,
         },
       ];
 
-      const response = await request(app).get('/item/list');
+      const response = await request(app)
+        .get('/item/list')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -99,10 +103,12 @@ describe('Item Controller Integration', () => {
         createdAt: expect.any(String),
         description: null,
         temperature: null,
-        vegan: null,
       };
 
-      const response = await request(app).get('/item/1');
+      const response = await request(app)
+        .get('/item/1')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -112,23 +118,21 @@ describe('Item Controller Integration', () => {
     });
   });
 
-  describe('POST /item/update', () => {
+  describe('PUT /item/update', () => {
     it('should return a Updated Item', async () => {
       const itemUpdated: Item = {
         id: 1,
         name: 'Bolo de murango',
         price: 69.99,
         shopId: 1,
-        categoryId: null,
-        createdAt: expect.any(String),
-        description: null,
-        temperature: null,
-        vegan: null,
+        temperature: 'cold',
       };
 
       const response = await request(app)
-        .post('/item/update')
-        .send(itemUpdated);
+        .put('/item/update')
+        .send(itemUpdated)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 

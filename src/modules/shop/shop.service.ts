@@ -1,67 +1,63 @@
-import { type ShopMenu, type ShopSafe } from '../../../database/schema';
 import {
-  ConflictError,
-  InternalServerError,
-  NotFoundError,
-} from '../../helpers/api.erros';
+  type ShopExtended,
+  type Item,
+  type ShopExtendedSafe,
+  type Shop,
+} from '../../../database/schema';
+import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 import deleteObjKey from '../../utils';
 import { type IShopRepository } from './Ishop.repository';
+import {
+  type ShopUpdateType,
+  type ShopCreateType,
+  type ShopListType,
+  type ShopListResType,
+} from './shop.schema';
 
 export class ShopService {
   constructor(private readonly shopRepository: IShopRepository) {}
 
-  async create(userId: number, addressId: number): Promise<ShopSafe> {
-    const shopExists = await this.shopRepository.exists(userId);
-
-    if (shopExists) throw new ConflictError('Shop already exists');
-
-    const addressExists = await this.shopRepository.existsAddress(addressId);
-
-    if (!addressExists)
-      throw new NotFoundError('Address with specified id not found');
-
-    const newShop = await this.shopRepository.create(userId, addressId);
+  async create(info: ShopCreateType): Promise<ShopExtendedSafe> {
+    const newShop = await this.shopRepository.create(info);
 
     if (!newShop) throw new InternalServerError();
-
-    deleteObjKey(newShop, 'password');
-    deleteObjKey(newShop, 'refreshToken');
 
     return newShop;
   }
 
-  async getById(userId: string): Promise<ShopSafe | undefined> {
-    const shopFound = await this.shopRepository.getById(userId);
-
-    if (!shopFound) throw new NotFoundError('No shop found');
-
-    deleteObjKey(shopFound, 'password');
-    deleteObjKey(shopFound, 'refreshToken');
-
-    return shopFound;
-  }
-
-  async list(): Promise<ShopSafe[]> {
-    const shops = await this.shopRepository.list();
+  async list(query?: ShopListType): Promise<ShopListResType[]> {
+    const shops = await this.shopRepository.list(query);
 
     if (!shops || shops.length < 1) throw new NotFoundError('No shops found');
 
-    shops.forEach((shop) => {
-      deleteObjKey(shop, 'password');
-      deleteObjKey(shop, 'refreshToken');
-    });
+    // shops.forEach((shop: ShopExtended) => {
+    //   deleteObjKey(shop.userInfo, 'password');
+    //   deleteObjKey(shop.userInfo, 'refreshToken');
+    // });
 
     return shops;
   }
 
-  async getMenu(userId: string): Promise<ShopMenu | undefined> {
-    const shopMenu = await this.shopRepository.getMenu(userId);
+  async getMenu(shopId: string): Promise<Item[] | undefined> {
+    const shopMenu = await this.shopRepository.getMenu(shopId);
 
     if (!shopMenu) throw new NotFoundError('No shop found');
 
-    if (!shopMenu.items || shopMenu.items?.length < 1)
+    if (!shopMenu || shopMenu.length < 1)
       throw new NotFoundError('Shop has no menu');
 
     return shopMenu;
+  }
+
+  async update(newShopInfo: ShopUpdateType): Promise<Shop | undefined> {
+    const shopExists = await this.shopRepository.exists(newShopInfo.userId);
+
+    if (!shopExists) throw new NotFoundError('No shop found');
+
+    const updatedShop = await this.shopRepository.update(newShopInfo);
+
+    if (!updatedShop) throw new InternalServerError();
+
+    return updatedShop;
   }
 }

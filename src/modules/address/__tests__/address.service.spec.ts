@@ -1,5 +1,6 @@
 import { type Address } from '../../../../database/schema';
 import { ConflictError, NotFoundError } from '../../../helpers/api.erros';
+import { type AddressUpdateType } from '../address.schema';
 import { AddressService } from './../address.service';
 import { type IAddressRepository } from './../Iaddress.repository';
 
@@ -13,6 +14,8 @@ describe('Address Service', () => {
       list: jest.fn(),
       getById: jest.fn(),
       exists: jest.fn(),
+      existsById: jest.fn(),
+      update: jest.fn(),
     };
     addressService = new AddressService(addressRepositoryMock);
   });
@@ -143,6 +146,45 @@ describe('Address Service', () => {
       addressRepositoryMock.getById.mockResolvedValue(undefined);
 
       await expect(addressService.getById(2)).rejects.toThrowError(
+        NotFoundError,
+      );
+    });
+  });
+
+  describe('Update Address', () => {
+    const newAddressInfo: AddressUpdateType = {
+      id: 1,
+      city: 'Murango',
+      neighborhood: 'Bolo',
+    };
+
+    const updatedAddress = {
+      id: 1,
+      city: 'Murango',
+      neighborhood: 'Bolo',
+      number: 69,
+      street: 'Virgulini',
+      state: 'Tute',
+      country: 'Italia',
+    };
+
+    it('should return the updated address', async () => {
+      addressRepositoryMock.existsById.mockResolvedValue(true);
+      addressRepositoryMock.update.mockResolvedValue(updatedAddress);
+
+      const result = await addressService.update(newAddressInfo);
+
+      expect(addressRepositoryMock.existsById).toHaveBeenCalledWith(1);
+      expect(addressRepositoryMock.update).toHaveBeenCalledWith(newAddressInfo);
+
+      expect(result).not.toBeUndefined();
+
+      expect(result?.id).toEqual(newAddressInfo.id);
+    });
+    it('should throw an error if no address is found with the specified ID', async () => {
+      addressRepositoryMock.existsById.mockResolvedValue(false);
+
+      await expect(addressService.update(newAddressInfo)).rejects.toThrowError(
         NotFoundError,
       );
     });

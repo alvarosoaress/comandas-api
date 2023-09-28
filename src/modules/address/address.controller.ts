@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type Request, type Response } from 'express';
-import { type getAddressType, type createAddressType } from './address.schema';
+import {
+  type AddressGetType,
+  type AddressCreateType,
+  type AddressUpdateType,
+} from './address.schema';
 import { type AddressService } from './address.service';
 
 export class AddressController {
@@ -16,7 +20,7 @@ export class AddressController {
   }
 
   async createAddress(
-    req: Request<unknown, unknown, createAddressType>,
+    req: Request<unknown, unknown, AddressCreateType>,
     res: Response,
   ) {
     const newAddress = await this.addressService.create(req.body);
@@ -27,7 +31,7 @@ export class AddressController {
     });
   }
 
-  async getAddressById(req: Request<getAddressType>, res: Response) {
+  async getAddressById(req: Request<AddressGetType>, res: Response) {
     const { id } = req.params;
 
     const addressFound = await this.addressService.getById(parseInt(id));
@@ -35,6 +39,18 @@ export class AddressController {
     return res.status(200).json({
       error: false,
       data: addressFound,
+    });
+  }
+
+  async updateAddress(
+    req: Request<unknown, unknown, AddressUpdateType>,
+    res: Response,
+  ) {
+    const updatedAddress = await this.addressService.update(req.body);
+
+    return res.status(200).json({
+      error: false,
+      data: updatedAddress,
     });
   }
 }

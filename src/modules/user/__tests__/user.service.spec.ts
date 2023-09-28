@@ -1,4 +1,8 @@
-import { type User } from '../../../../database/schema';
+import {
+  type ShopExtended,
+  type CustomerExtended,
+  type User,
+} from '../../../../database/schema';
 import {
   ConflictError,
   InternalServerError,
@@ -9,6 +13,7 @@ import { type IUserRepository } from '../Iuser.repository';
 import { UserService } from '../user.service';
 import bcrypt from 'bcryptjs';
 import jwt, { type Secret } from 'jsonwebtoken';
+
 describe('User Service', () => {
   const bcryptMock = {
     hash: jest.fn(),
@@ -32,8 +37,10 @@ describe('User Service', () => {
       list: jest.fn(),
       getByEmail: jest.fn(),
       getById: jest.fn(),
-      update: jest.fn(),
+      updateRefreshToken: jest.fn(),
       getRefreshToken: jest.fn(),
+      update: jest.fn(),
+      existsById: jest.fn(),
     };
     userService = new UserService(userRepositoryMock);
   });
@@ -47,7 +54,7 @@ describe('User Service', () => {
       name: 'Francesco Virgulini',
       email: 'maquinabeloz@tute.italia',
       password: 'supersafepasswordnobodywillnowhihi123',
-      role: 'client' as const,
+      role: 'customer' as const,
     };
     it('should create a user', async () => {
       userRepositoryMock.exists.mockResolvedValue(false);
@@ -87,7 +94,7 @@ describe('User Service', () => {
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
           phoneNumber: 4578784,
         },
         {
@@ -96,14 +103,13 @@ describe('User Service', () => {
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
           role: 'shop' as const,
-          photoUrl: 'https://www.littlerogerio.com.br',
         },
         {
           id: 3,
           name: 'Francesco Virgulini',
           email: 'maquinabeloz@tute.italia',
           password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-          role: 'client' as const,
+          role: 'customer' as const,
         },
       ];
 
@@ -130,13 +136,15 @@ describe('User Service', () => {
   });
 
   describe('GetById User', () => {
-    it('should return the user with the specified ID', async () => {
-      const userInfo = {
-        id: 1,
-        name: 'Francesco Virgulini',
-        email: 'maquinabeloz@tute.italia',
-        password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-        role: 'client' as const,
+    it('should return the CUSTOMER with the specified ID', async () => {
+      const userInfo: CustomerExtended = {
+        userId: 1,
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'customer' as const,
+        },
       };
 
       userRepositoryMock.getById.mockResolvedValue(userInfo);
@@ -145,7 +153,43 @@ describe('User Service', () => {
 
       expect(userRepositoryMock.getById).toHaveBeenCalledWith('1');
 
-      expect(userFound).toEqual<User>(userInfo);
+      expect(userFound).toEqual<CustomerExtended>(userInfo);
+
+      expect(userFound.userInfo.role).toEqual('customer');
+
+      expect(userFound).not.toHaveProperty<User>('password');
+      expect(userFound).not.toHaveProperty<User>('refreshToken');
+    });
+
+    it('should return the SHOP with the specified ID', async () => {
+      const userInfo: ShopExtended = {
+        userId: 1,
+        addressId: 1,
+        addressInfo: {
+          number: 69,
+          street: 'Virgulini',
+          neighborhood: 'Francesco',
+          city: 'City Test',
+          state: 'Tute',
+          country: 'Italia',
+        },
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'shop' as const,
+        },
+      };
+
+      userRepositoryMock.getById.mockResolvedValue(userInfo);
+
+      const userFound = await userService.getById('1');
+
+      expect(userRepositoryMock.getById).toHaveBeenCalledWith('1');
+
+      expect(userFound).toEqual<ShopExtended>(userInfo);
+
+      expect(userFound.userInfo.role).toEqual('shop');
 
       expect(userFound).not.toHaveProperty<User>('password');
       expect(userFound).not.toHaveProperty<User>('refreshToken');
@@ -161,13 +205,15 @@ describe('User Service', () => {
   });
 
   describe('GetByEmail User', () => {
-    it('should return the user with the specified Email', async () => {
-      const userInfo = {
-        id: 1,
-        name: 'Francesco Virgulini',
-        email: 'maquinabeloz@tute.italia',
-        password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-        role: 'client' as const,
+    it('should return the CUSTOMER with the specified Email', async () => {
+      const userInfo: CustomerExtended = {
+        userId: 1,
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'customer' as const,
+        },
       };
 
       userRepositoryMock.getByEmail.mockResolvedValue(userInfo);
@@ -180,7 +226,47 @@ describe('User Service', () => {
         'maquinabeloz@tute.italia',
       );
 
-      expect(userFound).toEqual<User>(userInfo);
+      expect(userFound).toEqual<CustomerExtended>(userInfo);
+
+      expect(userFound.userInfo.role).toEqual('customer');
+
+      expect(userFound).not.toHaveProperty<User>('password');
+      expect(userFound).not.toHaveProperty<User>('refreshToken');
+    });
+
+    it('should return the SHOP with the specified Email', async () => {
+      const userInfo: ShopExtended = {
+        userId: 1,
+        addressId: 1,
+        addressInfo: {
+          number: 69,
+          street: 'Virgulini',
+          neighborhood: 'Francesco',
+          city: 'City Test',
+          state: 'Tute',
+          country: 'Italia',
+        },
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'shop' as const,
+        },
+      };
+
+      userRepositoryMock.getByEmail.mockResolvedValue(userInfo);
+
+      const userFound = await userService.getByEmail(
+        'maquinabeloz@tute.italia',
+      );
+
+      expect(userRepositoryMock.getByEmail).toHaveBeenCalledWith(
+        'maquinabeloz@tute.italia',
+      );
+
+      expect(userFound).toEqual<ShopExtended>(userInfo);
+
+      expect(userFound.userInfo.role).toEqual('shop');
 
       expect(userFound).not.toHaveProperty<User>('password');
       expect(userFound).not.toHaveProperty<User>('refreshToken');
@@ -197,18 +283,19 @@ describe('User Service', () => {
 
   describe('Login User', () => {
     it('should login the user with the specified Email and Password', async () => {
-      const userFound: User = {
-        id: 1,
-        name: 'Francesco Virgulini',
-        email: 'maquinabeloz@tute.italia',
-        password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-        role: 'client' as const,
-        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
+      const userFound: CustomerExtended = {
+        userId: 1,
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'customer' as const,
+        },
       };
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
       bcryptMock.compare.mockResolvedValue(true);
-      userRepositoryMock.update.mockResolvedValue(1);
+      userRepositoryMock.updateRefreshToken.mockResolvedValue(1);
 
       const userLoginRes = await userService.logIn(
         'maquinabeloz@tute.italia',
@@ -227,13 +314,13 @@ describe('User Service', () => {
       expect(jwtMock.sign).toHaveBeenCalledWith(
         {},
         process.env.ACCESS_TOKEN_SECRET as Secret,
-        { expiresIn: '1m', subject: String(userFound.id) },
+        { expiresIn: '1m', subject: String(userFound.userInfo.id) },
       );
 
       expect(jwtMock.sign).toHaveBeenCalledWith(
         {},
         process.env.REFRESH_TOKEN_SECRET as Secret,
-        { expiresIn: '2m', subject: String(userFound.id) },
+        { expiresIn: '2m', subject: String(userFound.userInfo.id) },
       );
 
       expect(userLoginRes.userInfo).not.toHaveProperty('password');
@@ -252,13 +339,14 @@ describe('User Service', () => {
     });
 
     it('should throw a error if user found credentials not match the provided credentials', async () => {
-      const userFound: User = {
-        id: 1,
-        name: 'Francesco Virgulini',
-        email: 'maquinabeloz@tute.italia',
-        password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-        role: 'client' as const,
-        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
+      const userFound: CustomerExtended = {
+        userId: 1,
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'customer' as const,
+        },
       };
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
@@ -278,18 +366,19 @@ describe('User Service', () => {
     });
 
     it('should throw a error if database fails to update user refreshToken', async () => {
-      const userFound: User = {
-        id: 1,
-        name: 'Francesco Virgulini',
-        email: 'maquinabeloz@tute.italia',
-        password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
-        role: 'client' as const,
-        refreshToken: 'nothingsafeandencryptedrefreshtokenold',
+      const userFound: CustomerExtended = {
+        userId: 1,
+        userInfo: {
+          name: 'Francesco Virgulini',
+          email: 'maquinabeloz@tute.italia',
+          password: 'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
+          role: 'customer' as const,
+        },
       };
 
       userRepositoryMock.getByEmail.mockResolvedValue(userFound);
       bcryptMock.compare.mockResolvedValue(true);
-      userRepositoryMock.update.mockResolvedValue(0);
+      userRepositoryMock.updateRefreshToken.mockResolvedValue(0);
       // Retun Value pois o jwt não é await (não retorna promise)
       jwtMock.sign.mockReturnValue('supersafeandencryptedrefreshtoken');
 
@@ -305,8 +394,8 @@ describe('User Service', () => {
         'superencryptedpasswordnobodywillknowthatilikeanimehihi321',
       );
 
-      expect(userRepositoryMock.update).toHaveBeenCalledWith({
-        ...userFound,
+      expect(userRepositoryMock.updateRefreshToken).toHaveBeenCalledWith({
+        ...userFound.userInfo,
         refreshToken: 'supersafeandencryptedrefreshtoken',
       });
     });
@@ -345,9 +434,57 @@ describe('User Service', () => {
         sub: '1',
       });
 
-      const res = await userService.updateAccessToken(1);
+      await expect(userService.updateAccessToken(1)).rejects.toThrowError(
+        UnauthorizedError,
+      );
+    });
+  });
 
-      expect(res).toBeFalsy();
+  describe('Update User', () => {
+    const newUserInfo = {
+      id: 1,
+      name: 'Leoncio',
+      email: 'bolinea@gorfe.italia',
+    };
+
+    const userInfoUpdated: User = {
+      id: 1,
+      name: 'Leoncio',
+      email: 'bolinea@gorfe.italia',
+      password: 'supersafepasswordnobodywillnowhihi123',
+      role: 'customer' as const,
+      phoneNumber: null,
+      refreshToken: 'supersafeandencryptedrefreshtoken',
+    };
+
+    it('should return the updated user', async () => {
+      userRepositoryMock.existsById.mockResolvedValue(true);
+      userRepositoryMock.update.mockResolvedValue(userInfoUpdated);
+
+      const updatedUser = await userService.update(newUserInfo);
+
+      expect(userRepositoryMock.existsById).toHaveBeenCalledWith(
+        newUserInfo.id,
+      );
+      expect(userRepositoryMock.update).toHaveBeenCalledWith(newUserInfo);
+
+      // TODO Checar se updatedAt é maior que createdAt
+      expect(updatedUser).toHaveProperty<User>('id');
+      expect(updatedUser).not.toHaveProperty<User>('password');
+      expect(updatedUser).not.toHaveProperty<User>('refreshToken');
+    });
+
+    it('should throw a error if no user found', async () => {
+      userRepositoryMock.existsById.mockResolvedValue(false);
+
+      await expect(userService.update(newUserInfo)).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(userRepositoryMock.existsById).toHaveBeenCalledWith(
+        newUserInfo.id,
+      );
+      expect(userRepositoryMock.update).not.toHaveBeenCalled();
     });
   });
 });

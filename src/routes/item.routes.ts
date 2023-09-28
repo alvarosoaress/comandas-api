@@ -1,13 +1,20 @@
 import { Router } from 'express';
 import validate from '../middleware/validateResource';
-import { createItemSchema, getItemSchema } from '../modules/item/item.schema';
+import {
+  itemCreateSchema,
+  itemGetSchema,
+  itemUpdateSchema,
+} from '../modules/item/item.schema';
 import { ItemFactory } from '../modules/item/item.factory';
+import verifyToken from '../middleware/verifyToken';
 
 const router = Router();
+
 router
   .route('/create')
   .post(
-    validate(createItemSchema),
+    verifyToken('shop'),
+    validate(itemCreateSchema),
     async (req, res) => await ItemFactory().createItem(req, res),
   );
 
@@ -18,12 +25,16 @@ router
 router
   .route('/:id')
   .get(
-    validate(getItemSchema),
+    validate(itemGetSchema),
     async (req, res) => await ItemFactory().getItemById(req, res),
   );
 
 router
   .route('/update')
-  .post(async (req, res) => await ItemFactory().updateItem(req, res));
+  .put(
+    verifyToken('shop'),
+    validate(itemUpdateSchema),
+    async (req, res) => await ItemFactory().updateItem(req, res),
+  );
 
 export default router;

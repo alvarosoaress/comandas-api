@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type Request, type Response } from 'express';
 import {
-  type getShopType,
-  type createShopType,
-  type getShopMenuType,
+  type ShopUpdateType,
+  type ShopCreateType,
+  type ShopGetMenuType,
+  type ShopListType,
 } from './shop.schema';
 import { type ShopService } from './shop.service';
 
@@ -11,13 +12,15 @@ export class ShopController {
   constructor(private readonly shopService: ShopService) {}
 
   async createShop(
-    req: Request<unknown, unknown, createShopType>,
+    req: Request<unknown, unknown, ShopCreateType>,
     res: Response,
   ) {
-    const newShop = await this.shopService.create(
-      req.body.userId,
-      req.body.addressId,
-    );
+    const info: ShopCreateType = {
+      shopInfo: req.body.shopInfo,
+      userInfo: req.body.userInfo,
+      addressInfo: req.body.addressInfo,
+    };
+    const newShop = await this.shopService.create(info);
 
     return res.status(200).json({
       error: false,
@@ -25,8 +28,11 @@ export class ShopController {
     });
   }
 
-  async getShops(req: Request, res: Response) {
-    const shops = await this.shopService.list();
+  async getShops(
+    req: Request<unknown, unknown, unknown, ShopListType>,
+    res: Response,
+  ) {
+    const shops = await this.shopService.list(req.query);
 
     return res.status(200).json({
       error: false,
@@ -34,21 +40,24 @@ export class ShopController {
     });
   }
 
-  async getShopById(req: Request<getShopType>, res: Response) {
-    const shopFound = await this.shopService.getById(req.params.id);
-
-    return res.status(200).json({
-      error: false,
-      data: shopFound,
-    });
-  }
-
-  async getShopMenu(req: Request<getShopMenuType>, res: Response) {
+  async getShopMenu(req: Request<ShopGetMenuType>, res: Response) {
     const shopMenu = await this.shopService.getMenu(req.params.id);
 
     return res.status(200).json({
       error: false,
       data: shopMenu,
+    });
+  }
+
+  async updateShop(
+    req: Request<unknown, unknown, ShopUpdateType>,
+    res: Response,
+  ) {
+    const updatedShop = await this.shopService.update(req.body);
+
+    return res.status(200).json({
+      error: false,
+      data: updatedShop,
     });
   }
 }
