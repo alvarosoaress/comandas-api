@@ -8,6 +8,7 @@ import { type IGeneralCategoryRepository } from '../IgeneralCategory.repository'
 import {
   type GeneralCategorySetType,
   type GeneralCategoryCreateType,
+  type GeneralCategoryUpdateType,
 } from '../generalCategory.schema';
 import { GeneralCategoryService } from '../generalCategory.service';
 
@@ -143,13 +144,18 @@ describe('General Category Service', () => {
   });
 
   describe('Update General Category', () => {
-    const updatedGeneralCategory: GeneralCategory = {
+    const updatedGeneralCategory: GeneralCategoryUpdateType = {
+      id: 1,
+      name: 'jpop',
+    };
+
+    const updatedGeneralCategoryRes: GeneralCategory = {
       id: 1,
       name: 'jpop',
     };
     it('should return the updated general category', async () => {
       generalCategoryRepositoryMock.update.mockResolvedValue(
-        updatedGeneralCategory,
+        updatedGeneralCategoryRes,
       );
 
       const updateRes = await generalCategoryService.update(

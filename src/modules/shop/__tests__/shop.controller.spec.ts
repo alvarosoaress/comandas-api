@@ -2,11 +2,15 @@
  * @jest-environment ./database/drizzle.environment.jest
  */
 
-import { type Item, type ShopExtendedSafe } from '../../../../database/schema';
+import { type Item } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
 import { type ItemCreateType } from '../../item/item.schema';
 import { type ShopUpdateType, type ShopCreateType } from '../shop.schema';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -36,7 +40,9 @@ describe('Shop Controller Integration', () => {
 
       const response = await request(app)
         .post('/shop/create')
-        .send(newShopInfo);
+        .send(newShopInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -44,53 +50,6 @@ describe('Shop Controller Integration', () => {
       expect(response.body.data.userInfo.role).toEqual('shop');
     });
   });
-
-  // TODO Arrumar o teste de list
-  //   describe('GET /shop/list', () => {
-  //     it('should return a list of shops', async () => {
-  //       const shopList: ShopExtendedSafe[] = [
-  //         {
-  //           userId: 1,
-  //           addressId: 1,
-  //           tables: 5,
-  //           userInfo: {
-  //             name: 'Francesco Virgulini',
-  //             email: 'maquinabeloz@tute.italia',
-  //             role: 'shop',
-  //             id: expect.any(Number),
-  //             phoneNumber: null,
-  //             createdAt: expect.any(String),
-  //           },
-  //           addressInfo: {
-  //             id: 1,
-  //             city: 'City Test',
-  //             neighborhood: 'Francesco',
-  //             number: 69,
-  //             street: 'Virgulini',
-  //             state: 'Tute',
-  //             country: 'Italia',
-  //           },
-  //           categories: [],
-  //         },
-  //       ];
-
-  //       const response = await request(app).get('/shop/list');
-
-  //       console.log(response.body);
-
-  //       expect(response.status).toBe(200);
-
-  //       expect(response.body.data).toBeInstanceOf(Array);
-
-  //       expect(response.body.data.length).toBeGreaterThanOrEqual(1);
-
-  //       expect(response.body.data).toMatchObject(shopList);
-
-  //       response.body.data.forEach((shop: ShopExtendedSafe) => {
-  //         expect(shop.userInfo.role).toEqual('shop');
-  //       });
-  //     });
-  //   });
 
   describe('GET /shop/:id/menu', () => {
     beforeAll(async () => {
@@ -100,7 +59,11 @@ describe('Shop Controller Integration', () => {
         price: 6.99,
       };
 
-      await request(app).post('/item/create').send(newItemInfo);
+      await request(app)
+        .post('/item/create')
+        .send(newItemInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
     });
 
     it('should return the menu of the shop with the specified ID', async () => {
@@ -117,7 +80,10 @@ describe('Shop Controller Integration', () => {
         },
       ];
 
-      const response = await request(app).get('/shop/1/menu');
+      const response = await request(app)
+        .get('/shop/1/menu')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -136,7 +102,11 @@ describe('Shop Controller Integration', () => {
         tables: 85,
       };
 
-      const response = await request(app).put('/shop/update').send(newShopInfo);
+      const response = await request(app)
+        .put('/shop/update')
+        .send(newShopInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 

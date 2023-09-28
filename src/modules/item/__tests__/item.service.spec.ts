@@ -5,6 +5,7 @@ import {
   NotFoundError,
 } from '../../../helpers/api.erros';
 import { type IItemRepository } from '../Iitem.repository';
+import { type ItemUpdateType } from '../item.schema';
 import { ItemService } from '../item.service';
 
 let itemService: ItemService;
@@ -141,14 +142,20 @@ describe('Item Service', () => {
   });
 
   describe('Update Item', () => {
-    const updatedItem: Item = {
+    const updatedItem: ItemUpdateType = {
+      id: 1,
+      name: 'Bolinea de Gorfwe',
+      price: 69.99,
+    };
+
+    const updatedItemRes: Item = {
       id: 1,
       name: 'Bolinea de Gorfwe',
       shopId: 5,
       price: 69.99,
     };
     it('should return the Updated Item', async () => {
-      itemRepositoryMock.update.mockResolvedValue(updatedItem);
+      itemRepositoryMock.update.mockResolvedValue(updatedItemRes);
 
       const updateRes = await itemService.update(updatedItem);
 

@@ -6,7 +6,7 @@
   },
   "security": [
     {
-      "bearerAuth": []
+      "appApiKey": []
     }
   ],
   "tags": [
@@ -76,6 +76,12 @@
     },
     "/address/list": {
       "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "adminBearerAuth": []
+          }
+        ],
         "tags": ["Address"],
         "summary": "List all addresses",
         "responses": {
@@ -104,6 +110,12 @@
     },
     "/address/{addressId}": {
       "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["Address"],
         "summary": "Get a specific address",
         "parameters": [
@@ -141,8 +153,58 @@
         }
       }
     },
+    "/address/update": {
+      "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["Address"],
+        "summary": "Update address",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Address updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressUpdateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Address not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/list": {
       "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "adminBearerAuth": []
+          }
+        ],
         "tags": ["User"],
         "summary": "List all users",
         "responses": {
@@ -263,8 +325,58 @@
         }
       }
     },
+    "/user/update": {
+      "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "customerBearerAuth": []
+          }
+        ],
+        "tags": ["User"],
+        "summary": "Update user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserUpdateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/updatetoken": {
-      "post": {
+      "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "adminBearerAuth": []
+          }
+        ],
         "tags": ["User"],
         "summary": "Update user access token",
         "requestBody": {
@@ -313,6 +425,12 @@
     },
     "/generalcategory/create": {
       "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["GeneralCategory"],
         "summary": "Create a new general category",
         "requestBody": {
@@ -418,6 +536,12 @@
     },
     "/generalcategory/update": {
       "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["GeneralCategory"],
         "summary": "Updates a general category",
         "requestBody": {
@@ -456,6 +580,12 @@
     },
     "/generalcategory/delete/{generalCategoryId}": {
       "delete": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["GeneralCategory"],
         "summary": "Delete a specific general category",
         "parameters": [
@@ -495,6 +625,12 @@
     },
     "/generalcategory/set": {
       "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["GeneralCategory"],
         "summary": "Set general categories for specific shop",
         "requestBody": {
@@ -533,6 +669,12 @@
     },
     "/generalcategory/remove": {
       "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["GeneralCategory"],
         "summary": "Remove general categories for specific shop",
         "requestBody": {
@@ -676,6 +818,12 @@
     },
     "/customer/update": {
       "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "customerBearerAuth": []
+          }
+        ],
         "tags": ["Customer"],
         "summary": "Update a specific customer",
         "requestBody": {
@@ -753,7 +901,7 @@
     "/shop/list": {
       "get": {
         "tags": ["Shop"],
-        "summary": "Get menu from shop id",
+        "summary": "Get all the shops with query options",
         "parameters": [
           {
             "in": "query",
@@ -904,6 +1052,12 @@
     },
     "/shop/update": {
       "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["Shop"],
         "summary": "Update a specific shop",
         "requestBody": {
@@ -942,6 +1096,12 @@
     },
     "/item/create": {
       "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["Item"],
         "summary": "Create a new item",
         "requestBody": {
@@ -1047,6 +1207,12 @@
     },
     "/item/update": {
       "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
         "tags": ["Item"],
         "summary": "Update a specific item",
         "requestBody": {
@@ -1086,10 +1252,28 @@
   },
   "components": {
     "securitySchemes": {
-      "bearerAuth": {
+      "adminBearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "JWT Token with admin permissions"
+      },
+      "appApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY"
+      },
+      "shopBearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Token with shop permissions"
+      },
+      "customerBearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Token with customer permissions"
       }
     },
     "schemas": {
@@ -1311,6 +1495,114 @@
                   "type": "string",
                   "example": "2023-04-03T00:25:32.189Z"
                 }
+              }
+            }
+          }
+        }
+      },
+      "AddressUpdateSchema": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "number": {
+            "type": "integer",
+            "example": 71
+          },
+          "street": {
+            "type": "string",
+            "example": "Veneza"
+          },
+          "neighborhood": {
+            "type": "string",
+            "example": "Virgulini"
+          },
+          "city": {
+            "type": "string",
+            "example": "Italia"
+          },
+          "state": {
+            "type": "string",
+            "example": "Idont know"
+          },
+          "country": {
+            "type": "string",
+            "example": "Brazil"
+          },
+          "zipcode": {
+            "type": "number",
+            "example": 35772598
+          },
+          "lat": {
+            "type": "string",
+            "example": "35.702206"
+          },
+          "long": {
+            "type": "string",
+            "example": "139.774139"
+          }
+        }
+      },
+      "AddressUpdateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "number": {
+                "type": "integer",
+                "example": 71
+              },
+              "street": {
+                "type": "string",
+                "example": "Veneza"
+              },
+              "neighborhood": {
+                "type": "string",
+                "example": "Virgulini"
+              },
+              "city": {
+                "type": "string",
+                "example": "Italia"
+              },
+              "state": {
+                "type": "string",
+                "example": "Idont know"
+              },
+              "country": {
+                "type": "string",
+                "example": "Brazil"
+              },
+              "zipcode": {
+                "type": "number",
+                "example": 35772598
+              },
+              "lat": {
+                "type": "string",
+                "example": "35.702206"
+              },
+              "long": {
+                "type": "string",
+                "example": "139.774139"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
               }
             }
           }
@@ -1629,8 +1921,79 @@
           }
         }
       },
+      "UserUpdateSchema": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Fernando Virgulini"
+          },
+          "email": {
+            "type": "string",
+            "example": "maquinabeloz@tute.italia"
+          },
+          "phoneNumber": {
+            "type": "number",
+            "example": 988887777
+          },
+
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "UserUpdateRes": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Fernando Virgulini"
+              },
+              "email": {
+                "type": "string",
+                "example": "maquinabeloz@tute.italia"
+              },
+              "phoneNumber": {
+                "type": "number",
+                "example": 988887777
+              },
+              "role": {
+                "type": "string",
+                "enum": ["customer", "shop"],
+                "example": "customer"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          }
+        }
+      },
       "UserUpdateTokenSchema": {
         "type": "object",
+        "required": ["id"],
         "properties": {
           "id": {
             "type": "string",

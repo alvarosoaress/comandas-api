@@ -9,12 +9,14 @@ import {
   generalCategoryShpoListSchema,
 } from '../modules/generalCategory/generalCategory.schema';
 import { generalCategoryFactory } from '../modules/generalCategory/generalCategory.factory';
+import verifyToken from '../middleware/verifyToken';
 
 const router = express.Router();
 
 router
   .route('/create')
   .post(
+    verifyToken('shop'),
     validate(generalCategoryCreateSchema),
     async (req, res) =>
       await generalCategoryFactory().createGeneralCategory(req, res),
@@ -38,6 +40,7 @@ router
 router
   .route('/update')
   .put(
+    verifyToken('shop'),
     validate(generalCategoryUpdateSchema),
     async (req, res) =>
       await generalCategoryFactory().updateGeneralCategory(req, res),
@@ -46,6 +49,7 @@ router
 router
   .route('/delete/:id')
   .delete(
+    verifyToken('shop'),
     validate(generalCategoryDeleteSchema),
     async (req, res) =>
       await generalCategoryFactory().deleteGeneralCategory(req, res),
@@ -54,6 +58,7 @@ router
 router
   .route('/set')
   .post(
+    verifyToken('shop'),
     validate(generalCategorySetSchema),
     async (req, res) =>
       await generalCategoryFactory().setGeneralCategory(req, res),
@@ -62,6 +67,7 @@ router
 router
   .route('/remove')
   .delete(
+    verifyToken('shop'),
     validate(generalCategorySetSchema),
     async (req, res) =>
       await generalCategoryFactory().removeGeneralCategory(req, res),

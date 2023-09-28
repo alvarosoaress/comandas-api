@@ -96,13 +96,13 @@ export class UserService {
     if (!matchPassword) throw new UnauthorizedError('Credentials do not match');
 
     const accessToken = jwt.sign(
-      {},
+      { role: userFound.userInfo.role },
       process.env.ACCESS_TOKEN_SECRET as Secret,
       { expiresIn: '1m', subject: String(userFound.userInfo.id) },
     );
 
     const refreshToken = jwt.sign(
-      {},
+      { role: userFound.userInfo.role },
       process.env.REFRESH_TOKEN_SECRET as Secret,
       { expiresIn: '2m', subject: String(userFound.userInfo.id) },
     );
@@ -154,6 +154,11 @@ export class UserService {
     if (!userExists) throw new NotFoundError('User not found');
 
     const userUpdated = await this.userRepository.update(newUserInfo);
+
+    if (!userUpdated) throw new InternalServerError();
+
+    deleteObjKey(userUpdated, 'refreshToken');
+    deleteObjKey(userUpdated, 'password');
 
     return userUpdated;
   }

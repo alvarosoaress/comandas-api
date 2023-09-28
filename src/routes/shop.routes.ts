@@ -6,6 +6,7 @@ import {
   shopUpdateSchema,
 } from '../modules/shop/shop.schema';
 import { shopFactory } from '../modules/shop/shop.factory';
+import verifyToken from '../middleware/verifyToken';
 
 const router = express.Router();
 
@@ -30,6 +31,7 @@ router
 router
   .route('/update')
   .put(
+    verifyToken('shop'),
     validate(shopUpdateSchema),
     async (req, res) => await shopFactory().updateShop(req, res),
   );

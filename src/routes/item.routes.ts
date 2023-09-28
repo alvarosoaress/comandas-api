@@ -6,12 +6,14 @@ import {
   itemUpdateSchema,
 } from '../modules/item/item.schema';
 import { ItemFactory } from '../modules/item/item.factory';
+import verifyToken from '../middleware/verifyToken';
 
 const router = Router();
 
 router
   .route('/create')
   .post(
+    verifyToken('shop'),
     validate(itemCreateSchema),
     async (req, res) => await ItemFactory().createItem(req, res),
   );
@@ -30,6 +32,7 @@ router
 router
   .route('/update')
   .put(
+    verifyToken('shop'),
     validate(itemUpdateSchema),
     async (req, res) => await ItemFactory().updateItem(req, res),
   );

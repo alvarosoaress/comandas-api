@@ -1,6 +1,11 @@
 import { type Address } from '../../../database/schema';
-import { ConflictError, NotFoundError } from '../../helpers/api.erros';
+import {
+  ConflictError,
+  InternalServerError,
+  NotFoundError,
+} from '../../helpers/api.erros';
 import { type IAddressRepository } from './Iaddress.repository';
+import { type AddressUpdateType } from './address.schema';
 
 export class AddressService {
   constructor(private readonly addressRepository: IAddressRepository) {}
@@ -37,5 +42,21 @@ export class AddressService {
     if (!addressFound) throw new NotFoundError('No address found');
 
     return addressFound;
+  }
+
+  async update(
+    newAddressInfo: AddressUpdateType,
+  ): Promise<Address | undefined> {
+    const addressExists = await this.addressRepository.existsById(
+      newAddressInfo.id,
+    );
+
+    if (!addressExists) throw new NotFoundError('Address not found exists');
+
+    const addressUpdated = await this.addressRepository.update(newAddressInfo);
+
+    if (!addressUpdated) throw new InternalServerError();
+
+    return addressUpdated;
   }
 }

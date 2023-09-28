@@ -136,7 +136,7 @@ describe('User Service', () => {
   });
 
   describe('GetById User', () => {
-    it('should return the customer with the specified ID', async () => {
+    it('should return the CUSTOMER with the specified ID', async () => {
       const userInfo: CustomerExtended = {
         userId: 1,
         userInfo: {
@@ -205,7 +205,7 @@ describe('User Service', () => {
   });
 
   describe('GetByEmail User', () => {
-    it('should return the customer with the specified Email', async () => {
+    it('should return the CUSTOMER with the specified Email', async () => {
       const userInfo: CustomerExtended = {
         userId: 1,
         userInfo: {
@@ -434,9 +434,57 @@ describe('User Service', () => {
         sub: '1',
       });
 
-      const res = await userService.updateAccessToken(1);
+      await expect(userService.updateAccessToken(1)).rejects.toThrowError(
+        UnauthorizedError,
+      );
+    });
+  });
 
-      expect(res).toBeFalsy();
+  describe('Update User', () => {
+    const newUserInfo = {
+      id: 1,
+      name: 'Leoncio',
+      email: 'bolinea@gorfe.italia',
+    };
+
+    const userInfoUpdated: User = {
+      id: 1,
+      name: 'Leoncio',
+      email: 'bolinea@gorfe.italia',
+      password: 'supersafepasswordnobodywillnowhihi123',
+      role: 'customer' as const,
+      phoneNumber: null,
+      refreshToken: 'supersafeandencryptedrefreshtoken',
+    };
+
+    it('should return the updated user', async () => {
+      userRepositoryMock.existsById.mockResolvedValue(true);
+      userRepositoryMock.update.mockResolvedValue(userInfoUpdated);
+
+      const updatedUser = await userService.update(newUserInfo);
+
+      expect(userRepositoryMock.existsById).toHaveBeenCalledWith(
+        newUserInfo.id,
+      );
+      expect(userRepositoryMock.update).toHaveBeenCalledWith(newUserInfo);
+
+      // TODO Checar se updatedAt é maior que createdAt
+      expect(updatedUser).toHaveProperty<User>('id');
+      expect(updatedUser).not.toHaveProperty<User>('password');
+      expect(updatedUser).not.toHaveProperty<User>('refreshToken');
+    });
+
+    it('should throw a error if no user found', async () => {
+      userRepositoryMock.existsById.mockResolvedValue(false);
+
+      await expect(userService.update(newUserInfo)).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(userRepositoryMock.existsById).toHaveBeenCalledWith(
+        newUserInfo.id,
+      );
+      expect(userRepositoryMock.update).not.toHaveBeenCalled();
     });
   });
 });

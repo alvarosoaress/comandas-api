@@ -11,6 +11,10 @@ import {
 } from '../generalCategory.schema';
 import { type GeneralCategory } from '../../../../database/schema';
 import { type ShopCreateType } from '../../shop/shop.schema';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -25,7 +29,9 @@ describe('General Category Controller Integration', () => {
 
       const response = await request(app)
         .post('/generalcategory/create')
-        .send(newGeneralCategoryInfo);
+        .send(newGeneralCategoryInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -44,7 +50,10 @@ describe('General Category Controller Integration', () => {
         },
       ];
 
-      const response = await request(app).get('/generalcategory/list');
+      const response = await request(app)
+        .get('/generalcategory/list')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -65,7 +74,10 @@ describe('General Category Controller Integration', () => {
         updatedAt: expect.any(String),
       };
 
-      const response = await request(app).get('/generalcategory/1');
+      const response = await request(app)
+        .get('/generalcategory/1')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -91,7 +103,9 @@ describe('General Category Controller Integration', () => {
 
       const response = await request(app)
         .put('/generalcategory/update')
-        .send(newGeneralCategoryInfo);
+        .send(newGeneralCategoryInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -124,7 +138,11 @@ describe('General Category Controller Integration', () => {
         },
       };
 
-      await request(app).post('/shop/create').send(info);
+      await request(app)
+        .post('/shop/create')
+        .send(info)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
     });
     it('should return a array with the info about the new category assign', async () => {
       const generalCategorySet: GeneralCategorySetType = {
@@ -136,7 +154,9 @@ describe('General Category Controller Integration', () => {
 
       const response = await request(app)
         .post('/generalcategory/set')
-        .send(generalCategorySet);
+        .send(generalCategorySet)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -155,7 +175,10 @@ describe('General Category Controller Integration', () => {
         updatedAt: expect.any(String),
       };
 
-      const response = await request(app).delete('/generalcategory/delete/1');
+      const response = await request(app)
+        .delete('/generalcategory/delete/1')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 

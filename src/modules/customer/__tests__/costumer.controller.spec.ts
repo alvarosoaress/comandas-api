@@ -9,6 +9,10 @@ import {
   type CustomerUpdateType,
   type CustomerCreateType,
 } from '../customer.schema';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -31,7 +35,9 @@ describe('Customer Controller Integration', () => {
 
       const response = await request(app)
         .post('/customer/create')
-        .send(newCustomerInfo);
+        .send(newCustomerInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -61,7 +67,10 @@ describe('Customer Controller Integration', () => {
         },
       ];
 
-      const response = await request(app).get('/customer/list');
+      const response = await request(app)
+        .get('/customer/list')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -86,7 +95,9 @@ describe('Customer Controller Integration', () => {
 
       const response = await request(app)
         .put('/customer/update')
-        .send(newCostumerInfo);
+        .send(newCostumerInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 

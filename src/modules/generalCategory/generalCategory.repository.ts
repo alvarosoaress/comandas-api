@@ -156,6 +156,7 @@ export class GeneralCategoryRepository implements IGeneralCategoryRepository {
         await tx.insert(shopCategory).values({
           shopId: categorySetInfo.shopId,
           generalCategoryId: category,
+          updatedAt: new Date(),
         });
       });
     });

@@ -5,6 +5,7 @@ import {
   customerCreateSchema,
   customerUpdateSchema,
 } from '../modules/customer/customer.schema';
+import verifyToken from '../middleware/verifyToken';
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router
 router
   .route('/update')
   .put(
+    verifyToken('customer'),
     validate(customerUpdateSchema),
     async (req, res) => await customerFactory().updateCustomer(req, res),
   );

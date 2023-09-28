@@ -8,6 +8,14 @@ import ItemRoutes from './routes/item.routes';
 import CustomerRoutes from './routes/customer.routes';
 import GeneralCategoryRoutes from './routes/generalCategory.routes';
 import { errorMiddleware } from './middleware/error';
+import verifyToken from './middleware/verifyToken';
+import swaggerDocs from './utils/swagger';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
+const PORT = process.env.PORT;
 
 const app = express();
 
@@ -19,11 +27,13 @@ app.get('/', (req, res) => {
   return res.send({ message: 'Bom dia' });
 });
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+swaggerDocs(app, Number(PORT));
+
+app.use(verifyToken());
+
 // Configurando rotas
 app.use('/user', UserRoutes);
-
-// TODO Criar endPoint update para Address e Shop
-
 app.use('/address', AddressRoutes);
 app.use('/shop', ShopRoutes);
 app.use('/item', ItemRoutes);

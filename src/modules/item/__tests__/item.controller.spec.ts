@@ -7,6 +7,10 @@ import request from 'supertest';
 import { type ItemCreateType } from '../item.schema';
 import { type Item } from '../../../../database/schema';
 import { type ShopCreateType } from '../../shop/shop.schema';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // Define o limite de tempo de espera para 10 segundos (10000 ms)
 // Necessário, pois o migrate demora muito (meu pc é ruim disgurpa)
@@ -48,7 +52,9 @@ describe('Item Controller Integration', () => {
 
       const response = await request(app)
         .post('/item/create')
-        .send(newItemInfo);
+        .send(newItemInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -71,7 +77,10 @@ describe('Item Controller Integration', () => {
         },
       ];
 
-      const response = await request(app).get('/item/list');
+      const response = await request(app)
+        .get('/item/list')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -96,7 +105,10 @@ describe('Item Controller Integration', () => {
         temperature: null,
       };
 
-      const response = await request(app).get('/item/1');
+      const response = await request(app)
+        .get('/item/1')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
@@ -116,7 +128,11 @@ describe('Item Controller Integration', () => {
         temperature: 'cold',
       };
 
-      const response = await request(app).put('/item/update').send(itemUpdated);
+      const response = await request(app)
+        .put('/item/update')
+        .send(itemUpdated)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
 
