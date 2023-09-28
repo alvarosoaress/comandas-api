@@ -27,6 +27,14 @@ app.get('/', (req, res) => {
   return res.send({ message: 'Bom dia' });
 });
 
+app.get('/docs/swaggerjs', (req, res) => {
+  res.sendFile(path.resolve(process.cwd(), './src/utils/swaggerUi.js'));
+});
+
+app.get('/docs/favicon', (req, res) => {
+  res.sendFile(path.resolve(process.cwd(), './src/utils/favicon.ico'));
+});
+
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 swaggerDocs(app, Number(PORT));
 
