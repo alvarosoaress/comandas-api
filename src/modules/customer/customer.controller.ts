@@ -20,19 +20,13 @@ export class CustomerController {
 
     const newCustomer = await this.customerService.create(info);
 
-    return res.status(200).json({
-      error: false,
-      data: newCustomer,
-    });
+    return res.status(200).json(newCustomer);
   }
 
   async getCustomers(req: Request, res: Response) {
     const customers = await this.customerService.list();
 
-    return res.status(200).json({
-      error: false,
-      data: customers,
-    });
+    return res.status(200).json(customers);
   }
 
   async updateCustomer(
@@ -41,9 +35,6 @@ export class CustomerController {
   ) {
     const updatedCustomer = await this.customerService.update(req.body);
 
-    return res.status(200).json({
-      error: false,
-      data: updatedCustomer,
-    });
+    return res.status(200).json(updatedCustomer);
   }
 }

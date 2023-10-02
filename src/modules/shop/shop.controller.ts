@@ -22,10 +22,7 @@ export class ShopController {
     };
     const newShop = await this.shopService.create(info);
 
-    return res.status(200).json({
-      error: false,
-      data: newShop,
-    });
+    return res.status(200).json(newShop);
   }
 
   async getShops(
@@ -34,19 +31,13 @@ export class ShopController {
   ) {
     const shops = await this.shopService.list(req.query);
 
-    return res.status(200).json({
-      error: false,
-      data: shops,
-    });
+    return res.status(200).json(shops);
   }
 
   async getShopMenu(req: Request<ShopGetMenuType>, res: Response) {
     const shopMenu = await this.shopService.getMenu(req.params.id);
 
-    return res.status(200).json({
-      error: false,
-      data: shopMenu,
-    });
+    return res.status(200).json(shopMenu);
   }
 
   async updateShop(
@@ -55,9 +46,6 @@ export class ShopController {
   ) {
     const updatedShop = await this.shopService.update(req.body);
 
-    return res.status(200).json({
-      error: false,
-      data: updatedShop,
-    });
+    return res.status(200).json(updatedShop);
   }
 }

@@ -34,7 +34,7 @@ describe('Address Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('id');
+      expect(response.body).toHaveProperty('id');
     });
   });
 
@@ -63,11 +63,11 @@ describe('Address Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toBeInstanceOf(Array);
 
-      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(addressList);
+      expect(response.body).toMatchObject(addressList);
     });
   });
 
@@ -80,7 +80,7 @@ describe('Address Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('id');
+      expect(response.body).toHaveProperty('id');
     });
   });
 
@@ -114,9 +114,9 @@ describe('Address Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.id).toEqual(1);
 
-      expect(response.body.data).toMatchObject(updatedAddress);
+      expect(response.body).toMatchObject(updatedAddress);
     });
   });
 });

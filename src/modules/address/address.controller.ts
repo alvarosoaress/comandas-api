@@ -13,10 +13,7 @@ export class AddressController {
   async getAddresses(req: Request, res: Response) {
     const addresses = await this.addressService.list();
 
-    return res.status(200).json({
-      error: false,
-      data: addresses,
-    });
+    return res.status(200).json(addresses);
   }
 
   async createAddress(
@@ -25,10 +22,7 @@ export class AddressController {
   ) {
     const newAddress = await this.addressService.create(req.body);
 
-    return res.status(200).json({
-      error: false,
-      data: newAddress,
-    });
+    return res.status(200).json(newAddress);
   }
 
   async getAddressById(req: Request<AddressGetType>, res: Response) {
@@ -36,10 +30,7 @@ export class AddressController {
 
     const addressFound = await this.addressService.getById(parseInt(id));
 
-    return res.status(200).json({
-      error: false,
-      data: addressFound,
-    });
+    return res.status(200).json(addressFound);
   }
 
   async updateAddress(
@@ -48,9 +39,6 @@ export class AddressController {
   ) {
     const updatedAddress = await this.addressService.update(req.body);
 
-    return res.status(200).json({
-      error: false,
-      data: updatedAddress,
-    });
+    return res.status(200).json(updatedAddress);
   }
 }

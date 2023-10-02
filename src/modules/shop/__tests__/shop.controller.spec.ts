@@ -46,8 +46,8 @@ describe('Shop Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('userInfo');
-      expect(response.body.data.userInfo.role).toEqual('shop');
+      expect(response.body).toHaveProperty('userInfo');
+      expect(response.body.userInfo.role).toEqual('shop');
     });
   });
 
@@ -87,11 +87,11 @@ describe('Shop Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toBeInstanceOf(Array);
 
-      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(itemList);
+      expect(response.body).toMatchObject(itemList);
     });
   });
 
@@ -110,9 +110,9 @@ describe('Shop Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('updatedAt');
+      expect(response.body).toHaveProperty('updatedAt');
 
-      expect(response.body.data.userId).toEqual(1);
+      expect(response.body.userId).toEqual(1);
     });
   });
 });

@@ -38,7 +38,11 @@ beforeAll(async () => {
     },
   };
 
-  await request(app).post('/shop/create').send(info);
+  await request(app)
+    .post('/shop/create')
+    .send(info)
+    .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+    .set('x-api-key', `${process.env.API_KEY}`);
 });
 
 describe('Item Controller Integration', () => {
@@ -58,7 +62,7 @@ describe('Item Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('id');
+      expect(response.body).toHaveProperty('id');
     });
   });
 
@@ -84,11 +88,11 @@ describe('Item Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toBeInstanceOf(Array);
 
-      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(itemList);
+      expect(response.body).toMatchObject(itemList);
     });
   });
 
@@ -112,9 +116,9 @@ describe('Item Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.id).toEqual(1);
 
-      expect(response.body.data).toMatchObject(itemFound);
+      expect(response.body).toMatchObject(itemFound);
     });
   });
 
@@ -136,9 +140,9 @@ describe('Item Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.id).toEqual(1);
 
-      expect(response.body.data).toMatchObject(itemUpdated);
+      expect(response.body).toMatchObject(itemUpdated);
     });
   });
 });

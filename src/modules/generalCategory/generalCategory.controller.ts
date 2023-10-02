@@ -23,20 +23,14 @@ export class GeneralCategoryController {
       req.body,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: newGeneralCategory,
-    });
+    return res.status(200).json(newGeneralCategory);
   }
 
   async getGeneralCategories(req: Request, res: Response) {
     const generalCategories =
       await this.generalCategoryService.getGeneralCategories();
 
-    return res.status(200).json({
-      error: false,
-      data: generalCategories,
-    });
+    return res.status(200).json(generalCategories);
   }
 
   async getGeneralCategoryById(
@@ -47,10 +41,7 @@ export class GeneralCategoryController {
       req.params.id,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: generalCategoryFound,
-    });
+    return res.status(200).json(generalCategoryFound);
   }
 
   async updateGeneralCategory(
@@ -61,10 +52,7 @@ export class GeneralCategoryController {
       req.body,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: updatedGeneralCategory,
-    });
+    return res.status(200).json(updatedGeneralCategory);
   }
 
   async deleteGeneralCategory(
@@ -75,10 +63,7 @@ export class GeneralCategoryController {
       req.params.id,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: deletedCategory,
-    });
+    return res.status(200).json(deletedCategory);
   }
 
   async getShopListCategories(
@@ -88,10 +73,7 @@ export class GeneralCategoryController {
     const shopCategories =
       await this.generalCategoryService.getShopListCategories(req.params.id);
 
-    return res.status(200).json({
-      error: false,
-      data: shopCategories,
-    });
+    return res.status(200).json(shopCategories);
   }
 
   async setGeneralCategory(
@@ -102,10 +84,7 @@ export class GeneralCategoryController {
       req.body,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: generalCategorySettled,
-    });
+    return res.status(200).json(generalCategorySettled);
   }
 
   async removeGeneralCategory(
@@ -116,9 +95,6 @@ export class GeneralCategoryController {
       req.body,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: generalCategoryRemaining,
-    });
+    return res.status(200).json(generalCategoryRemaining);
   }
 }

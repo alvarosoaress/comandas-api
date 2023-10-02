@@ -41,9 +41,9 @@ describe('Customer Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('userInfo');
-      expect(response.body.data).toHaveProperty('userId');
-      expect(response.body.data.userInfo.role).toEqual('customer');
+      expect(response.body).toHaveProperty('userInfo');
+      expect(response.body).toHaveProperty('userId');
+      expect(response.body.userInfo.role).toEqual('customer');
     });
   });
 
@@ -74,13 +74,13 @@ describe('Customer Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toBeInstanceOf(Array);
 
-      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(customerList);
+      expect(response.body).toMatchObject(customerList);
 
-      response.body.data.forEach((customer: CustomerExtendedSafe) => {
+      response.body.forEach((customer: CustomerExtendedSafe) => {
         expect(customer.userInfo.role).toEqual('customer');
       });
     });
@@ -101,11 +101,9 @@ describe('Customer Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('updatedAt');
+      expect(response.body).toHaveProperty('updatedAt');
 
-      expect(response.body.data.photoUrl).toEqual(
-        'https://animeisnotfun.anymore',
-      );
+      expect(response.body.photoUrl).toEqual('https://animeisnotfun.anymore');
     });
   });
 });

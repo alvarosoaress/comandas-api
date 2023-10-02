@@ -9,8 +9,5 @@ export function errorMiddleware(
 ): Response<any, Record<string, any>> {
   const statusCode = err.statusCode ?? 500;
 
-  return res.status(statusCode).json({
-    error: true,
-    message: err.message ?? 'Internal Sever Error',
-  });
+  return res.status(statusCode).json(err.message ?? 'Internal Sever Error');
 }

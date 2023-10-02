@@ -35,7 +35,7 @@ describe('General Category Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toHaveProperty('id');
+      expect(response.body).toHaveProperty('id');
     });
   });
 
@@ -57,11 +57,11 @@ describe('General Category Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toBeInstanceOf(Array);
 
-      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(generalCategoryList);
+      expect(response.body).toMatchObject(generalCategoryList);
     });
   });
 
@@ -81,9 +81,9 @@ describe('General Category Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.id).toEqual(1);
 
-      expect(response.body.data).toMatchObject(generalCategoryFound);
+      expect(response.body).toMatchObject(generalCategoryFound);
     });
   });
 
@@ -109,9 +109,9 @@ describe('General Category Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.id).toEqual(1);
 
-      expect(response.body.data).toMatchObject(generalCategoryUpdated);
+      expect(response.body).toMatchObject(generalCategoryUpdated);
     });
   });
 
@@ -160,9 +160,9 @@ describe('General Category Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toBeInstanceOf(Array);
 
-      expect(response.body.data).toMatchObject(generalCategorySetRes);
+      expect(response.body).toMatchObject(generalCategorySetRes);
     });
   });
 
@@ -182,9 +182,9 @@ describe('General Category Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.id).toEqual(1);
+      expect(response.body.id).toEqual(1);
 
-      expect(response.body.data).toMatchObject(generalCategoryUpdated);
+      expect(response.body).toMatchObject(generalCategoryUpdated);
     });
   });
 });

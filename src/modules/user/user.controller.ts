@@ -19,28 +19,19 @@ export class UserController {
   async getUsers(req: Request, res: Response) {
     const users = await this.userService.list();
 
-    return res.status(200).json({
-      error: false,
-      data: users,
-    });
+    return res.status(200).json(users);
   }
 
   async getUserById(req: Request<UserGetByIdType>, res: Response) {
     const userFound = await this.userService.getById(req.params.id);
 
-    return res.status(200).json({
-      error: false,
-      data: userFound,
-    });
+    return res.status(200).json(userFound);
   }
 
   async getUserByEmail(req: Request<UserGetByEmailType>, res: Response) {
     const userFound = await this.userService.getByEmail(req.params.email);
 
-    return res.status(200).json({
-      error: false,
-      data: userFound,
-    });
+    return res.status(200).json(userFound);
   }
 
   async logIn(req: Request<unknown, unknown, UserLoginType>, res: Response) {
@@ -49,10 +40,7 @@ export class UserController {
       req.body.password,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: { ...userInfo },
-    });
+    return res.status(200).json({ ...userInfo });
   }
 
   async updateAccessToken(
@@ -63,10 +51,7 @@ export class UserController {
       req.body.id,
     );
 
-    return res.status(200).json({
-      error: false,
-      data: newAccessToken,
-    });
+    return res.status(200).json(newAccessToken);
   }
 
   async updateUser(
@@ -75,9 +60,6 @@ export class UserController {
   ) {
     const updatedUser = await this.userService.update(req.body);
 
-    return res.status(200).json({
-      error: false,
-      data: updatedUser,
-    });
+    return res.status(200).json(updatedUser);
   }
 }

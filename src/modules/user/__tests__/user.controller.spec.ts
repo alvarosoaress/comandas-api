@@ -61,11 +61,11 @@ describe('User Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toBeInstanceOf(Array);
 
-      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
 
-      expect(response.body.data).toMatchObject(userList);
+      expect(response.body).toMatchObject(userList);
     });
   });
 
@@ -77,7 +77,7 @@ describe('User Controller Integration', () => {
         .set('x-api-key', `${process.env.API_KEY}`);
 
       expect(response.status).toBe(200);
-      expect(response.body.data.userInfo.id).toEqual(1);
+      expect(response.body.userInfo.id).toEqual(1);
     });
   });
 
@@ -105,9 +105,9 @@ describe('User Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data.userInfo).toMatchObject(userInfo);
+      expect(response.body.userInfo).toMatchObject(userInfo);
 
-      expect(response.body.data.accessToken).not.toBeNull();
+      expect(response.body.accessToken).not.toBeNull();
     });
   });
 
@@ -125,7 +125,7 @@ describe('User Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).not.toBeNull();
+      expect(response.body).not.toBeNull();
     });
   });
 
@@ -155,12 +155,12 @@ describe('User Controller Integration', () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.body.data).not.toBeNull();
+      expect(response.body).not.toBeNull();
 
-      expect(response.body.data).toMatchObject(updatedUser);
+      expect(response.body).toMatchObject(updatedUser);
 
-      expect(response.body.data).not.toHaveProperty('password');
-      expect(response.body.data).not.toHaveProperty('refreshToken');
+      expect(response.body).not.toHaveProperty('password');
+      expect(response.body).not.toHaveProperty('refreshToken');
     });
   });
 });
