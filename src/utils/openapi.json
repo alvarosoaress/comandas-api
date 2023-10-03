@@ -70,6 +70,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
           }
         }
       }
@@ -101,6 +111,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -149,6 +179,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -193,6 +243,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -224,6 +294,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -270,6 +360,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
                 }
               }
             }
@@ -321,6 +421,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
           }
         }
       }
@@ -362,6 +472,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -411,11 +541,21 @@
             }
           },
           "401": {
-            "description": "Refresh token expried",
+            "description": "Refresh token expried OR Authorization token was not provided",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
                 }
               }
             }
@@ -463,6 +603,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -488,6 +648,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -527,6 +707,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -571,6 +771,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -619,6 +839,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
           }
         }
       }
@@ -660,6 +890,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -707,6 +957,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -743,6 +1013,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
                 }
               }
             }
@@ -784,6 +1064,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -809,6 +1109,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -856,6 +1176,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -891,6 +1231,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
                 }
               }
             }
@@ -1007,6 +1357,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
           }
         }
       }
@@ -1043,6 +1403,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
                 }
               }
             }
@@ -1090,6 +1460,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -1134,6 +1524,26 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         }
       }
@@ -1159,6 +1569,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
                 }
               }
             }
@@ -1198,6 +1618,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
                 }
               }
             }
@@ -1242,6 +1672,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -2907,6 +3357,10 @@
       "UnauthorizedError": {
         "type": "string",
         "default": "Not authorized"
+      },
+      "ForbiddenError": {
+        "type": "string",
+        "default": "Not enough privileges"
       }
     }
   }
