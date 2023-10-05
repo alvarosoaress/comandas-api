@@ -2,6 +2,7 @@ import {
   type Item,
   type ShopExtendedSafe,
   type Shop,
+  type QrCode,
 } from '../../../database/schema';
 import {
   type ShopUpdateType,
@@ -14,5 +15,6 @@ export type IShopRepository = {
   create: (info: ShopCreateType) => Promise<ShopExtendedSafe | undefined>;
   list: (query?: ShopListType) => Promise<any>;
   getMenu: (userId: string) => Promise<Item[] | undefined>;
+  getQrCodes: (userId: string) => Promise<QrCode[] | undefined>;
   update: (newShopInfo: ShopUpdateType) => Promise<Shop | undefined>;
 };

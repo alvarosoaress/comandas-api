@@ -33,6 +33,10 @@
     {
       "name": "Item",
       "description": "Operations about item"
+    },
+    {
+      "name": "QrCode",
+      "description": "Operations about qrCode"
     }
   ],
   "paths": {
@@ -1402,7 +1406,56 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConflictError"
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/{shopId}/qrcode": {
+      "get": {
+        "tags": ["Shop"],
+        "summary": "Get qrCodes belonging to shop id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shopId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Shop ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shop qrCodes found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopGetQrCodeRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not foud OR Shop has no qrCodes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
                 }
               }
             }
@@ -1668,6 +1721,254 @@
           },
           "404": {
             "description": "Item not found OR categoryId not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qrcode/create": {
+      "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["QrCode"],
+        "summary": "Create a new qrcode",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QrCodeCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "QrCode created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QrCodeCreateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "QrCode already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qrcode/list": {
+      "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["QrCode"],
+        "summary": "List all qrCodes",
+        "responses": {
+          "200": {
+            "description": "QrCodes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QrCodeListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No QrCodes not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qrcode/{qrCodeId}": {
+      "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["QrCode"],
+        "summary": "Get a specific qrcode",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "qrCodeId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the qrCode to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "QrCode found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QrCodeGetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "QrCode not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qrcode/delete/{qrCodeId}": {
+      "delete": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["QrCode"],
+        "summary": "Delete a specific qrcode",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "qrCodeId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the qrCode to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "QrCode deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QrCodeDeleteRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "QrCode not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2514,8 +2815,8 @@
             "example": 1
           },
           "generalCategoryId": {
-              "type": "integer",
-              "example": [1,2,3,4]
+            "type": "integer",
+            "example": [1, 2, 3, 4]
           }
         }
       },
@@ -2530,7 +2831,7 @@
             },
             "id": {
               "type": "integer",
-              "example": [1,2,3,4]
+              "example": [1, 2, 3, 4]
             }
           }
         }
@@ -2543,10 +2844,8 @@
             "example": 1
           },
           "generalCategoryId": {
-
-              "type": "integer",
-              "example": [1,2,3,4]
-
+            "type": "integer",
+            "example": [1, 2, 3, 4]
           }
         }
       },
@@ -2561,7 +2860,7 @@
             },
             "id": {
               "type": "integer",
-              "example": [1,2,3,4]
+              "example": [1, 2, 3, 4]
             }
           }
         }
@@ -3092,6 +3391,42 @@
           }
         }
       },
+      "ShopGetQrCodeRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "tables": {
+              "type": "integer",
+              "example": 1
+            },
+            "isOccupied": {
+              "type": "boolean",
+              "default": false
+            },
+            "qrCodeUrl": {
+              "type": "string",
+              "example": "https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}"
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
       "ShopUpdateSchema": {
         "type": "object",
         "required": ["userId"],
@@ -3335,6 +3670,155 @@
           "temperature": {
             "type": "string",
             "example": "cold"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "QrCodeCreateSchema": {
+        "type": "object",
+        "required": ["shopId", "tables"],
+        "properties": {
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "tables": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "QrCodeCreateRes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "tables": {
+            "type": "integer",
+            "example": 1
+          },
+          "isOccupied": {
+            "type": "boolean",
+            "default": false
+          },
+          "qrCodeUrl": {
+            "type": "string",
+            "example": "https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "QrCodeListRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "tables": {
+              "type": "integer",
+              "example": 1
+            },
+            "isOccupied": {
+              "type": "boolean",
+              "default": false
+            },
+            "qrCodeUrl": {
+              "type": "string",
+              "example": "https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}"
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
+      "QrCodeGetRes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "tables": {
+            "type": "integer",
+            "example": 1
+          },
+          "isOccupied": {
+            "type": "boolean",
+            "default": false
+          },
+          "qrCodeUrl": {
+            "type": "string",
+            "example": "https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "QrCodeDeleteRes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "tables": {
+            "type": "integer",
+            "example": 1
+          },
+          "isOccupied": {
+            "type": "boolean",
+            "default": false
+          },
+          "qrCodeUrl": {
+            "type": "string",
+            "example": "https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}"
           },
           "createdAt": {
             "type": "string",

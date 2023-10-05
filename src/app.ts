@@ -7,6 +7,7 @@ import ShopRoutes from './routes/shop.routes';
 import ItemRoutes from './routes/item.routes';
 import CustomerRoutes from './routes/customer.routes';
 import GeneralCategoryRoutes from './routes/generalCategory.routes';
+import QrCodeRoutes from './routes/qrCode.routes';
 import { errorMiddleware } from './middleware/error';
 import verifyToken from './middleware/verifyToken';
 import swaggerDocs from './utils/swagger';
@@ -47,6 +48,7 @@ app.use('/shop', ShopRoutes);
 app.use('/item', ItemRoutes);
 app.use('/customer', CustomerRoutes);
 app.use('/generalcategory', GeneralCategoryRoutes);
+app.use('/qrcode', QrCodeRoutes);
 
 // Middleware para tratamento de erros
 app.use(errorMiddleware);

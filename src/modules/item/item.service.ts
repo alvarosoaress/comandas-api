@@ -21,7 +21,7 @@ export class ItemService {
       itemInfo.name,
     );
 
-    // TODO Incluir verificação para categoria
+    // TODO Incluir verificação para categoria de item
 
     if (itemExists) throw new ConflictError('Item already exists');
 

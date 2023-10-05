@@ -6,6 +6,7 @@ import {
   type Item,
   type ShopExtendedSafe,
   type Shop,
+  type QrCode,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
@@ -175,6 +176,20 @@ export class ShopRepository implements IShopRepository {
     if (!shopMenu) return undefined;
 
     return Object.values(shopMenu.menu);
+  }
+
+  async getQrCodes(shopId: string): Promise<QrCode[] | undefined> {
+    const shopQrCodes = await db.query.shop.findFirst({
+      where: eq(shop.userId, parseInt(shopId)),
+      columns: {},
+      with: {
+        qrCodes: true,
+      },
+    });
+
+    if (!shopQrCodes) return undefined;
+
+    return Object.values(shopQrCodes.qrCodes);
   }
 
   async exists(userId: number): Promise<boolean> {

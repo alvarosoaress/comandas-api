@@ -3,6 +3,7 @@ import validate from '../middleware/validateResource';
 import {
   shopCreateSchema,
   shopGetMenuSchema,
+  shopGetQrCodeSchema,
   shopUpdateSchema,
 } from '../modules/shop/shop.schema';
 import { shopFactory } from '../modules/shop/shop.factory';
@@ -26,6 +27,13 @@ router
   .get(
     validate(shopGetMenuSchema),
     async (req, res) => await shopFactory().getShopMenu(req, res),
+  );
+
+router
+  .route('/:id/qrcode')
+  .get(
+    validate(shopGetQrCodeSchema),
+    async (req, res) => await shopFactory().getShopQrCodes(req, res),
   );
 
 router

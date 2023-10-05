@@ -5,6 +5,7 @@ import {
   type ShopCreateType,
   type ShopGetMenuType,
   type ShopListType,
+  type ShopGetQrCodeType,
 } from './shop.schema';
 import { type ShopService } from './shop.service';
 
@@ -38,6 +39,12 @@ export class ShopController {
     const shopMenu = await this.shopService.getMenu(req.params.id);
 
     return res.status(200).json(shopMenu);
+  }
+
+  async getShopQrCodes(req: Request<ShopGetQrCodeType>, res: Response) {
+    const shopQrCodes = await this.shopService.getQrCodes(req.params.id);
+
+    return res.status(200).json(shopQrCodes);
   }
 
   async updateShop(

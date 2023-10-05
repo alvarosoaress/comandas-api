@@ -2,13 +2,14 @@
  * @jest-environment ./database/drizzle.environment.jest
  */
 
-import { type Item } from '../../../../database/schema';
+import { type QrCode, type Item } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
 import { type ItemCreateType } from '../../item/item.schema';
 import { type ShopUpdateType, type ShopCreateType } from '../shop.schema';
 import path from 'path';
 import dotenv from 'dotenv';
+import { type QrCodeCreateType } from '../../qrCode/qrCode.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -92,6 +93,49 @@ describe('Shop Controller Integration', () => {
       expect(response.body.length).toBeGreaterThanOrEqual(1);
 
       expect(response.body).toMatchObject(itemList);
+    });
+  });
+
+  describe('GET /shop/:id/qrcode', () => {
+    beforeAll(async () => {
+      const newQrCode: QrCodeCreateType = {
+        shopId: 1,
+        table: 1,
+      };
+
+      await request(app)
+        .post('/qrcode/create')
+        .send(newQrCode)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+    });
+
+    it('should return all the qrCodes belonging to shop', async () => {
+      const qrCodes: QrCode[] = [
+        {
+          qrCodeUrl:
+            'https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}',
+          shopId: 1,
+          table: 1,
+          id: 1,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+          isOccupied: false,
+        },
+      ];
+
+      const response = await request(app)
+        .get('/shop/1/qrcode')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toBeInstanceOf(Array);
+
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
+
+      expect(response.body).toMatchObject(qrCodes);
     });
   });
 

@@ -120,9 +120,11 @@ export const qrCode = mysqlTable('shops_qrcodes', {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  qrcodeUrl: varchar('qrcode_url', { length: 256 }).notNull().unique(),
+  qrCodeUrl: varchar('qrcode_url', { length: 256 }).notNull().unique(),
   table: int('table_number').notNull(),
   isOccupied: boolean('is_occupied').default(false).notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
 export const qrCodeRelations = relations(qrCode, ({ one }) => ({

@@ -2,6 +2,7 @@ import {
   type Shop,
   type Item,
   type ShopExtended,
+  type QrCode,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
@@ -23,6 +24,7 @@ describe('Shop Service', () => {
       getMenu: jest.fn(),
       exists: jest.fn(),
       update: jest.fn(),
+      getQrCodes: jest.fn(),
     };
 
     shopService = new ShopService(shopRepositoryMock);
@@ -179,6 +181,59 @@ describe('Shop Service', () => {
       );
 
       expect(shopRepositoryMock.getMenu).toHaveBeenCalledWith('1');
+    });
+  });
+
+  describe('Shop QrCodes', () => {
+    it('should return all shop qrCodes', async () => {
+      const shopQrCodes: QrCode[] = [
+        {
+          id: 1,
+          shopId: 1,
+          table: 1,
+          isOccupied: false,
+          qrCodeUrl:
+            'https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chl={"name":"tomo","tag":"romcom"}&chof=.png',
+        },
+        {
+          id: 2,
+          shopId: 1,
+          table: 2,
+          isOccupied: false,
+          qrCodeUrl:
+            'https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chl={"name":"tomo","tag":"romcom"}&chof=.png',
+        },
+      ];
+
+      shopRepositoryMock.getQrCodes.mockResolvedValue(shopQrCodes);
+
+      const shopQrCodeFound = await shopService.getQrCodes('1');
+
+      expect(shopRepositoryMock.getQrCodes).toHaveBeenCalledWith('1');
+
+      expect(shopQrCodeFound).toEqual(shopQrCodes);
+    });
+
+    it('should throw a error if no shop found', async () => {
+      shopRepositoryMock.getQrCodes.mockResolvedValue(undefined);
+
+      await expect(shopService.getQrCodes('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getQrCodes).toHaveBeenCalledWith('1');
+    });
+
+    it('should throw a error if the shop has no qrCode', async () => {
+      const shopQrCodes = undefined;
+
+      shopRepositoryMock.getQrCodes.mockResolvedValue(shopQrCodes);
+
+      await expect(shopService.getQrCodes('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getQrCodes).toHaveBeenCalledWith('1');
     });
   });
 
