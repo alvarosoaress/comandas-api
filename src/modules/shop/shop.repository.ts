@@ -93,11 +93,11 @@ export class ShopRepository implements IShopRepository {
 
     const shopsBase = sql`
         SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
-        FROM shops as s
-        JOIN addresses as a ON s.address_id = a.id
-        JOIN users as u ON s.user_id = u.id
-        JOIN shop_categories as sc ON s.user_id = sc.shop_id
-        JOIN general_categories as gc ON sc.general_category_id = gc.id
+        FROM shop as s
+        JOIN address as a ON s.address_id = a.id
+        JOIN user as u ON s.user_id = u.id
+        JOIN shop_category as sc ON s.user_id = sc.shop_id
+        JOIN general_category as gc ON sc.general_category_id = gc.id
     `;
 
     const sqlChunks: SQL[] = [];

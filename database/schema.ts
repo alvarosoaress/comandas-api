@@ -10,7 +10,7 @@ import {
   varchar,
 } from 'drizzle-orm/mysql-core';
 
-export const user = mysqlTable('users', {
+export const user = mysqlTable('user', {
   id: int('id').primaryKey().autoincrement(),
   name: varchar('name', { length: 256 }).notNull(),
   email: varchar('email', { length: 256 }).unique().notNull(),
@@ -22,7 +22,7 @@ export const user = mysqlTable('users', {
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const address = mysqlTable('addresses', {
+export const address = mysqlTable('address', {
   id: int('id').primaryKey().autoincrement(),
   street: varchar('street', { length: 256 }).notNull(),
   number: int('number').notNull(),
@@ -37,7 +37,7 @@ export const address = mysqlTable('addresses', {
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
 
-export const generalCategory = mysqlTable('general_categories', {
+export const generalCategory = mysqlTable('general_category', {
   id: int('id').primaryKey().autoincrement(),
   name: varchar('name', { length: 256 }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -51,7 +51,7 @@ export const generalCategoryRelations = relations(
   }),
 );
 
-export const shop = mysqlTable('shops', {
+export const shop = mysqlTable('shop', {
   userId: int('user_id')
     .primaryKey()
     .references(() => user.id, {
@@ -85,7 +85,7 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
 }));
 
 export const shopCategory = mysqlTable(
-  'shop_categories',
+  'shop_category',
   {
     shopId: int('shop_id')
       .notNull()
@@ -112,7 +112,7 @@ export const shopCategoryRelations = relations(shopCategory, ({ one }) => ({
   }),
 }));
 
-export const qrCode = mysqlTable('shops_qrcodes', {
+export const qrCode = mysqlTable('shop_qrcode', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
     .notNull()
@@ -154,7 +154,7 @@ export const costumerRelations = relations(customer, ({ one, many }) => ({
   }),
 }));
 
-export const itemCategory = mysqlTable('item_categories', {
+export const itemCategory = mysqlTable('item_category', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
     .references(() => shop.userId, { onDelete: 'cascade', onUpdate: 'cascade' })
@@ -171,7 +171,7 @@ export const itemCategoryRelations = relations(itemCategory, ({ one }) => ({
   }),
 }));
 
-export const item = mysqlTable('items', {
+export const item = mysqlTable('item', {
   id: int('id').primaryKey().autoincrement(),
   shopId: int('shop_id')
     .references(() => shop.userId, { onDelete: 'cascade', onUpdate: 'cascade' })
@@ -225,7 +225,7 @@ export const itemRelations = relations(item, ({ one }) => ({
 // );
 
 export const order = mysqlTable(
-  'orders',
+  'order',
   {
     clientId: int('client_id')
       .references(() => customer.userId, {
