@@ -123,8 +123,6 @@ describe('QrCode Controller Integration', () => {
         .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
         .set('x-api-key', `${process.env.API_KEY}`);
 
-      console.log(response.body);
-
       expect(response.status).toBe(200);
 
       expect(response.body).toHaveProperty('id');
