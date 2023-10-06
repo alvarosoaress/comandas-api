@@ -20,7 +20,10 @@ router
 
 router
   .route('/list')
-  .get(async (req, res) => await ItemFactory().getItems(req, res));
+  .get(
+    verifyToken('admin'),
+    async (req, res) => await ItemFactory().getItems(req, res),
+  );
 
 router
   .route('/:id')

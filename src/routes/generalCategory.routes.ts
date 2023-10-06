@@ -6,7 +6,7 @@ import {
   generalCategoryUpdateSchema,
   generalCategorySetSchema,
   generalCategoryDeleteSchema,
-  generalCategoryShpoListSchema,
+  generalCategoryShopListSchema,
 } from '../modules/generalCategory/generalCategory.schema';
 import { generalCategoryFactory } from '../modules/generalCategory/generalCategory.factory';
 import verifyToken from '../middleware/verifyToken';
@@ -76,7 +76,7 @@ router
 router
   .route('/shop/:id')
   .get(
-    validate(generalCategoryShpoListSchema),
+    validate(generalCategoryShopListSchema),
     async (req, res) =>
       await generalCategoryFactory().getShopListCategories(req, res),
   );

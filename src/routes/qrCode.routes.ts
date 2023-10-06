@@ -9,7 +9,7 @@ const router = express.Router();
 router
   .route('/list')
   .get(
-    verifyToken('shop'),
+    verifyToken('admin'),
     async (req, res) => await qrCodeFactory().listQrCode(req, res),
   );
 

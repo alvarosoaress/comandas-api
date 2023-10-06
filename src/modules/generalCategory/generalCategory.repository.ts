@@ -184,8 +184,8 @@ export class GeneralCategoryRepository implements IGeneralCategoryRepository {
   ): Promise<GeneralCategoryShopType | undefined> {
     await db.transaction(async (tx) => {
       categorySetInfo.generalCategoryId.forEach(async (category) => {
-        await db.execute(
-          sql`DELETE FROM ${shopCategory} WHERE ${shopCategory.shopId} = ${categorySetInfo.shopId} AND ${shopCategory.generalCategoryId}  = ${category};`,
+        await tx.execute(
+          sql`DELETE FROM ${shopCategory} WHERE ${shopCategory.shopId} = ${categorySetInfo.shopId} AND ${shopCategory.generalCategoryId} = ${category};`,
         );
       });
     });

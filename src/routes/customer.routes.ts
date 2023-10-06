@@ -18,7 +18,10 @@ router
 
 router
   .route('/list')
-  .get(async (req, res) => await customerFactory().getCustomers(req, res));
+  .get(
+    verifyToken('admin'),
+    async (req, res) => await customerFactory().getCustomers(req, res),
+  );
 
 router
   .route('/update')

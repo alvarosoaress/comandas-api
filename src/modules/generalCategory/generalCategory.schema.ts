@@ -34,7 +34,7 @@ export const generalCategoryDeleteSchema = z.object({
   }),
 });
 
-export const generalCategoryShpoListSchema = z.object({
+export const generalCategoryShopListSchema = z.object({
   params: z.object({
     id: z.string(),
   }),
@@ -63,7 +63,7 @@ export type GeneralCategorySetType = z.infer<
   typeof generalCategorySetSchema
 >['body'];
 export type GeneralCategoryShopListType = z.infer<
-  typeof generalCategoryShpoListSchema
+  typeof generalCategoryShopListSchema
 >['params'];
 export type GeneralCategoryShopType = Array<{
   name: string;

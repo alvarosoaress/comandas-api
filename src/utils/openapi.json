@@ -23,6 +23,10 @@
       "description": "Operations about general category for shops"
     },
     {
+      "name": "ItemCategory",
+      "description": "Operations about item category for items"
+    },
+    {
       "name": "Shop",
       "description": "Operations about shop"
     },
@@ -1027,6 +1031,315 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itemcategory/create": {
+      "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["ItemCategory"],
+        "summary": "Create a new item category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemCategoryCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item category created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCategoryCreateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Item category already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itemcategory/{itemCategoryId}": {
+      "get": {
+        "tags": ["ItemCategory"],
+        "summary": "Get a specific item category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemCategoryId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the item category to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item category found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCategoryGetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itemcategory/list": {
+      "get": {
+        "tags": ["ItemCategory"],
+        "summary": "Get all item categories",
+        "responses": {
+          "200": {
+            "description": "Item categories found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCategoryListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itemcategory/set": {
+      "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["ItemCategory"],
+        "summary": "Set item category for specific item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemCategorySetSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item category settled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCategorySetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item category not found OR Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itemcategory/remove": {
+      "delete": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["ItemCategory"],
+        "summary": "Remove item category for specific item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemCategoryRemoveSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item category removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCategoryRemoveRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item category not found OR Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key OR Invalid token OR Token does not have the right privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization token was not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -2878,6 +3191,174 @@
               "type": "integer",
               "example": 1
             }
+          }
+        }
+      },
+      "ItemCategoryCreateSchema": {
+        "type": "object",
+        "required": ["name, shopId"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Bebidas geladas"
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "ItemCategoryCreateRes": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Bebidas geladas"
+          },
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "ItemCategoryGetRes": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Bebidas geladas"
+          },
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "ItemCategoryListRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Bebidas geladas"
+            },
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
+      "ItemCategorySetSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "example": 1
+          },
+          "itemCategoryId": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "ItemCategorySetRes": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Bebidas quentes"
+          },
+          "id": {
+            "type": "integer",
+            "example": 2
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "ItemCategoryRemoveSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "example": 1
+          },
+          "itemCategoryId": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "ItemCategoryRemoveRes": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Bebidas quentes"
+          },
+          "id": {
+            "type": "integer",
+            "example": 2
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
           }
         }
       },
