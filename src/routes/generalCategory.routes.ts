@@ -16,7 +16,7 @@ const router = express.Router();
 router
   .route('/create')
   .post(
-    verifyToken('shop'),
+    verifyToken('admin'),
     validate(generalCategoryCreateSchema),
     async (req, res) =>
       await generalCategoryFactory().createGeneralCategory(req, res),
@@ -40,7 +40,7 @@ router
 router
   .route('/update')
   .put(
-    verifyToken('shop'),
+    verifyToken('admin'),
     validate(generalCategoryUpdateSchema),
     async (req, res) =>
       await generalCategoryFactory().updateGeneralCategory(req, res),
@@ -49,7 +49,7 @@ router
 router
   .route('/delete/:id')
   .delete(
-    verifyToken('shop'),
+    verifyToken('admin'),
     validate(generalCategoryDeleteSchema),
     async (req, res) =>
       await generalCategoryFactory().deleteGeneralCategory(req, res),

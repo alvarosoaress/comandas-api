@@ -3,6 +3,7 @@ import {
   type Item,
   type ShopExtended,
   type QrCode,
+  type ItemCategory,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
@@ -25,6 +26,7 @@ describe('Shop Service', () => {
       exists: jest.fn(),
       update: jest.fn(),
       getQrCodes: jest.fn(),
+      getItemCategories: jest.fn(),
     };
 
     shopService = new ShopService(shopRepositoryMock);
@@ -234,6 +236,57 @@ describe('Shop Service', () => {
       );
 
       expect(shopRepositoryMock.getQrCodes).toHaveBeenCalledWith('1');
+    });
+  });
+
+  describe('Shop Item Categories', () => {
+    it('should return all shop item categories', async () => {
+      const shopItemCategories: ItemCategory[] = [
+        {
+          shopId: 1,
+          id: 1,
+          name: 'Cold drinks',
+        },
+        {
+          shopId: 1,
+          id: 2,
+          name: 'Hot drinks',
+        },
+      ];
+
+      shopRepositoryMock.getItemCategories.mockResolvedValue(
+        shopItemCategories,
+      );
+
+      const shopItemCategoriesFound = await shopService.getItemCategories('1');
+
+      expect(shopRepositoryMock.getItemCategories).toHaveBeenCalledWith('1');
+
+      expect(shopItemCategoriesFound).toEqual(shopItemCategories);
+    });
+
+    it('should throw a error if no shop found', async () => {
+      shopRepositoryMock.getItemCategories.mockResolvedValue(undefined);
+
+      await expect(shopService.getItemCategories('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getItemCategories).toHaveBeenCalledWith('1');
+    });
+
+    it('should throw a error if the shop has no item categories', async () => {
+      const shopItemCategories = undefined;
+
+      shopRepositoryMock.getItemCategories.mockResolvedValue(
+        shopItemCategories,
+      );
+
+      await expect(shopService.getItemCategories('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getItemCategories).toHaveBeenCalledWith('1');
     });
   });
 

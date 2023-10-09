@@ -576,7 +576,7 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "adminBearerAuth": []
           }
         ],
         "tags": ["GeneralCategory"],
@@ -747,7 +747,7 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "adminBearerAuth": []
           }
         ],
         "tags": ["GeneralCategory"],
@@ -811,7 +811,7 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "adminBearerAuth": []
           }
         ],
         "tags": ["GeneralCategory"],
@@ -1765,6 +1765,55 @@
           },
           "404": {
             "description": "Shop not foud OR Shop has no qrCodes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/{shopId}/itemcategory": {
+      "get": {
+        "tags": ["Shop"],
+        "summary": "Get item categories belonging to shop id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shopId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Shop ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shop item categories found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopGetItemCategoryRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not foud OR Shop has no item categories",
             "content": {
               "application/json": {
                 "schema": {
@@ -3896,6 +3945,34 @@
             "qrCodeUrl": {
               "type": "string",
               "example": "https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}"
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
+      "ShopGetItemCategoryRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Bebidas geladas"
+            },
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "shopId": {
+              "type": "integer",
+              "example": 1
             },
             "createdAt": {
               "type": "string",

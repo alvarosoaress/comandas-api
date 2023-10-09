@@ -7,6 +7,7 @@ import {
   type ShopExtendedSafe,
   type Shop,
   type QrCode,
+  type ItemCategory,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
@@ -27,6 +28,11 @@ export class ShopRepository implements IShopRepository {
 
   async create(info: ShopCreateType): Promise<ShopExtendedSafe | undefined> {
     // TODO Incluir verificação para categoryId e addressId
+
+    await this.userService.exists(info.userInfo.email);
+
+    await this.addressService.exists(info.addressInfo);
+
     const newAddress = await this.addressService.create(info.addressInfo);
 
     const newUser = await this.userService.create({
@@ -190,6 +196,20 @@ export class ShopRepository implements IShopRepository {
     if (!shopQrCodes) return undefined;
 
     return Object.values(shopQrCodes.qrCodes);
+  }
+
+  async getItemCategories(shopId: string): Promise<ItemCategory[] | undefined> {
+    const shopItemCategories = await db.query.shop.findFirst({
+      where: eq(shop.userId, parseInt(shopId)),
+      columns: {},
+      with: {
+        itemCategories: true,
+      },
+    });
+
+    if (!shopItemCategories) return undefined;
+
+    return Object.values(shopItemCategories.itemCategories);
   }
 
   async exists(userId: number): Promise<boolean> {

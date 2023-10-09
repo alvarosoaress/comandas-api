@@ -7,6 +7,12 @@ import {
   type ItemCategoryRemoveType,
 } from './itemCategory.schema';
 import { type ItemCategoryService } from './itemCategory.service';
+import verifyOwnership from '../../middleware/verifyOwnership';
+import {
+  genericOwnership,
+  itemCategoryOwnership,
+  itemOwnership,
+} from '../../middleware/ownership';
 
 export class ItemCategoryController {
   constructor(private readonly itemCategoryService: ItemCategoryService) {}
@@ -15,6 +21,11 @@ export class ItemCategoryController {
     req: Request<unknown, unknown, ItemCategoryCreateType>,
     res: Response,
   ) {
+    verifyOwnership(
+      genericOwnership(Number(req.user.id), req.body.shopId),
+      req,
+    );
+
     const newItemCategory = await this.itemCategoryService.create(req.body);
 
     return res.status(200).json(newItemCategory);
@@ -36,6 +47,14 @@ export class ItemCategoryController {
     req: Request<unknown, unknown, ItemCategorySetType>,
     res: Response,
   ) {
+    verifyOwnership(
+      await itemCategoryOwnership(Number(req.user.id), req.body.itemCategoryId),
+      req,
+    );
+    verifyOwnership(
+      await itemOwnership(Number(req.user.id), req.body.itemId),
+      req,
+    );
     const settledItemCategory = await this.itemCategoryService.set(req.body);
 
     return res.status(200).json(settledItemCategory);
@@ -45,6 +64,14 @@ export class ItemCategoryController {
     req: Request<unknown, unknown, ItemCategoryRemoveType>,
     res: Response,
   ) {
+    verifyOwnership(
+      await itemCategoryOwnership(Number(req.user.id), req.body.itemCategoryId),
+      req,
+    );
+    verifyOwnership(
+      await itemOwnership(Number(req.user.id), req.body.itemId),
+      req,
+    );
     const removedItemCategory = await this.itemCategoryService.remove(req.body);
 
     return res.status(200).json(removedItemCategory);

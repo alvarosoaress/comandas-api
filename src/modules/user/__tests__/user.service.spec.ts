@@ -314,13 +314,13 @@ describe('User Service', () => {
       expect(jwtMock.sign).toHaveBeenCalledWith(
         { role: userFound.userInfo.role },
         process.env.ACCESS_TOKEN_SECRET as Secret,
-        { expiresIn: '1m', subject: String(userFound.userInfo.id) },
+        { expiresIn: '10m', subject: String(userFound.userInfo.id) },
       );
 
       expect(jwtMock.sign).toHaveBeenCalledWith(
         { role: userFound.userInfo.role },
         process.env.REFRESH_TOKEN_SECRET as Secret,
-        { expiresIn: '2m', subject: String(userFound.userInfo.id) },
+        { expiresIn: '20m', subject: String(userFound.userInfo.id) },
       );
 
       expect(userLoginRes.userInfo).not.toHaveProperty('password');

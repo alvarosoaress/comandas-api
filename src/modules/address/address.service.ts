@@ -10,6 +10,21 @@ import { type AddressUpdateType } from './address.schema';
 export class AddressService {
   constructor(private readonly addressRepository: IAddressRepository) {}
 
+  async exists(addressInfo: Address): Promise<boolean> {
+    const addressExists = await this.addressRepository.exists({
+      number: addressInfo.number,
+      street: addressInfo.street,
+      neighborhood: addressInfo.neighborhood,
+      city: addressInfo.city,
+      state: addressInfo.state,
+      country: addressInfo.country,
+    });
+
+    if (addressExists) throw new ConflictError('Address already exists');
+
+    return addressExists;
+  }
+
   async create(addressInfo: Address): Promise<Address> {
     const addressExists = await this.addressRepository.exists({
       number: addressInfo.number,

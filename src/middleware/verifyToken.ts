@@ -10,6 +10,7 @@ type DecodedType = {
   role: 'customer' | 'shop' | 'apiKey' | 'admin';
   iat: number;
   exp: number;
+  sub: number | string;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -30,7 +31,7 @@ const verifyToken =
           throw new ForbiddenError('Invalid api key');
         }
 
-        const decodedInfo = decoded as DecodedType;
+        const decodedInfo = decoded as unknown as DecodedType;
 
         if (decodedInfo.role !== 'apiKey') {
           throw new ForbiddenError('Invalid api key');
@@ -58,7 +59,14 @@ const verifyToken =
                 throw new ForbiddenError('Invalid token');
               }
 
-              const decodedInfo = decoded as DecodedType;
+              const decodedInfo = decoded as unknown as DecodedType;
+
+              const reqUser = {
+                id: decodedInfo.sub,
+                role: decodedInfo.role,
+              };
+
+              req.user = reqUser;
 
               if (role) {
                 if (decodedInfo.role === role || decodedInfo.role === 'admin') {

@@ -6,6 +6,8 @@ import {
   type ItemGetType,
 } from './item.schema';
 import { type ItemService } from './item.service';
+import verifyOwnership from '../../middleware/verifyOwnership';
+import { genericOwnership, itemOwnership } from '../../middleware/ownership';
 
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
@@ -14,6 +16,11 @@ export class ItemController {
     req: Request<unknown, unknown, ItemCreateType>,
     res: Response,
   ) {
+    verifyOwnership(
+      genericOwnership(Number(req.user.id), req.body.shopId),
+      req,
+    );
+
     const newItem = await this.itemService.create(req.body);
 
     return res.status(200).json(newItem);
@@ -35,6 +42,8 @@ export class ItemController {
     req: Request<unknown, unknown, ItemUpdateType>,
     res: Response,
   ) {
+    verifyOwnership(await itemOwnership(Number(req.user.id), req.body.id), req);
+
     const updatedItem = await this.itemService.update(req.body);
 
     return res.status(200).json(updatedItem);

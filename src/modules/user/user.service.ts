@@ -28,7 +28,15 @@ export type UserLoginRes = {
 export class UserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async create(userInfo: User): Promise<UserSafe> {
+  async exists(userEmail: string): Promise<boolean> {
+    const userExists = await this.userRepository.exists(userEmail);
+
+    if (userExists) throw new ConflictError('User already exists');
+
+    return userExists;
+  }
+
+  async create(userInfo: User): Promise<UserSafe | undefined> {
     const userExists = await this.userRepository.exists(userInfo.email);
 
     if (userExists) throw new ConflictError('User already exists');
@@ -98,13 +106,13 @@ export class UserService {
     const accessToken = jwt.sign(
       { role: userFound.userInfo.role },
       process.env.ACCESS_TOKEN_SECRET as Secret,
-      { expiresIn: '1m', subject: String(userFound.userInfo.id) },
+      { expiresIn: '10m', subject: String(userFound.userInfo.id) },
     );
 
     const refreshToken = jwt.sign(
       { role: userFound.userInfo.role },
       process.env.REFRESH_TOKEN_SECRET as Secret,
-      { expiresIn: '2m', subject: String(userFound.userInfo.id) },
+      { expiresIn: '20m', subject: String(userFound.userInfo.id) },
     );
 
     userFound.userInfo.refreshToken = refreshToken;

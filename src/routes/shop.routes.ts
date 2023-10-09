@@ -2,6 +2,7 @@ import express from 'express';
 import validate from '../middleware/validateResource';
 import {
   shopCreateSchema,
+  shopGetItemCategoriesSchema,
   shopGetMenuSchema,
   shopGetQrCodeSchema,
   shopUpdateSchema,
@@ -34,6 +35,13 @@ router
   .get(
     validate(shopGetQrCodeSchema),
     async (req, res) => await shopFactory().getShopQrCodes(req, res),
+  );
+
+router
+  .route('/:id/itemcategory')
+  .get(
+    validate(shopGetItemCategoriesSchema),
+    async (req, res) => await shopFactory().getShopItemCategories(req, res),
   );
 
 router

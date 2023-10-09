@@ -55,6 +55,12 @@ export const shopGetQrCodeSchema = z.object({
   }),
 });
 
+export const shopGetItemCategoriesSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
 export const shopUpdateSchema = z.object({
   body: createInsertSchema(shop).omit({
     addressId: true,
@@ -101,5 +107,8 @@ export type ShopCreateType = z.infer<typeof shopCreateSchema>['body'];
 export type ShopGetType = z.infer<typeof shopGetSchema>['params'];
 export type ShopGetMenuType = z.infer<typeof shopGetMenuSchema>['params'];
 export type ShopGetQrCodeType = z.infer<typeof shopGetQrCodeSchema>['params'];
+export type ShopGetItemCategoriesType = z.infer<
+  typeof shopGetItemCategoriesSchema
+>['params'];
 export type ShopUpdateType = z.infer<typeof shopUpdateSchema>['body'];
 export type ShopListType = z.infer<typeof shopListSchema>['query'];

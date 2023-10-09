@@ -6,8 +6,11 @@ import {
   type ShopGetMenuType,
   type ShopListType,
   type ShopGetQrCodeType,
+  type ShopGetItemCategoriesType,
 } from './shop.schema';
 import { type ShopService } from './shop.service';
+import verifyOwnership from '../../middleware/verifyOwnership';
+import { genericOwnership } from '../../middleware/ownership';
 
 export class ShopController {
   constructor(private readonly shopService: ShopService) {}
@@ -47,10 +50,26 @@ export class ShopController {
     return res.status(200).json(shopQrCodes);
   }
 
+  async getShopItemCategories(
+    req: Request<ShopGetItemCategoriesType>,
+    res: Response,
+  ) {
+    const shopItemCategories = await this.shopService.getItemCategories(
+      req.params.id,
+    );
+
+    return res.status(200).json(shopItemCategories);
+  }
+
   async updateShop(
     req: Request<unknown, unknown, ShopUpdateType>,
     res: Response,
   ) {
+    verifyOwnership(
+      genericOwnership(Number(req.user.id), req.body.userId),
+      req,
+    );
+
     const updatedShop = await this.shopService.update(req.body);
 
     return res.status(200).json(updatedShop);
