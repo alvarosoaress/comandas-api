@@ -6,6 +6,7 @@ import {
   type QrCode,
   type Item,
   type ItemCategory,
+  type Order,
 } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
@@ -15,6 +16,8 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { type QrCodeCreateType } from '../../qrCode/qrCode.schema';
 import { type ItemCategoryCreateType } from '../../itemCategory/itemCategory.schema';
+import { type OrderCreateType } from '../../order/order.schema';
+import { type CustomerCreateType } from '../../customer/customer.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -141,6 +144,84 @@ describe('Shop Controller Integration', () => {
       expect(response.body.length).toBeGreaterThanOrEqual(1);
 
       expect(response.body).toMatchObject(qrCodes);
+    });
+  });
+
+  describe('GET /shop/:id/order', () => {
+    beforeAll(async () => {
+      const newCustomer: CustomerCreateType = {
+        userInfo: {
+          name: 'Virgulini',
+          email: 'maquina@tute.italia',
+          password: 'supersafepasswordnobodywillnowhihi123',
+        },
+      };
+
+      const newItem: ItemCreateType = {
+        name: 'Bolo de murango',
+        price: 71.8,
+        shopId: 1,
+      };
+
+      const newOrder: OrderCreateType = [
+        {
+          shopId: 1,
+          customerId: 2,
+          itemId: 1,
+          quantity: 1,
+          tableId: 1,
+          total: 258.78,
+        },
+      ];
+
+      await request(app)
+        .post('/item/create')
+        .send(newItem)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      await request(app)
+        .post('/customer/create')
+        .send(newCustomer)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      await request(app)
+        .post('/order/create')
+        .send(newOrder)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+    });
+
+    it('should return all the orders belonging to shop', async () => {
+      const orders: Order[] = [
+        {
+          shopId: 1,
+          groupId: expect.any(Number),
+          tableId: 1,
+          id: 1,
+          customerId: 2,
+          itemId: 1,
+          quantity: 1,
+          total: 258.78,
+          status: 'open',
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+      ];
+
+      const response = await request(app)
+        .get('/shop/1/order')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toBeInstanceOf(Array);
+
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
+
+      expect(response.body).toMatchObject(orders);
     });
   });
 

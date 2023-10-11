@@ -41,6 +41,10 @@
     {
       "name": "QrCode",
       "description": "Operations about qrCode"
+    },
+    {
+      "name": "Order",
+      "description": "Operations about order"
     }
   ],
   "paths": {
@@ -2361,6 +2365,283 @@
           }
         }
       }
+    },
+    "/order/create": {
+      "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": [],
+            "customerBearerAuth": []
+          }
+        ],
+        "tags": ["Order"],
+        "summary": "Create a new order",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderCreateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not exists OR Customer not exists OR Item not exists OR Table not exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Order for this table id already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/list": {
+      "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "adminBearerAuth": []
+          }
+        ],
+        "tags": ["Order"],
+        "summary": "List all orders",
+        "responses": {
+          "200": {
+            "description": "Orders found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderListRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Orders not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/{groupId}": {
+      "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": [],
+            "customerBearerAuth": []
+          }
+        ],
+        "tags": ["Order"],
+        "summary": "Get a specific order",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the order to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderGetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/complete/{groupId}": {
+      "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": [],
+            "customerBearerAuth": []
+          }
+        ],
+        "tags": ["Order"],
+        "summary": "Complete a specific order",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the order to complete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderCompleteRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/cancel/{groupId}": {
+      "delete": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": [],
+            "customerBearerAuth": []
+          }
+        ],
+        "tags": ["Order"],
+        "summary": "Cancel a specific order",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the order to cancel."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order cancelled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderCancelRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4377,6 +4658,362 @@
           "qrCodeUrl": {
             "type": "string",
             "example": "https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "OrderCreateSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "shopId",
+            "customerId",
+            "itemId",
+            "quantity",
+            "total",
+            "tableId"
+          ],
+          "properties": {
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "customerId": {
+              "type": "integer",
+              "example": 5
+            },
+            "itemId": {
+              "type": "integer",
+              "example": 2
+            },
+            "quantity": {
+              "type": "integer",
+              "example": 2
+            },
+            "total": {
+              "type": "integer",
+              "example": 88.78
+            },
+            "tableId": {
+              "type": "integer",
+              "example": 3
+            },
+            "note": {
+              "type": "string",
+              "example": "No romcom please"
+            }
+          }
+        }
+      },
+      "OrderCreateRes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "groupId": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customerId": {
+            "type": "integer",
+            "example": 5
+          },
+          "tableId": {
+            "type": "integer",
+            "example": 3
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "quantity": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 88.78
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer",
+            "example": 88.78
+          },
+          "status": {
+            "type": "string",
+            "example": "open"
+          },
+          "note": {
+            "type": "string",
+            "example": "No romcom please"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "OrderListRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "groupId": {
+              "type": "integer",
+              "example": 123456789
+            },
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "customerId": {
+              "type": "integer",
+              "example": 5
+            },
+            "tableId": {
+              "type": "integer",
+              "example": 3
+            },
+            "itemId": {
+              "type": "integer",
+              "example": 2
+            },
+            "total": {
+              "type": "integer",
+              "example": 88.78
+            },
+            "status": {
+              "type": "string",
+              "example": "open"
+            },
+            "note": {
+              "type": "string",
+              "example": "No romcom please"
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
+      "OrderGetRes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "groupId": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customerId": {
+            "type": "integer",
+            "example": 5
+          },
+          "tableId": {
+            "type": "integer",
+            "example": 3
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "quantity": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 88.78
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer",
+            "example": 88.78
+          },
+          "status": {
+            "type": "string",
+            "example": "open"
+          },
+          "note": {
+            "type": "string",
+            "example": "No romcom please"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "OrderCompleteRes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "groupId": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customerId": {
+            "type": "integer",
+            "example": 5
+          },
+          "tableId": {
+            "type": "integer",
+            "example": 3
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "quantity": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 88.78
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer",
+            "example": 88.78
+          },
+          "status": {
+            "type": "string",
+            "example": "closed"
+          },
+          "note": {
+            "type": "string",
+            "example": "No romcom please"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "OrderCancelRes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "groupId": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customerId": {
+            "type": "integer",
+            "example": 5
+          },
+          "tableId": {
+            "type": "integer",
+            "example": 3
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "quantity": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 88.78
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer",
+            "example": 88.78
+          },
+          "status": {
+            "type": "string",
+            "example": "cancelled"
+          },
+          "note": {
+            "type": "string",
+            "example": "No romcom please"
           },
           "createdAt": {
             "type": "string",

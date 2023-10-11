@@ -15,7 +15,7 @@ type DecodedType = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const verifyToken =
-  (role?: 'customer' | 'shop' | 'admin') =>
+  (role?: 'customer' | 'shop' | 'both' | 'admin') =>
   (req: Request, res: Response, next: NextFunction) => {
     const apiKey = req.headers['x-api-key'];
 
@@ -69,7 +69,11 @@ const verifyToken =
               req.user = reqUser;
 
               if (role) {
-                if (decodedInfo.role === role || decodedInfo.role === 'admin') {
+                if (
+                  decodedInfo.role === role ||
+                  decodedInfo.role === 'admin' ||
+                  role === 'both'
+                ) {
                   next();
                 } else {
                   throw new ForbiddenError(

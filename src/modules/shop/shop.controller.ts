@@ -6,7 +6,8 @@ import {
   type ShopGetMenuType,
   type ShopListType,
   type ShopGetQrCodeType,
-  type ShopGetItemCategoriesType,
+  type ShopGetItemCategoryType,
+  type ShopGetOrderType,
 } from './shop.schema';
 import { type ShopService } from './shop.service';
 import verifyOwnership from '../../middleware/verifyOwnership';
@@ -50,8 +51,14 @@ export class ShopController {
     return res.status(200).json(shopQrCodes);
   }
 
+  async getShopOrders(req: Request<ShopGetOrderType>, res: Response) {
+    const shopOrders = await this.shopService.getOrders(req.params.id);
+
+    return res.status(200).json(shopOrders);
+  }
+
   async getShopItemCategories(
-    req: Request<ShopGetItemCategoriesType>,
+    req: Request<ShopGetItemCategoryType>,
     res: Response,
   ) {
     const shopItemCategories = await this.shopService.getItemCategories(

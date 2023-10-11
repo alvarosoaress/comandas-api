@@ -8,6 +8,7 @@ import {
   type Shop,
   type QrCode,
   type ItemCategory,
+  type Order,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
@@ -210,6 +211,20 @@ export class ShopRepository implements IShopRepository {
     if (!shopItemCategories) return undefined;
 
     return Object.values(shopItemCategories.itemCategories);
+  }
+
+  async getOrders(shopId: string): Promise<Order[] | undefined> {
+    const shopOrders = await db.query.shop.findFirst({
+      where: eq(shop.userId, parseInt(shopId)),
+      columns: {},
+      with: {
+        orders: true,
+      },
+    });
+
+    if (!shopOrders) return undefined;
+
+    return Object.values(shopOrders.orders);
   }
 
   async exists(userId: number): Promise<boolean> {

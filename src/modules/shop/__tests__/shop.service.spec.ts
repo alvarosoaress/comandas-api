@@ -4,6 +4,7 @@ import {
   type ShopExtended,
   type QrCode,
   type ItemCategory,
+  type Order,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
@@ -27,6 +28,7 @@ describe('Shop Service', () => {
       update: jest.fn(),
       getQrCodes: jest.fn(),
       getItemCategories: jest.fn(),
+      getOrders: jest.fn(),
     };
 
     shopService = new ShopService(shopRepositoryMock);
@@ -287,6 +289,54 @@ describe('Shop Service', () => {
       );
 
       expect(shopRepositoryMock.getItemCategories).toHaveBeenCalledWith('1');
+    });
+  });
+
+  describe('Shop Orders', () => {
+    it('should return all shop orders', async () => {
+      const shopOrders: Order[] = [
+        {
+          shopId: 1,
+          id: 1,
+          customerId: 1,
+          status: 'open',
+          itemId: 1,
+          quantity: 5,
+          tableId: 1,
+          total: 558.78,
+          groupId: 123456789,
+        },
+      ];
+
+      shopRepositoryMock.getOrders.mockResolvedValue(shopOrders);
+
+      const shopOrdersFound = await shopService.getOrders('1');
+
+      expect(shopRepositoryMock.getOrders).toHaveBeenCalledWith('1');
+
+      expect(shopOrdersFound).toEqual(shopOrders);
+    });
+
+    it('should throw a error if no shop found', async () => {
+      shopRepositoryMock.getOrders.mockResolvedValue(undefined);
+
+      await expect(shopService.getOrders('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getOrders).toHaveBeenCalledWith('1');
+    });
+
+    it('should throw a error if the shop has no orders', async () => {
+      const shopOrders = undefined;
+
+      shopRepositoryMock.getOrders.mockResolvedValue(shopOrders);
+
+      await expect(shopService.getOrders('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getOrders).toHaveBeenCalledWith('1');
     });
   });
 

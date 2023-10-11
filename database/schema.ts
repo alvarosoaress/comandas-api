@@ -82,6 +82,7 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
   menu: many(item),
   qrCodes: many(qrCode),
   itemCategories: many(itemCategory),
+  orders: many(order),
 }));
 
 export const shopCategory = mysqlTable(
@@ -224,42 +225,46 @@ export const itemRelations = relations(item, ({ one }) => ({
 //   },
 // );
 
-export const order = mysqlTable(
-  'order',
-  {
-    clientId: int('client_id')
-      .references(() => customer.userId, {
-        onDelete: 'cascade',
-        onUpdate: 'cascade',
-      })
-      .notNull(),
-    shopId: int('shop_id')
-      .references(() => shop.userId, {
-        onDelete: 'cascade',
-        onUpdate: 'cascade',
-      })
-      .notNull(),
-    itemId: int('item_id')
-      .references(() => item.id, {
-        onDelete: 'cascade',
-        onUpdate: 'cascade',
-      })
-      .notNull(),
-    quantity: int('quantity').notNull(),
-    total: int('total').notNull(),
-    isCompleted: boolean('is_completed').default(false).notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  },
-  (table) => {
-    return { pk: primaryKey(table.clientId, table.itemId, table.shopId) };
-  },
-);
+export const order = mysqlTable('order', {
+  id: int('id').primaryKey().autoincrement(),
+  groupId: int('group_id').notNull(),
+  customerId: int('customer_id')
+    .references(() => customer.userId, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    })
+    .notNull(),
+  shopId: int('shop_id')
+    .references(() => shop.userId, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    })
+    .notNull(),
+  itemId: int('item_id')
+    .references(() => item.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    })
+    .notNull(),
+  tableId: int('table_id').notNull(),
+  quantity: int('quantity').notNull(),
+  total: real('total', { precision: 10, scale: 2 }).notNull(),
+  status: mysqlEnum('status', ['open', 'closed', 'cancelled'])
+    .default('open')
+    .notNull(),
+  note: varchar('note', { length: 512 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
 
 export const ordersRelations = relations(order, ({ one }) => ({
   item: one(item, {
     fields: [order.itemId],
     references: [item.id],
+  }),
+  shop: one(shop, {
+    fields: [order.shopId],
+    references: [shop.userId],
   }),
 }));
 
@@ -312,4 +317,22 @@ export type ItemCategory = typeof itemCategory.$inferInsert;
 
 export type QrCode = typeof qrCode.$inferInsert;
 
-export type Order = typeof order.$inferSelect;
+export type Order = typeof order.$inferInsert;
+
+export type OrderFormatted = {
+  id: number | undefined;
+  createdAt?: Date;
+  updatedAt?: Date;
+  shopId: number;
+  groupId: number;
+  customerId: number;
+  items: Array<{
+    itemId: number;
+    quantity: number;
+    total: number;
+  }>;
+  total: number;
+  tableId: number;
+  status: 'open' | 'closed' | 'cancelled' | undefined;
+  note?: string | null;
+};

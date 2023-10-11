@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../database';
-import { item, itemCategory, qrCode, shop } from '../../database/schema';
+import { item, itemCategory, order, qrCode, shop } from '../../database/schema';
 
 export function genericOwnership(
   requestId: number,
@@ -51,4 +51,28 @@ export async function qrCodeOwnership(
   });
 
   return qrCodeFound?.shopId === shopId;
+}
+
+export async function orderGenericOwnership(
+  requesterId: number,
+  orderGroupId: number | string,
+): Promise<boolean> {
+  const orderFound = await db.query.order.findFirst({
+    where: eq(order.groupId, Number(orderGroupId)),
+  });
+
+  return (
+    orderFound?.shopId === requesterId || orderFound?.customerId === requesterId
+  );
+}
+
+export async function orderShopOwnership(
+  shopId: number,
+  orderGroupId: number | string,
+): Promise<boolean> {
+  const orderFound = await db.query.order.findFirst({
+    where: eq(order.groupId, Number(orderGroupId)),
+  });
+
+  return orderFound?.shopId === shopId;
 }

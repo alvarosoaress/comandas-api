@@ -2,8 +2,9 @@ import express from 'express';
 import validate from '../middleware/validateResource';
 import {
   shopCreateSchema,
-  shopGetItemCategoriesSchema,
+  shopGetItemCategorySchema,
   shopGetMenuSchema,
+  shopGetOrderSchema,
   shopGetQrCodeSchema,
   shopUpdateSchema,
 } from '../modules/shop/shop.schema';
@@ -40,8 +41,15 @@ router
 router
   .route('/:id/itemcategory')
   .get(
-    validate(shopGetItemCategoriesSchema),
+    validate(shopGetItemCategorySchema),
     async (req, res) => await shopFactory().getShopItemCategories(req, res),
+  );
+
+router
+  .route('/:id/order')
+  .get(
+    validate(shopGetOrderSchema),
+    async (req, res) => await shopFactory().getShopOrders(req, res),
   );
 
 router

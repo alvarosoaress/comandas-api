@@ -4,6 +4,7 @@ import {
   type Shop,
   type QrCode,
   type ItemCategory,
+  type Order,
 } from '../../../database/schema';
 import {
   type ShopUpdateType,
@@ -17,6 +18,7 @@ export type IShopRepository = {
   list: (query?: ShopListType) => Promise<any>;
   getMenu: (userId: string) => Promise<Item[] | undefined>;
   getQrCodes: (userId: string) => Promise<QrCode[] | undefined>;
+  getOrders: (userId: string) => Promise<Order[] | undefined>;
   getItemCategories: (userId: string) => Promise<ItemCategory[] | undefined>;
   update: (newShopInfo: ShopUpdateType) => Promise<Shop | undefined>;
 };

@@ -5,7 +5,7 @@ import {
   itemGetSchema,
   itemUpdateSchema,
 } from '../modules/item/item.schema';
-import { ItemFactory } from '../modules/item/item.factory';
+import { itemFactory } from '../modules/item/item.factory';
 import verifyToken from '../middleware/verifyToken';
 
 const router = Router();
@@ -15,21 +15,21 @@ router
   .post(
     verifyToken('shop'),
     validate(itemCreateSchema),
-    async (req, res) => await ItemFactory().createItem(req, res),
+    async (req, res) => await itemFactory().createItem(req, res),
   );
 
 router
   .route('/list')
   .get(
     verifyToken('admin'),
-    async (req, res) => await ItemFactory().getItems(req, res),
+    async (req, res) => await itemFactory().getItems(req, res),
   );
 
 router
   .route('/:id')
   .get(
     validate(itemGetSchema),
-    async (req, res) => await ItemFactory().getItemById(req, res),
+    async (req, res) => await itemFactory().getItemById(req, res),
   );
 
 router
@@ -37,7 +37,7 @@ router
   .put(
     verifyToken('shop'),
     validate(itemUpdateSchema),
-    async (req, res) => await ItemFactory().updateItem(req, res),
+    async (req, res) => await itemFactory().updateItem(req, res),
   );
 
 export default router;

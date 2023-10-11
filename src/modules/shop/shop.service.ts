@@ -5,6 +5,7 @@ import {
   type Shop,
   type QrCode,
   type ItemCategory,
+  type Order,
 } from '../../../database/schema';
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 import deleteObjKey from '../../utils';
@@ -60,6 +61,17 @@ export class ShopService {
       throw new NotFoundError('Shop has no QrCodes');
 
     return shopQrCodes;
+  }
+
+  async getOrders(shopId: string): Promise<Order[] | undefined> {
+    const shopOrders = await this.shopRepository.getOrders(shopId);
+
+    if (!shopOrders) throw new NotFoundError('No shop found');
+
+    if (!shopOrders || shopOrders.length < 1)
+      throw new NotFoundError('Shop has no orders');
+
+    return shopOrders;
   }
 
   async getItemCategories(shopId: string): Promise<ItemCategory[] | undefined> {
