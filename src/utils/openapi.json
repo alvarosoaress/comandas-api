@@ -1177,6 +1177,12 @@
     },
     "/itemcategory/list": {
       "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "adminBearerAuth": []
+          }
+        ],
         "tags": ["ItemCategory"],
         "summary": "Get all item categories",
         "responses": {
@@ -1411,6 +1417,12 @@
     },
     "/customer/list": {
       "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "adminBearerAuth": []
+          }
+        ],
         "tags": ["Customer"],
         "summary": "List all customers",
         "responses": {
@@ -1969,6 +1981,12 @@
     },
     "/item/list": {
       "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "adminBearerAuth": []
+          }
+        ],
         "tags": ["Item"],
         "summary": "List all items",
         "responses": {
