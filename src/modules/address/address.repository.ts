@@ -6,7 +6,7 @@ import {
   type AddressExists,
 } from './Iaddress.repository';
 import { type AddressUpdateType } from './address.schema';
-import deleteObjKey from '../../utils';
+import { deleteObjKey } from '../../utils';
 
 export class AddressRepository implements IAddressRepository {
   async exists(info: AddressExists): Promise<boolean> {

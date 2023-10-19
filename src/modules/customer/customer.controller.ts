@@ -4,7 +4,10 @@ import { type CustomerService } from './customer.service';
 import {
   type CustomerUpdateType,
   type CustomerCreateType,
+  type CustomerGetOrderType,
 } from './customer.schema';
+import verifyOwnership from '../../middleware/verifyOwnership';
+import { genericOwnership } from '../../middleware/ownership';
 
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
@@ -27,6 +30,14 @@ export class CustomerController {
     const customers = await this.customerService.list();
 
     return res.status(200).json(customers);
+  }
+
+  async getCustomerOrders(req: Request<CustomerGetOrderType>, res: Response) {
+    verifyOwnership(genericOwnership(req.user.id, req.params.id), req);
+
+    const shopOrders = await this.customerService.getOrders(req.params.id);
+
+    return res.status(200).json(shopOrders);
   }
 
   async updateCustomer(

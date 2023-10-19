@@ -5,9 +5,11 @@ import {
   type CustomerExtendedSafe,
   type CustomerExtended,
   type Customer,
+  type OrderFormatted,
+  type Order,
 } from '../../../database/schema';
 import { type UserService } from '../user/user.service';
-import deleteObjKey from '../../utils';
+import { deleteObjKey, formatOrder } from '../../utils';
 import { type ICustomerRepository } from './Icustomer.repository';
 import {
   type CustomerUpdateType,
@@ -78,5 +80,42 @@ export class CustomerRepository implements ICustomerRepository {
     });
 
     return updatedCustomer;
+  }
+
+  async getOrders(userId: string): Promise<OrderFormatted[] | undefined> {
+    const customerOrders = await db.query.customer.findFirst({
+      where: eq(customer.userId, parseInt(userId)),
+      columns: {},
+      with: {
+        orders: true,
+      },
+    });
+
+    if (!customerOrders) return undefined;
+
+    const orderArray = new Map<string, Order[] | undefined>();
+
+    Object.values(customerOrders.orders).forEach((order) => {
+      const groupIdIndex = String(order.groupId);
+
+      let index = orderArray.get(groupIdIndex);
+
+      if (!index) {
+        orderArray.set(groupIdIndex, []);
+        index = orderArray.get(groupIdIndex);
+      }
+
+      index?.push(order);
+      orderArray.set(groupIdIndex, index);
+    });
+
+    const formattedOrderArray: OrderFormatted[] | undefined = [];
+
+    orderArray.forEach((arrayOrder) =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      formattedOrderArray.push(formatOrder(arrayOrder!)),
+    );
+
+    return formattedOrderArray;
   }
 }

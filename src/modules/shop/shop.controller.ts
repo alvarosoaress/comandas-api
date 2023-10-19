@@ -52,6 +52,8 @@ export class ShopController {
   }
 
   async getShopOrders(req: Request<ShopGetOrderType>, res: Response) {
+    verifyOwnership(genericOwnership(req.user.id, req.params.id), req);
+
     const shopOrders = await this.shopService.getOrders(req.params.id);
 
     return res.status(200).json(shopOrders);

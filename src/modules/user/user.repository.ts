@@ -10,7 +10,7 @@ import {
   customer,
 } from '../../../database/schema';
 import { type UserUpdateType } from './user.schema';
-import deleteObjKey from '../../utils';
+import { deleteObjKey } from '../../utils';
 
 export class UserRepository implements IUserRepository {
   async exists(email: string): Promise<boolean> {

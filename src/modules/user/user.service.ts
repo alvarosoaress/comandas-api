@@ -10,7 +10,7 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from '../../helpers/api.erros';
-import deleteObjKey from '../../utils';
+import { deleteObjKey } from '../../utils';
 import { type IUserRepository } from './Iuser.repository';
 import bcrypt from 'bcryptjs';
 import path from 'path';

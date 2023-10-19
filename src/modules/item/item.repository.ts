@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { db } from '../../../database';
 import { type Item, item, user } from '../../../database/schema';
 import { type IItemRepository } from './Iitem.repository';
-import deleteObjKey from '../../utils';
+import { deleteObjKey } from '../../utils';
 import { type ItemUpdateType } from './item.schema';
 
 export class ItemRepository implements IItemRepository {

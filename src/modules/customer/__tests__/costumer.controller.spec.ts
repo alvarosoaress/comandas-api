@@ -2,7 +2,10 @@
  * @jest-environment ./database/drizzle.environment.jest
  */
 
-import { type CustomerExtendedSafe } from '../../../../database/schema';
+import {
+  type OrderFormatted,
+  type CustomerExtendedSafe,
+} from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
 import {
@@ -11,6 +14,9 @@ import {
 } from '../customer.schema';
 import path from 'path';
 import dotenv from 'dotenv';
+import { type ItemCreateType } from '../../item/item.schema';
+import { type OrderCreateType } from '../../order/order.schema';
+import { type ShopCreateType } from '../../shop/shop.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -83,6 +89,101 @@ describe('Customer Controller Integration', () => {
       response.body.forEach((customer: CustomerExtendedSafe) => {
         expect(customer.userInfo.role).toEqual('customer');
       });
+    });
+  });
+
+  describe('GET /customer/:id/order', () => {
+    beforeAll(async () => {
+      const newShopInfo: ShopCreateType = {
+        shopInfo: {
+          tables: 5,
+        },
+        userInfo: {
+          name: 'Leoncio',
+          email: 'leoncio@tute.italia',
+          password: 'supersafepasswordnobodywillnowhihi123',
+        },
+        addressInfo: {
+          number: 69,
+          street: 'Virgulini',
+          neighborhood: 'Francesco',
+          city: 'City Test',
+          state: 'Tute',
+          country: 'Italia',
+        },
+      };
+
+      const newItem: ItemCreateType = {
+        name: 'Bolo de murango',
+        price: 71.8,
+        shopId: 2,
+      };
+
+      const newOrder: OrderCreateType = [
+        {
+          customerId: 1,
+          shopId: 2,
+          itemId: 1,
+          quantity: 1,
+          tableId: 1,
+          total: 258.78,
+        },
+      ];
+
+      await request(app)
+        .post('/shop/create')
+        .send(newShopInfo)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      await request(app)
+        .post('/item/create')
+        .send(newItem)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      await request(app)
+        .post('/order/create')
+        .send(newOrder)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+    });
+
+    it('should return all the orders belonging to customer', async () => {
+      const orders: OrderFormatted[] = [
+        {
+          customerId: 1,
+          shopId: 2,
+          groupId: expect.any(Number),
+          tableId: 1,
+          id: 1,
+          status: 'open',
+          items: [
+            {
+              itemId: 1,
+              quantity: 1,
+              total: 258.78,
+            },
+          ],
+          total: 258.78,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+          note: null,
+        },
+      ];
+
+      const response = await request(app)
+        .get('/customer/1/order')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toBeInstanceOf(Array);
+
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
+
+      expect(response.body).toMatchObject(orders);
     });
   });
 

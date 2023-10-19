@@ -2,6 +2,7 @@ import {
   type CustomerExtendedSafe,
   type CustomerExtended,
   type Customer,
+  type OrderFormatted,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type ICustomerRepository } from '../Icustomer.repository';
@@ -18,6 +19,7 @@ describe('Customer Service', () => {
       create: jest.fn(),
       list: jest.fn(),
       update: jest.fn(),
+      getOrders: jest.fn(),
     };
 
     customerService = new CustomerService(customerRepositoryMock);
@@ -60,6 +62,59 @@ describe('Customer Service', () => {
 
       expect(newCustomer).not.toHaveProperty('password');
       expect(newCustomer).not.toHaveProperty('refreshToken');
+    });
+  });
+
+  describe('Customer Orders', () => {
+    it('should return all customer orders', async () => {
+      const customerOrders: OrderFormatted[] = [
+        {
+          customerId: 1,
+          shopId: 1,
+          tableId: 1,
+          total: 588.78,
+          groupId: 123456789,
+          id: 1,
+          status: 'open',
+          items: [
+            {
+              itemId: 1,
+              quantity: 1,
+              total: 588.78,
+            },
+          ],
+        },
+      ];
+
+      customerRepositoryMock.getOrders.mockResolvedValue(customerOrders);
+
+      const customerOrdersFound = await customerService.getOrders('1');
+
+      expect(customerRepositoryMock.getOrders).toHaveBeenCalledWith('1');
+
+      expect(customerOrdersFound).toEqual(customerOrders);
+    });
+
+    it('should throw a error if no customer found', async () => {
+      customerRepositoryMock.getOrders.mockResolvedValue(undefined);
+
+      await expect(customerService.getOrders('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(customerRepositoryMock.getOrders).toHaveBeenCalledWith('1');
+    });
+
+    it('should throw a error if the customer has no orders', async () => {
+      const customerOrders = undefined;
+
+      customerRepositoryMock.getOrders.mockResolvedValue(customerOrders);
+
+      await expect(customerService.getOrders('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(customerRepositoryMock.getOrders).toHaveBeenCalledWith('1');
     });
   });
 

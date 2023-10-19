@@ -48,6 +48,7 @@ router
 router
   .route('/:id/order')
   .get(
+    verifyToken('shop'),
     validate(shopGetOrderSchema),
     async (req, res) => await shopFactory().getShopOrders(req, res),
   );

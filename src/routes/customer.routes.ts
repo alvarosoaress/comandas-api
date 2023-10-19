@@ -3,6 +3,7 @@ import validate from '../middleware/validateResource';
 import { customerFactory } from '../modules/customer/customer.factory';
 import {
   customerCreateSchema,
+  customerGetOrderSchema,
   customerUpdateSchema,
 } from '../modules/customer/customer.schema';
 import verifyToken from '../middleware/verifyToken';
@@ -14,6 +15,14 @@ router
   .post(
     validate(customerCreateSchema),
     async (req, res) => await customerFactory().createCustomer(req, res),
+  );
+
+router
+  .route('/:id/order')
+  .get(
+    verifyToken('shop'),
+    validate(customerGetOrderSchema),
+    async (req, res) => await customerFactory().getCustomerOrders(req, res),
   );
 
 router

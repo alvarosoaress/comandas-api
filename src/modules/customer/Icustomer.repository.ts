@@ -2,6 +2,7 @@ import {
   type Customer,
   type CustomerExtendedSafe,
   type CustomerExtended,
+  type OrderFormatted,
 } from '../../../database/schema';
 import {
   type CustomerUpdateType,
@@ -17,4 +18,5 @@ export type ICustomerRepository = {
   update: (
     newCustomerInfo: CustomerUpdateType,
   ) => Promise<Customer | undefined>;
+  getOrders: (userId: string) => Promise<OrderFormatted[] | undefined>;
 };

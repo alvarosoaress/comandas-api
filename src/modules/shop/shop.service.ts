@@ -1,14 +1,13 @@
 import {
-  type ShopExtended,
   type Item,
   type ShopExtendedSafe,
   type Shop,
   type QrCode,
   type ItemCategory,
-  type Order,
+  type OrderFormatted,
 } from '../../../database/schema';
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
-import deleteObjKey from '../../utils';
+
 import { type IShopRepository } from './Ishop.repository';
 import {
   type ShopUpdateType,
@@ -33,16 +32,11 @@ export class ShopService {
 
     if (!shops || shops.length < 1) throw new NotFoundError('No shops found');
 
-    // shops.forEach((shop: ShopExtended) => {
-    //   deleteObjKey(shop.userInfo, 'password');
-    //   deleteObjKey(shop.userInfo, 'refreshToken');
-    // });
-
     return shops;
   }
 
-  async getMenu(shopId: string): Promise<Item[] | undefined> {
-    const shopMenu = await this.shopRepository.getMenu(shopId);
+  async getMenu(userId: string): Promise<Item[] | undefined> {
+    const shopMenu = await this.shopRepository.getMenu(userId);
 
     if (!shopMenu) throw new NotFoundError('No shop found');
 
@@ -52,8 +46,8 @@ export class ShopService {
     return shopMenu;
   }
 
-  async getQrCodes(shopId: string): Promise<QrCode[] | undefined> {
-    const shopQrCodes = await this.shopRepository.getQrCodes(shopId);
+  async getQrCodes(userId: string): Promise<QrCode[] | undefined> {
+    const shopQrCodes = await this.shopRepository.getQrCodes(userId);
 
     if (!shopQrCodes) throw new NotFoundError('No shop found');
 
@@ -63,8 +57,8 @@ export class ShopService {
     return shopQrCodes;
   }
 
-  async getOrders(shopId: string): Promise<Order[] | undefined> {
-    const shopOrders = await this.shopRepository.getOrders(shopId);
+  async getOrders(userId: string): Promise<OrderFormatted[] | undefined> {
+    const shopOrders = await this.shopRepository.getOrders(userId);
 
     if (!shopOrders) throw new NotFoundError('No shop found');
 
@@ -74,9 +68,9 @@ export class ShopService {
     return shopOrders;
   }
 
-  async getItemCategories(shopId: string): Promise<ItemCategory[] | undefined> {
+  async getItemCategories(userId: string): Promise<ItemCategory[] | undefined> {
     const shopItemCategories =
-      await this.shopRepository.getItemCategories(shopId);
+      await this.shopRepository.getItemCategories(userId);
 
     if (!shopItemCategories) throw new NotFoundError('No shop found');
 

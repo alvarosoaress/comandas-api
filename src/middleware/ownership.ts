@@ -3,10 +3,10 @@ import { db } from '../../database';
 import { item, itemCategory, order, qrCode, shop } from '../../database/schema';
 
 export function genericOwnership(
-  requestId: number,
-  operationId: number,
+  requestId: number | string | undefined,
+  operationId: number | string,
 ): boolean {
-  return requestId === operationId;
+  return Number(requestId) === Number(operationId);
 }
 
 export async function addressOwnership(

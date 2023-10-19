@@ -25,10 +25,19 @@ export const customerGetSchema = z.object({
   }),
 });
 
+export const customerGetOrderSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
 export const customerUpdateSchema = z.object({
   body: customerSchema.omit({ createdAt: true }),
 });
 
 export type CustomerCreateType = z.infer<typeof customerCreateSchema>['body'];
 export type CustomerGetType = z.infer<typeof customerGetSchema>['params'];
+export type CustomerGetOrderType = z.infer<
+  typeof customerGetOrderSchema
+>['params'];
 export type CustomerUpdateType = z.infer<typeof customerUpdateSchema>['body'];

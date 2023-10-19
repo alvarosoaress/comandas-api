@@ -131,7 +131,7 @@ describe('Order Controller Integration', () => {
 
   describe('GET /order/:groupId', () => {
     it('should return order with specified group id', async () => {
-      // Necessário o GET primeio pois o groupId é random
+      // Necessário o GET primeiro pois o groupId é random
       const order = await request(app)
         .get('/order/list')
         .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)

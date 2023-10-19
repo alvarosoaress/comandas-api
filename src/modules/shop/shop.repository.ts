@@ -9,10 +9,11 @@ import {
   type QrCode,
   type ItemCategory,
   type Order,
+  type OrderFormatted,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
-import deleteObjKey from '../../utils';
+import { deleteObjKey, formatOrder } from '../../utils';
 import {
   type ShopUpdateType,
   type ShopCreateType,
@@ -77,27 +78,6 @@ export class ShopRepository implements IShopRepository {
   }
 
   async list(query?: ShopListType): Promise<ShopListResType> {
-    // if (!query) {
-    //   const shops = await db.query.shop.findMany({
-    //     with: {
-    //       addressInfo: true,
-    //       userInfo: true,
-    //       categories: {
-    //         with: { categories: { columns: { name: true, id: true } } },
-    //       },
-    //     },
-    //   });
-    //   const shopsTreated = shops.map((shop) => ({
-    //     ...shop,
-    //     categories: shop.categories.map((category) => ({
-    //       name: category.categories.name,
-    //       id: category.categories.id,
-    //     })),
-    //   }));
-
-    //   return shopsTreated;
-    // }
-
     const shopsBase = sql`
         SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
         FROM shop as s
@@ -171,9 +151,9 @@ export class ShopRepository implements IShopRepository {
     return result[0] as unknown as ShopListResType;
   }
 
-  async getMenu(shopId: string): Promise<Item[] | undefined> {
+  async getMenu(userId: string): Promise<Item[] | undefined> {
     const shopMenu = await db.query.shop.findFirst({
-      where: eq(shop.userId, parseInt(shopId)),
+      where: eq(shop.userId, parseInt(userId)),
       columns: {},
       with: {
         menu: true,
@@ -185,9 +165,9 @@ export class ShopRepository implements IShopRepository {
     return Object.values(shopMenu.menu);
   }
 
-  async getQrCodes(shopId: string): Promise<QrCode[] | undefined> {
+  async getQrCodes(userId: string): Promise<QrCode[] | undefined> {
     const shopQrCodes = await db.query.shop.findFirst({
-      where: eq(shop.userId, parseInt(shopId)),
+      where: eq(shop.userId, parseInt(userId)),
       columns: {},
       with: {
         qrCodes: true,
@@ -199,9 +179,9 @@ export class ShopRepository implements IShopRepository {
     return Object.values(shopQrCodes.qrCodes);
   }
 
-  async getItemCategories(shopId: string): Promise<ItemCategory[] | undefined> {
+  async getItemCategories(userId: string): Promise<ItemCategory[] | undefined> {
     const shopItemCategories = await db.query.shop.findFirst({
-      where: eq(shop.userId, parseInt(shopId)),
+      where: eq(shop.userId, parseInt(userId)),
       columns: {},
       with: {
         itemCategories: true,
@@ -213,9 +193,9 @@ export class ShopRepository implements IShopRepository {
     return Object.values(shopItemCategories.itemCategories);
   }
 
-  async getOrders(shopId: string): Promise<Order[] | undefined> {
+  async getOrders(userId: string): Promise<OrderFormatted[] | undefined> {
     const shopOrders = await db.query.shop.findFirst({
-      where: eq(shop.userId, parseInt(shopId)),
+      where: eq(shop.userId, parseInt(userId)),
       columns: {},
       with: {
         orders: true,
@@ -224,7 +204,30 @@ export class ShopRepository implements IShopRepository {
 
     if (!shopOrders) return undefined;
 
-    return Object.values(shopOrders.orders);
+    const orderArray = new Map<string, Order[] | undefined>();
+
+    Object.values(shopOrders.orders).forEach((order) => {
+      const groupIdIndex = String(order.groupId);
+
+      let index = orderArray.get(groupIdIndex);
+
+      if (!index) {
+        orderArray.set(groupIdIndex, []);
+        index = orderArray.get(groupIdIndex);
+      }
+
+      index?.push(order);
+      orderArray.set(groupIdIndex, index);
+    });
+
+    const formattedOrderArray: OrderFormatted[] | undefined = [];
+
+    orderArray.forEach((arrayOrder) =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      formattedOrderArray.push(formatOrder(arrayOrder!)),
+    );
+
+    return formattedOrderArray;
   }
 
   async exists(userId: number): Promise<boolean> {

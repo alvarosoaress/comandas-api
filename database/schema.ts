@@ -153,6 +153,7 @@ export const costumerRelations = relations(customer, ({ one, many }) => ({
     fields: [customer.userId],
     references: [user.id],
   }),
+  orders: many(order),
 }));
 
 export const itemCategory = mysqlTable('item_category', {
@@ -265,6 +266,10 @@ export const ordersRelations = relations(order, ({ one }) => ({
   shop: one(shop, {
     fields: [order.shopId],
     references: [shop.userId],
+  }),
+  customer: one(customer, {
+    fields: [order.customerId],
+    references: [customer.userId],
   }),
 }));
 

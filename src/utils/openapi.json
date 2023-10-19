@@ -1533,6 +1533,61 @@
         }
       }
     },
+    "/customer/{customerId}/order": {
+      "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "customerBearerAuth": []
+          }
+        ],
+        "tags": ["Customer"],
+        "summary": "Get all open and closed orders belonging to customerid",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Customer ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer orders found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerGetOrderRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not foud OR Customer has no orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/shop/create": {
       "post": {
         "tags": ["Shop"],
@@ -1830,6 +1885,61 @@
           },
           "404": {
             "description": "Shop not foud OR Shop has no item categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/{shopId}/order": {
+      "get": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["Shop"],
+        "summary": "Get all open and closed orders belonging to shop id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shopId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Shop ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shop orders found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopGetItemCategoryRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not foud OR Shop has no orders",
             "content": {
               "application/json": {
                 "schema": {
@@ -3928,6 +4038,74 @@
           }
         }
       },
+      "CustomerGetOrderRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "groupId": {
+              "type": "integer",
+              "example": 123456789
+            },
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "customerId": {
+              "type": "integer",
+              "example": 5
+            },
+            "tableId": {
+              "type": "integer",
+              "example": 3
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "itemId": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "total": {
+                    "type": "integer",
+                    "example": 88.78
+                  }
+                }
+              }
+            },
+            "total": {
+              "type": "integer",
+              "example": 88.78
+            },
+            "status": {
+              "type": "string",
+              "example": "open"
+            },
+            "note": {
+              "type": "string",
+              "example": "No romcom please"
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
       "ShopCreateSchema": {
         "type": "object",
         "required": ["userInfo, addressInfo"],
@@ -4272,6 +4450,74 @@
             "shopId": {
               "type": "integer",
               "example": 1
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
+      "ShopGetOrderRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "groupId": {
+              "type": "integer",
+              "example": 123456789
+            },
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "customerId": {
+              "type": "integer",
+              "example": 5
+            },
+            "tableId": {
+              "type": "integer",
+              "example": 3
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "itemId": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "total": {
+                    "type": "integer",
+                    "example": 88.78
+                  }
+                }
+              }
+            },
+            "total": {
+              "type": "integer",
+              "example": 88.78
+            },
+            "status": {
+              "type": "string",
+              "example": "open"
+            },
+            "note": {
+              "type": "string",
+              "example": "No romcom please"
             },
             "createdAt": {
               "type": "string",

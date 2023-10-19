@@ -1,9 +1,10 @@
 import {
   type CustomerExtendedSafe,
   type Customer,
+  type OrderFormatted,
 } from '../../../database/schema';
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
-import deleteObjKey from '../../utils';
+import { deleteObjKey } from '../../utils';
 import { type ICustomerRepository } from './Icustomer.repository';
 import {
   type CustomerUpdateType,
@@ -33,6 +34,17 @@ export class CustomerService {
     });
 
     return customers;
+  }
+
+  async getOrders(userId: string): Promise<OrderFormatted[] | undefined> {
+    const customerOrders = await this.customerRepository.getOrders(userId);
+
+    if (!customerOrders) throw new NotFoundError('No customer found');
+
+    if (!customerOrders || customerOrders.length < 1)
+      throw new NotFoundError('Customer has no orders');
+
+    return customerOrders;
   }
 
   async update(

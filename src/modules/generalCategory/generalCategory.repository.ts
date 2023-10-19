@@ -1,6 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { db } from '../../../database';
-import deleteObjKey from '../../utils';
+import { deleteObjKey } from '../../utils';
 import { type IGeneralCategoryRepository } from './IgeneralCategory.repository';
 import {
   type GeneralCategory,

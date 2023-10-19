@@ -6,7 +6,7 @@ import {
   type QrCode,
   type Item,
   type ItemCategory,
-  type Order,
+  type OrderFormatted,
 } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
@@ -194,19 +194,25 @@ describe('Shop Controller Integration', () => {
     });
 
     it('should return all the orders belonging to shop', async () => {
-      const orders: Order[] = [
+      const orders: OrderFormatted[] = [
         {
           shopId: 1,
           groupId: expect.any(Number),
           tableId: 1,
           id: 1,
           customerId: 2,
-          itemId: 1,
-          quantity: 1,
-          total: 258.78,
           status: 'open',
+          items: [
+            {
+              itemId: 1,
+              quantity: 1,
+              total: 258.78,
+            },
+          ],
+          total: 258.78,
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
+          note: null,
         },
       ];
 

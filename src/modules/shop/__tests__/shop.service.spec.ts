@@ -4,7 +4,7 @@ import {
   type ShopExtended,
   type QrCode,
   type ItemCategory,
-  type Order,
+  type OrderFormatted,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
@@ -294,17 +294,22 @@ describe('Shop Service', () => {
 
   describe('Shop Orders', () => {
     it('should return all shop orders', async () => {
-      const shopOrders: Order[] = [
+      const shopOrders: OrderFormatted[] = [
         {
-          shopId: 1,
-          id: 1,
           customerId: 1,
-          status: 'open',
-          itemId: 1,
-          quantity: 5,
+          shopId: 1,
           tableId: 1,
-          total: 558.78,
+          total: 588.78,
           groupId: 123456789,
+          id: 1,
+          status: 'open',
+          items: [
+            {
+              itemId: 1,
+              quantity: 1,
+              total: 588.78,
+            },
+          ],
         },
       ];
 
