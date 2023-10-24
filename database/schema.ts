@@ -6,6 +6,7 @@ import {
   mysqlTable,
   primaryKey,
   real,
+  text,
   timestamp,
   varchar,
 } from 'drizzle-orm/mysql-core';
@@ -65,7 +66,7 @@ export const shop = mysqlTable('shop', {
       onUpdate: 'cascade',
     }),
   tables: int('tables'),
-  photoUrl: varchar('photo_url', { length: 256 }),
+  photoUrl: text('photo_url'),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
@@ -171,7 +172,7 @@ export const customer = mysqlTable('customer', {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  photoUrl: varchar('photo_url', { length: 256 }),
+  photoUrl: text('photo_url'),
   birthday: timestamp('birthday'),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
@@ -215,7 +216,7 @@ export const item = mysqlTable('item', {
   description: varchar('description', { length: 256 }),
   price: real('price', { precision: 10, scale: 2 }).notNull(),
   temperature: mysqlEnum('temperature', ['cold', 'hot']),
-  photoUrl: varchar('photo_url', { length: 256 }),
+  photoUrl: text('photo_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
