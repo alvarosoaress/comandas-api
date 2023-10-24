@@ -10,6 +10,7 @@ import GeneralCategoryRoutes from './routes/generalCategory.routes';
 import ItemCategoryRoutes from './routes/itemCategory.routes';
 import QrCodeRoutes from './routes/qrCode.routes';
 import OrderRoutes from './routes/order.routes';
+import ScheduleRoutes from './routes/schedule.routes';
 import { errorMiddleware } from './middleware/error';
 import verifyToken from './middleware/verifyToken';
 import swaggerDocs from './utils/swagger';
@@ -53,6 +54,7 @@ app.use('/generalcategory', GeneralCategoryRoutes);
 app.use('/itemcategory', ItemCategoryRoutes);
 app.use('/qrcode', QrCodeRoutes);
 app.use('/order', OrderRoutes);
+app.use('/schedule', ScheduleRoutes);
 
 // Middleware para tratamento de erros
 app.use(errorMiddleware);

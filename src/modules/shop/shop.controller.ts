@@ -8,6 +8,7 @@ import {
   type ShopGetQrCodeType,
   type ShopGetItemCategoryType,
   type ShopGetOrderType,
+  type ShopGetScheduleType,
 } from './shop.schema';
 import { type ShopService } from './shop.service';
 import verifyOwnership from '../../middleware/verifyOwnership';
@@ -55,6 +56,12 @@ export class ShopController {
     verifyOwnership(genericOwnership(req.user.id, req.params.id), req);
 
     const shopOrders = await this.shopService.getOrders(req.params.id);
+
+    return res.status(200).json(shopOrders);
+  }
+
+  async getShopSchedule(req: Request<ShopGetScheduleType>, res: Response) {
+    const shopOrders = await this.shopService.getSchedule(req.params.id);
 
     return res.status(200).json(shopOrders);
   }

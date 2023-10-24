@@ -10,6 +10,7 @@ import {
   type ItemCategory,
   type Order,
   type OrderFormatted,
+  type ShopSchedule,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
@@ -20,7 +21,6 @@ import {
   type ShopListType,
   type ShopListResType,
 } from './shop.schema';
-// import { MySqlDialect } from 'drizzle-orm/mysql-core';
 
 export class ShopRepository implements IShopRepository {
   constructor(
@@ -61,6 +61,7 @@ export class ShopRepository implements IShopRepository {
         categories: {
           with: { categories: { columns: { name: true, id: true } } },
         },
+        schedule: true,
       },
     });
 
@@ -77,9 +78,9 @@ export class ShopRepository implements IShopRepository {
     return newShopTreated;
   }
 
-  async list(query?: ShopListType): Promise<ShopListResType> {
+  async list(query?: ShopListType): Promise<ShopListResType[]> {
     const shopsBase = sql`
-        SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
+        SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, s.photo_url, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
         FROM shop as s
         JOIN address as a ON s.address_id = a.id
         JOIN user as u ON s.user_id = u.id
@@ -145,10 +146,42 @@ export class ShopRepository implements IShopRepository {
 
     const result = await db.execute(finalSql);
 
+    const resultTyped = result[0] as unknown as ShopListResType[];
+
+    // -----------------------
+
+    const shopScheduleSql = sql`
+    SELECT * FROM menuappTest.shop_schedule as sch
+    WHERE`;
+
+    const sqlChunksSchedule: SQL[] = [];
+
+    sqlChunksSchedule.push(shopScheduleSql);
+
+    for (let index = 0; index < resultTyped.length; index++) {
+      sqlChunksSchedule.push(sql`sch.shop_id = ${resultTyped[index].user_id}`);
+
+      if (index !== resultTyped.length - 1) sqlChunksSchedule.push(sql`OR`);
+    }
+
+    const finalScheduleSql: SQL = sql.join(sqlChunksSchedule, sql.raw(' '));
+
+    const resultSchedule = await db.execute(finalScheduleSql);
+
+    const resultScheduleTyped = resultSchedule[0] as unknown as ShopSchedule[];
+
+    resultTyped.forEach((shop) => {
+      shop.schedule = resultScheduleTyped.filter(
+        (schedule) => schedule.shop_id === shop.user_id,
+      );
+    });
+
+    // -----------------------
+
     // console.log(result[0]);
     // console.log(query);
 
-    return result[0] as unknown as ShopListResType;
+    return resultTyped;
   }
 
   async getMenu(userId: string): Promise<Item[] | undefined> {
@@ -228,6 +261,20 @@ export class ShopRepository implements IShopRepository {
     );
 
     return formattedOrderArray;
+  }
+
+  async getSchedule(userId: string): Promise<ShopSchedule[] | undefined> {
+    const shopSchedule = await db.query.shop.findFirst({
+      where: eq(shop.userId, parseInt(userId)),
+      columns: {},
+      with: {
+        schedule: true,
+      },
+    });
+
+    if (!shopSchedule) return undefined;
+
+    return Object.values(shopSchedule.schedule);
   }
 
   async exists(userId: number): Promise<boolean> {

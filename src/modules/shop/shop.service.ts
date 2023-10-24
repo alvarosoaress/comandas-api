@@ -5,6 +5,7 @@ import {
   type QrCode,
   type ItemCategory,
   type OrderFormatted,
+  type ShopSchedule,
 } from '../../../database/schema';
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 
@@ -78,6 +79,17 @@ export class ShopService {
       throw new NotFoundError('Shop has no item categories');
 
     return shopItemCategories;
+  }
+
+  async getSchedule(userId: string): Promise<ShopSchedule[] | undefined> {
+    const shopSchedule = await this.shopRepository.getSchedule(userId);
+
+    if (!shopSchedule) throw new NotFoundError('No shop found');
+
+    if (!shopSchedule || shopSchedule.length < 1)
+      throw new NotFoundError('Shop has no schedule');
+
+    return shopSchedule;
   }
 
   async update(newShopInfo: ShopUpdateType): Promise<Shop | undefined> {

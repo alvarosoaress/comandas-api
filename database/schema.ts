@@ -65,6 +65,7 @@ export const shop = mysqlTable('shop', {
       onUpdate: 'cascade',
     }),
   tables: int('tables'),
+  photoUrl: varchar('photo_url', { length: 256 }),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
@@ -83,6 +84,7 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
   qrCodes: many(qrCode),
   itemCategories: many(itemCategory),
   orders: many(order),
+  schedule: many(shopSchedule),
 }));
 
 export const shopCategory = mysqlTable(
@@ -110,6 +112,33 @@ export const shopCategoryRelations = relations(shopCategory, ({ one }) => ({
   categories: one(generalCategory, {
     fields: [shopCategory.generalCategoryId],
     references: [generalCategory.id],
+  }),
+}));
+
+export const shopSchedule = mysqlTable(
+  'shop_schedule',
+  {
+    shop_id: int('shop_id')
+      .notNull()
+      .references(() => shop.userId, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      }),
+    day: int('day').notNull(),
+    opening: int('opening').notNull(),
+    closing: int('closing').notNull(),
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+  },
+  (table) => {
+    return { pk: primaryKey(table.shop_id, table.day) };
+  },
+);
+
+export const shopScheduleRelations = relations(shopSchedule, ({ one }) => ({
+  shops: one(shop, {
+    fields: [shopSchedule.shop_id],
+    references: [shop.userId],
   }),
 }));
 
@@ -186,6 +215,7 @@ export const item = mysqlTable('item', {
   description: varchar('description', { length: 256 }),
   price: real('price', { precision: 10, scale: 2 }).notNull(),
   temperature: mysqlEnum('temperature', ['cold', 'hot']),
+  photoUrl: varchar('photo_url', { length: 256 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
@@ -308,12 +338,14 @@ export type ShopExtended = typeof shop.$inferInsert & {
   categories?: Array<{ id: number; name: string }>;
   userInfo: User;
   addressInfo: Address;
+  schedule?: ShopSchedule[];
 };
 
 export type ShopExtendedSafe = typeof shop.$inferInsert & {
   categories?: Array<{ id: number; name: string }>;
   userInfo: UserSafe;
   addressInfo: Address;
+  schedule?: ShopSchedule[];
 };
 
 export type Item = typeof item.$inferInsert;
@@ -341,3 +373,5 @@ export type OrderFormatted = {
   status: 'open' | 'closed' | 'cancelled' | undefined;
   note?: string | null;
 };
+
+export type ShopSchedule = typeof shopSchedule.$inferInsert;

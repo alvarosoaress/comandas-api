@@ -92,6 +92,7 @@ export class UserRepository implements IUserRepository {
           categories: {
             with: { categories: { columns: { name: true, id: true } } },
           },
+          schedule: true,
         },
       });
 

@@ -54,6 +54,13 @@ router
   );
 
 router
+  .route('/:id/schedule')
+  .get(
+    validate(shopGetOrderSchema),
+    async (req, res) => await shopFactory().getShopSchedule(req, res),
+  );
+
+router
   .route('/update')
   .put(
     verifyToken('shop'),

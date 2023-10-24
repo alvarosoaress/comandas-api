@@ -7,6 +7,7 @@ import {
   type Item,
   type ItemCategory,
   type OrderFormatted,
+  type ShopSchedule,
 } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
@@ -18,6 +19,7 @@ import { type QrCodeCreateType } from '../../qrCode/qrCode.schema';
 import { type ItemCategoryCreateType } from '../../itemCategory/itemCategory.schema';
 import { type OrderCreateType } from '../../order/order.schema';
 import { type CustomerCreateType } from '../../customer/customer.schema';
+import { type ScheduleSetType } from '../../schedule/schedule.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -228,6 +230,135 @@ describe('Shop Controller Integration', () => {
       expect(response.body.length).toBeGreaterThanOrEqual(1);
 
       expect(response.body).toMatchObject(orders);
+    });
+  });
+
+  describe('GET /shop/:id/schedule', () => {
+    beforeAll(async () => {
+      const newSchedule: ScheduleSetType = [
+        {
+          shop_id: 1,
+          day: 0,
+          opening: 8,
+          closing: 12,
+        },
+        {
+          shop_id: 1,
+          day: 1,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 2,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 3,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 4,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 5,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 6,
+          opening: 8,
+          closing: 12,
+        },
+      ];
+
+      await request(app)
+        .post('/schedule/set')
+        .send(newSchedule)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+    });
+
+    it('should return the shop schedule', async () => {
+      const schedule: ShopSchedule[] = [
+        {
+          shop_id: 1,
+          day: 0,
+          opening: 8,
+          closing: 12,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+        {
+          shop_id: 1,
+          day: 1,
+          opening: 8,
+          closing: 22,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+        {
+          shop_id: 1,
+          day: 2,
+          opening: 8,
+          closing: 22,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+        {
+          shop_id: 1,
+          day: 3,
+          opening: 8,
+          closing: 22,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+        {
+          shop_id: 1,
+          day: 4,
+          opening: 8,
+          closing: 22,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+        {
+          shop_id: 1,
+          day: 5,
+          opening: 8,
+          closing: 22,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+        {
+          shop_id: 1,
+          day: 6,
+          opening: 8,
+          closing: 12,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+      ];
+
+      const response = await request(app)
+        .get('/shop/1/schedule')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toBeInstanceOf(Array);
+
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
+
+      expect(response.body).toMatchObject(schedule);
     });
   });
 

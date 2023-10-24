@@ -5,6 +5,7 @@ import {
   type QrCode,
   type ItemCategory,
   type OrderFormatted,
+  type ShopSchedule,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
@@ -29,6 +30,7 @@ describe('Shop Service', () => {
       getQrCodes: jest.fn(),
       getItemCategories: jest.fn(),
       getOrders: jest.fn(),
+      getSchedule: jest.fn(),
     };
 
     shopService = new ShopService(shopRepositoryMock);
@@ -114,6 +116,8 @@ describe('Shop Service', () => {
           name: 'Virgulini',
           category_name: 'Fiaaaun',
           category_id: 7,
+          photo_url: undefined,
+          schedule: [],
         },
       ];
       shopRepositoryMock.list.mockResolvedValue(shopList);
@@ -342,6 +346,85 @@ describe('Shop Service', () => {
       );
 
       expect(shopRepositoryMock.getOrders).toHaveBeenCalledWith('1');
+    });
+  });
+
+  describe('Shop Shedule', () => {
+    it('should return the shop schedule', async () => {
+      const shopSchedule: ShopSchedule[] = [
+        {
+          shop_id: 1,
+          day: 0,
+          opening: 8,
+          closing: 12,
+        },
+        {
+          shop_id: 1,
+          day: 1,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 2,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 3,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 4,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 5,
+          opening: 8,
+          closing: 22,
+        },
+        {
+          shop_id: 1,
+          day: 6,
+          opening: 8,
+          closing: 12,
+        },
+      ];
+
+      shopRepositoryMock.getSchedule.mockResolvedValue(shopSchedule);
+
+      const shopScheduleFound = await shopService.getSchedule('1');
+
+      expect(shopRepositoryMock.getSchedule).toHaveBeenCalledWith('1');
+
+      expect(shopScheduleFound).toEqual(shopSchedule);
+    });
+
+    it('should throw a error if no shop found', async () => {
+      shopRepositoryMock.getSchedule.mockResolvedValue(undefined);
+
+      await expect(shopService.getSchedule('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getSchedule).toHaveBeenCalledWith('1');
+    });
+
+    it('should throw a error if the shop has no schedule', async () => {
+      const shopSchedule = undefined;
+
+      shopRepositoryMock.getSchedule.mockResolvedValue(shopSchedule);
+
+      await expect(shopService.getSchedule('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getSchedule).toHaveBeenCalledWith('1');
     });
   });
 

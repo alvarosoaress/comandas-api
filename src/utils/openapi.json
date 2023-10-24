@@ -45,6 +45,10 @@
     {
       "name": "Order",
       "description": "Operations about order"
+    },
+    {
+      "name": "Schedule",
+      "description": "Operations about schedule"
     }
   ],
   "paths": {
@@ -1590,6 +1594,11 @@
     },
     "/shop/create": {
       "post": {
+        "security": [
+          {
+            "appApiKey": []
+          }
+        ],
         "tags": ["Shop"],
         "summary": "Create a new shop",
         "requestBody": {
@@ -1638,6 +1647,11 @@
     },
     "/shop/list": {
       "get": {
+        "security": [
+          {
+            "appApiKey": []
+          }
+        ],
         "tags": ["Shop"],
         "summary": "Get all the shops with query options",
         "parameters": [
@@ -1761,6 +1775,11 @@
     },
     "/shop/{shopId}/menu": {
       "get": {
+        "security": [
+          {
+            "appApiKey": []
+          }
+        ],
         "tags": ["Shop"],
         "summary": "Get menu from shop id",
         "parameters": [
@@ -1810,6 +1829,11 @@
     },
     "/shop/{shopId}/qrcode": {
       "get": {
+        "security": [
+          {
+            "appApiKey": []
+          }
+        ],
         "tags": ["Shop"],
         "summary": "Get qrCodes belonging to shop id",
         "parameters": [
@@ -1859,6 +1883,11 @@
     },
     "/shop/{shopId}/itemcategory": {
       "get": {
+        "security": [
+          {
+            "appApiKey": []
+          }
+        ],
         "tags": ["Shop"],
         "summary": "Get item categories belonging to shop id",
         "parameters": [
@@ -1961,6 +1990,55 @@
         }
       }
     },
+    "/shop/{shopId}/schedule": {
+      "get": {
+        "tags": ["Shop"],
+        "summary": "Get the schedule belonging to shop id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shopId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Shop ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shop schedule found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopGetSchedules"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not foud OR Shop has no schedule",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/shop/update": {
       "put": {
         "security": [
@@ -2037,6 +2115,7 @@
         "summary": "Create a new item",
         "requestBody": {
           "required": true,
+          "description": "<h2>This categoryId equal the shop's defined Item Category</h2>",
           "content": {
             "application/json": {
               "schema": {
@@ -2622,7 +2701,7 @@
               "type": "integer"
             },
             "required": true,
-            "description": "Numeric ID of the order to get."
+            "description": "<h2>All the orders have a unique ID and a groupId so they can be put together more easily, we always use the groupId</h2>"
           }
         ],
         "responses": {
@@ -2754,6 +2833,71 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schedule/set": {
+      "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "shopBearerAuth": []
+          }
+        ],
+        "tags": ["Schedule"],
+        "summary": "Set a new schedule for a shop",
+        "requestBody": {
+          "required": true,
+          "description": "<h1>It uses a 0 to 6 day schema / The hours is 24 hour style</h1> <br><h2>Sunday = 0 <br> Monday = 1 <br> Tuesday = 2 <br> Wednesday = 3 <br> Thursday = 4 <br> Friday = 5 <br> Saturday = 6</h2>",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleSetSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule settled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleSetRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Schedule array length is greater than 7 OR Shop IDs are differs along the array OR Schedule day is greater than 6",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
                 }
               }
             }
@@ -4462,6 +4606,38 @@
           }
         }
       },
+      "ShopGetSchedules": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "shop_id": {
+              "type": "integer",
+              "example": 1
+            },
+            "day": {
+              "type": "integer",
+              "example": 0
+            },
+            "openening": {
+              "type": "integer",
+              "example": 8
+            },
+            "closing": {
+              "type": "integer",
+              "example": 22
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
       "ShopGetOrderRes": {
         "type": "array",
         "items": {
@@ -5289,6 +5465,63 @@
           }
         }
       },
+      "ScheduleSetSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["shop_id", "day", "openening", "closing"],
+          "properties": {
+            "shop_id": {
+              "type": "integer",
+              "example": 1
+            },
+            "day": {
+              "type": "integer",
+              "example": 0
+            },
+            "openening": {
+              "type": "integer",
+              "example": 8
+            },
+            "closing": {
+              "type": "integer",
+              "example": 22
+            }
+          }
+        }
+      },
+      "ScheduleSetRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "shop_id": {
+              "type": "integer",
+              "example": 1
+            },
+            "day": {
+              "type": "integer",
+              "example": 0
+            },
+            "openening": {
+              "type": "integer",
+              "example": 8
+            },
+            "closing": {
+              "type": "integer",
+              "example": 22
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
       "NotFoundError": {
         "type": "string",
         "default": "Not found"
@@ -5304,6 +5537,10 @@
       "ForbiddenError": {
         "type": "string",
         "default": "Not enough privileges"
+      },
+      "BadRequestError": {
+        "type": "string",
+        "default": "Bad parameters"
       }
     }
   }

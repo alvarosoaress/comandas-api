@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../database';
 import { item, itemCategory, order, qrCode, shop } from '../../database/schema';
+import { type ScheduleSetType } from '../modules/schedule/schedule.schema';
 
 export function genericOwnership(
   requestId: number | string | undefined,
@@ -75,4 +76,18 @@ export async function orderShopOwnership(
   });
 
   return orderFound?.shopId === shopId;
+}
+
+export function scheduleShopOwnership(
+  shopId: number,
+  shopIdArr: ScheduleSetType,
+): boolean {
+  let shopIdDuplicate = false;
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  shopIdArr.forEach(({ shop_id }) => {
+    if (shopId !== shop_id) shopIdDuplicate = true;
+  });
+
+  return shopIdDuplicate;
 }
