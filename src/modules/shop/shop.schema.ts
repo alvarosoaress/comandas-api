@@ -91,6 +91,7 @@ export const shopListSchema = z.object({
       tables: z.string().nonempty().optional(),
       mintables: z.string().nonempty().optional(),
       maxtables: z.string().nonempty().optional(),
+      search: z.string().nonempty().optional(),
     })
     .optional(),
 });

@@ -21,6 +21,7 @@ import {
   type ShopListType,
   type ShopListResType,
 } from './shop.schema';
+import { MySqlDialect } from 'drizzle-orm/mysql-core';
 
 export class ShopRepository implements IShopRepository {
   constructor(
@@ -135,6 +136,23 @@ export class ShopRepository implements IShopRepository {
         if (sqlChunks.length > 2) sqlChunks.push(sql` AND `);
         sqlChunks.push(sql`s.tables = ${parseInt(query.tables)}`);
       }
+      if (query.search) {
+        if (sqlChunks.length > 2) sqlChunks.push(sql` AND `);
+        sqlChunks.push(sql`
+        CONCAT(u.name, ' ', gc.name, ' ', a.street, ' ', a.city, ' ', a.neighborhood)
+        LIKE CONCAT('%', ${query.search}, '%')
+        ORDER BY
+            CASE
+                WHEN u.name LIKE ${query.search} THEN 1
+                WHEN gc.name LIKE ${query.search} THEN 2
+                WHEN a.street LIKE ${query.search} THEN 3
+                WHEN a.city LIKE ${query.search} THEN 4
+                WHEN a.neighborhood LIKE ${query.search} THEN 5
+                ELSE 6
+            END
+            `);
+      }
+      console.log(query.search);
       if (query.limit) {
         if (sqlChunks.length <= 2) sqlChunks.pop();
         sqlChunks.push(sql`LIMIT ${parseInt(query.limit)}`);
@@ -142,7 +160,7 @@ export class ShopRepository implements IShopRepository {
     }
 
     const finalSql: SQL = sql.join(sqlChunks, sql.raw(' '));
-    // console.log(new MySqlDialect().sqlToQuery(finalSql));
+    console.log(new MySqlDialect().sqlToQuery(finalSql));
 
     const result = await db.execute(finalSql);
 
