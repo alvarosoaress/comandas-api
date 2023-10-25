@@ -1657,6 +1657,16 @@
         "parameters": [
           {
             "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "example": "veneza"
+            },
+            "required": false,
+            "description": "Search for shop name, general category, street, city or neighborhood in that order."
+          },
+          {
+            "in": "query",
             "name": "limit",
             "schema": {
               "type": "integer",
