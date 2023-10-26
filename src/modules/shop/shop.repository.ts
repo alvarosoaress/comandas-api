@@ -79,8 +79,7 @@ export class ShopRepository implements IShopRepository {
   }
 
   async list(query?: ShopListType): Promise<ShopListResType[]> {
-    const shopsBase = sql`
-        SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, s.photo_url, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
+    const shopsBase = sql`SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, s.photo_url, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
         FROM shop as s
         JOIN address as a ON s.address_id = a.id
         JOIN user as u ON s.user_id = u.id
@@ -174,31 +173,36 @@ export class ShopRepository implements IShopRepository {
 
     // -----------------------
 
-    const shopScheduleSql = sql`
-    SELECT * FROM menuappTest.shop_schedule as sch
+    if (resultTyped.length > 0) {
+      const shopScheduleSql = sql`
+      SELECT * FROM menuappTest.shop_schedule as sch
     WHERE`;
 
-    const sqlChunksSchedule: SQL[] = [];
+      const sqlChunksSchedule: SQL[] = [];
 
-    sqlChunksSchedule.push(shopScheduleSql);
+      sqlChunksSchedule.push(shopScheduleSql);
 
-    for (let index = 0; index < resultTyped.length; index++) {
-      sqlChunksSchedule.push(sql`sch.shop_id = ${resultTyped[index].user_id}`);
+      for (let index = 0; index < resultTyped.length; index++) {
+        sqlChunksSchedule.push(
+          sql`sch.shop_id = ${resultTyped[index].user_id}`,
+        );
 
-      if (index !== resultTyped.length - 1) sqlChunksSchedule.push(sql`OR`);
+        if (index !== resultTyped.length - 1) sqlChunksSchedule.push(sql`OR`);
+      }
+
+      const finalScheduleSql: SQL = sql.join(sqlChunksSchedule, sql.raw(' '));
+
+      const resultSchedule = await db.execute(finalScheduleSql);
+
+      const resultScheduleTyped =
+        resultSchedule[0] as unknown as ShopSchedule[];
+
+      resultTyped.forEach((shop) => {
+        shop.schedule = resultScheduleTyped.filter(
+          (schedule) => schedule.shop_id === shop.user_id,
+        );
+      });
     }
-
-    const finalScheduleSql: SQL = sql.join(sqlChunksSchedule, sql.raw(' '));
-
-    const resultSchedule = await db.execute(finalScheduleSql);
-
-    const resultScheduleTyped = resultSchedule[0] as unknown as ShopSchedule[];
-
-    resultTyped.forEach((shop) => {
-      shop.schedule = resultScheduleTyped.filter(
-        (schedule) => schedule.shop_id === shop.user_id,
-      );
-    });
 
     // -----------------------
 
