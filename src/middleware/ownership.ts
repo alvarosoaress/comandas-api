@@ -3,6 +3,11 @@ import { db } from '../../database';
 import { item, itemCategory, order, qrCode, shop } from '../../database/schema';
 import { type ScheduleSetType } from '../modules/schedule/schedule.schema';
 
+type doubleOwnership = {
+  customerId?: number | string;
+  shopId?: number | string;
+};
+
 export function genericOwnership(
   requestId: number | string | undefined,
   operationId: number | string,
@@ -52,6 +57,16 @@ export async function qrCodeOwnership(
   });
 
   return qrCodeFound?.shopId === shopId;
+}
+
+export function orderGenericDoubleOwnership(
+  requesterId: number | string,
+  operationId: doubleOwnership,
+): boolean {
+  return (
+    Number(operationId.customerId) === Number(requesterId) ||
+    Number(operationId.shopId) === Number(requesterId)
+  );
 }
 
 export async function orderGenericOwnership(

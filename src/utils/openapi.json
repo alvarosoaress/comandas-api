@@ -6,7 +6,8 @@
   },
   "security": [
     {
-      "appApiKey": []
+      "appApiKey": [],
+      "adminBearerAuth": []
     }
   ],
   "tags": [
@@ -159,7 +160,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Address"],
@@ -224,7 +226,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Address"],
@@ -456,7 +459,8 @@
         "security": [
           {
             "appApiKey": [],
-            "customerBearerAuth": []
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["User"],
@@ -874,7 +878,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["GeneralCategory"],
@@ -938,7 +943,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["GeneralCategory"],
@@ -1051,7 +1057,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["ItemCategory"],
@@ -1238,7 +1245,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["ItemCategory"],
@@ -1302,7 +1310,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["ItemCategory"],
@@ -1478,7 +1487,8 @@
         "security": [
           {
             "appApiKey": [],
-            "customerBearerAuth": []
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Customer"],
@@ -1542,7 +1552,8 @@
         "security": [
           {
             "appApiKey": [],
-            "customerBearerAuth": []
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Customer"],
@@ -1950,7 +1961,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Shop"],
@@ -2054,7 +2066,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Shop"],
@@ -2118,7 +2131,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Item"],
@@ -2276,7 +2290,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Item"],
@@ -2340,7 +2355,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["QrCode"],
@@ -2404,7 +2420,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["QrCode"],
@@ -2458,7 +2475,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["QrCode"],
@@ -2523,7 +2541,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["QrCode"],
@@ -2589,7 +2608,8 @@
           {
             "appApiKey": [],
             "shopBearerAuth": [],
-            "customerBearerAuth": []
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Order"],
@@ -2698,7 +2718,8 @@
           {
             "appApiKey": [],
             "shopBearerAuth": [],
-            "customerBearerAuth": []
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Order"],
@@ -2754,7 +2775,8 @@
           {
             "appApiKey": [],
             "shopBearerAuth": [],
-            "customerBearerAuth": []
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Order"],
@@ -2810,7 +2832,8 @@
           {
             "appApiKey": [],
             "shopBearerAuth": [],
-            "customerBearerAuth": []
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Order"],
@@ -2865,7 +2888,8 @@
         "security": [
           {
             "appApiKey": [],
-            "shopBearerAuth": []
+            "shopBearerAuth": [],
+            "adminBearerAuth": []
           }
         ],
         "tags": ["Schedule"],

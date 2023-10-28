@@ -9,7 +9,7 @@ import {
 import { type OrderService } from './order.service';
 import verifyOwnership from '../../middleware/verifyOwnership';
 import {
-  genericOwnership,
+  orderGenericDoubleOwnership,
   orderGenericOwnership,
   orderShopOwnership,
 } from '../../middleware/ownership';
@@ -22,7 +22,10 @@ export class OrderController {
     res: Response,
   ) {
     verifyOwnership(
-      genericOwnership(Number(req.user.id), req.body[0].customerId),
+      orderGenericDoubleOwnership(Number(req.user.id), {
+        customerId: req.body[0].customerId,
+        shopId: req.body[0].shopId,
+      }),
       req,
     );
 

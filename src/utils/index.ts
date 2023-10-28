@@ -27,7 +27,7 @@ export function formatOrder(orders: Order[]): OrderFormatted {
         total: order.total,
       });
 
-      result.total = order.total;
+      result.total += order.total;
       result.tableId = order.tableId;
       result.status = order.status;
       result.note = order.note;
