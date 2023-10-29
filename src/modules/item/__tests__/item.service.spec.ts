@@ -5,7 +5,7 @@ import {
   NotFoundError,
 } from '../../../helpers/api.erros';
 import { type IItemRepository } from '../Iitem.repository';
-import { type ItemUpdateType } from '../item.schema';
+import { type ItemCreateType, type ItemUpdateType } from '../item.schema';
 import { ItemService } from '../item.service';
 
 let itemService: ItemService;
@@ -19,6 +19,7 @@ beforeEach(() => {
     list: jest.fn(),
     getById: jest.fn(),
     update: jest.fn(),
+    itemCategoryExists: jest.fn(),
   };
 
   itemService = new ItemService(itemRepositoryMock);
@@ -29,15 +30,18 @@ afterEach(() => {
 });
 
 describe('Item Service', () => {
-  const itemInfo: Item = {
+  const itemInfo: ItemCreateType = {
     name: 'Bolinea de Gorfwe',
     shopId: 1,
     price: 6.99,
+    categoryId: 71,
+    description: 'none',
   };
   describe('Create Item', () => {
     it('should return a new item', async () => {
       itemRepositoryMock.exists.mockResolvedValue(false);
       itemRepositoryMock.shopExists.mockResolvedValue(true);
+      itemRepositoryMock.itemCategoryExists.mockResolvedValue(true);
       itemRepositoryMock.create.mockResolvedValue({ ...itemInfo, id: 1 });
 
       const newItem = await itemService.create(itemInfo);
@@ -61,9 +65,22 @@ describe('Item Service', () => {
       expect(itemRepositoryMock.create).not.toBeCalled();
     });
 
+    it('should throw a error if item category with specified id not exists', async () => {
+      itemRepositoryMock.exists.mockResolvedValue(false);
+      itemRepositoryMock.shopExists.mockResolvedValue(true);
+      itemRepositoryMock.itemCategoryExists.mockResolvedValue(false);
+
+      await expect(itemService.create(itemInfo)).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(itemRepositoryMock.create).not.toBeCalled();
+    });
+
     it('should throw a error if item already exists', async () => {
       itemRepositoryMock.shopExists.mockResolvedValue(true);
       itemRepositoryMock.exists.mockResolvedValue(true);
+      itemRepositoryMock.itemCategoryExists.mockResolvedValue(true);
 
       await expect(itemService.create(itemInfo)).rejects.toThrowError(
         ConflictError,

@@ -16,12 +16,19 @@ export class ItemService {
     if (!shopExists)
       throw new NotFoundError('Shop with the specified ID not found');
 
+    if (itemInfo.categoryId) {
+      const itemCategoryExists = await this.itemRepository.itemCategoryExists(
+        itemInfo.categoryId,
+      );
+
+      if (!itemCategoryExists)
+        throw new NotFoundError('Item Category not found');
+    }
+
     const itemExists = await this.itemRepository.exists(
       itemInfo.shopId,
       itemInfo.name,
     );
-
-    // TODO Incluir verificação para categoria de item
 
     if (itemExists) throw new ConflictError('Item already exists');
 

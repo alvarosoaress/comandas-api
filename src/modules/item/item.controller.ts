@@ -7,7 +7,11 @@ import {
 } from './item.schema';
 import { type ItemService } from './item.service';
 import verifyOwnership from '../../middleware/verifyOwnership';
-import { genericOwnership, itemOwnership } from '../../middleware/ownership';
+import {
+  genericOwnership,
+  itemCategoryOwnership,
+  itemOwnership,
+} from '../../middleware/ownership';
 
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
@@ -20,6 +24,13 @@ export class ItemController {
       genericOwnership(Number(req.user.id), req.body.shopId),
       req,
     );
+
+    if (req.body.categoryId) {
+      verifyOwnership(
+        await itemCategoryOwnership(Number(req.user.id), req.body.categoryId),
+        req,
+      );
+    }
 
     const newItem = await this.itemService.create(req.body);
 

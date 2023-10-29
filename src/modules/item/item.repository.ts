@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import { db } from '../../../database';
-import { type Item, item, user } from '../../../database/schema';
+import { type Item, item, user, itemCategory } from '../../../database/schema';
 import { type IItemRepository } from './Iitem.repository';
 import { deleteObjKey } from '../../utils';
 import { type ItemUpdateType } from './item.schema';
@@ -20,6 +20,14 @@ export class ItemRepository implements IItemRepository {
     });
 
     return !!shopFound;
+  }
+
+  async itemCategoryExists(itemCategoryId: number): Promise<boolean> {
+    const itemCategoryFound = await db.query.itemCategory.findFirst({
+      where: and(eq(itemCategory.id, itemCategoryId)),
+    });
+
+    return !!itemCategoryFound;
   }
 
   async create(itemInfo: Item): Promise<Item | undefined> {
