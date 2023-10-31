@@ -1,11 +1,11 @@
 import {
-  type Item,
   type ShopExtendedSafe,
   type Shop,
   type QrCode,
   type ItemCategory,
   type OrderFormatted,
   type ShopSchedule,
+  type ItemMenu,
 } from '../../../database/schema';
 import {
   type ShopUpdateType,
@@ -18,7 +18,7 @@ export type IShopRepository = {
   exists: (userId: number) => Promise<boolean>;
   create: (info: ShopCreateType) => Promise<ShopExtendedSafe | undefined>;
   list: (query?: ShopListType) => Promise<ShopListResType[]>;
-  getMenu: (userId: string) => Promise<Item[] | undefined>;
+  getMenu: (userId: string) => Promise<ItemMenu[] | undefined>;
   getQrCodes: (userId: string) => Promise<QrCode[] | undefined>;
   getOrders: (userId: string) => Promise<OrderFormatted[] | undefined>;
   getItemCategories: (userId: string) => Promise<ItemCategory[] | undefined>;

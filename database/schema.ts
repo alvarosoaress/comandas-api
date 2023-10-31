@@ -356,6 +356,10 @@ export type ShopOrderExtended = typeof shop.$inferInsert & {
 
 export type Item = typeof item.$inferInsert;
 
+export type ItemMenu = {
+  category: typeof itemCategory.$inferSelect | null;
+} & Omit<typeof item.$inferInsert, 'categoryId'>;
+
 export type ItemCategory = typeof itemCategory.$inferInsert;
 
 export type QrCode = typeof qrCode.$inferInsert;

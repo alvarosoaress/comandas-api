@@ -1,11 +1,11 @@
 import {
-  type Item,
   type ShopExtendedSafe,
   type Shop,
   type QrCode,
   type ItemCategory,
   type OrderFormatted,
   type ShopSchedule,
+  type ItemMenu,
 } from '../../../database/schema';
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 
@@ -36,7 +36,7 @@ export class ShopService {
     return shops;
   }
 
-  async getMenu(userId: string): Promise<Item[] | undefined> {
+  async getMenu(userId: string): Promise<ItemMenu[] | undefined> {
     const shopMenu = await this.shopRepository.getMenu(userId);
 
     if (!shopMenu) throw new NotFoundError('No shop found');

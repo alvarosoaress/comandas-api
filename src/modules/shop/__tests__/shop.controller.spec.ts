@@ -4,10 +4,10 @@
 
 import {
   type QrCode,
-  type Item,
   type ItemCategory,
   type OrderFormatted,
   type ShopSchedule,
+  type ItemMenu,
 } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
@@ -78,16 +78,18 @@ describe('Shop Controller Integration', () => {
     });
 
     it('should return the menu of the shop with the specified ID', async () => {
-      const itemList: Item[] = [
+      const itemList: ItemMenu[] = [
         {
           id: 1,
           name: 'Bolinea de Gorfwe',
           price: 6.99,
           shopId: 1,
-          categoryId: null,
-          createdAt: expect.any(String),
           description: null,
           temperature: null,
+          photoUrl: null,
+          category: expect.any(Object),
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
         },
       ];
 

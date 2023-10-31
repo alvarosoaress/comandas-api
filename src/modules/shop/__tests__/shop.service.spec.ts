@@ -1,11 +1,11 @@
 import {
   type Shop,
-  type Item,
   type ShopExtended,
   type QrCode,
   type ItemCategory,
   type OrderFormatted,
   type ShopSchedule,
+  type ItemMenu,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
@@ -143,12 +143,19 @@ describe('Shop Service', () => {
 
   describe('Shop Menu', () => {
     it('should return shop id, name and menu', async () => {
-      const shopMenu: Item[] = [
+      const shopMenu: ItemMenu[] = [
         {
           id: 1,
           name: 'Bolinea de Gorfe',
           shopId: 1,
           price: 9.89,
+          category: {
+            id: 1,
+            name: 'Romcom',
+            shopId: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         },
         {
           id: 2,
@@ -157,6 +164,13 @@ describe('Shop Service', () => {
           price: 1.89,
           description: 'Sparkling water',
           temperature: 'cold' as const,
+          category: {
+            id: 1,
+            name: 'Romcom',
+            shopId: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         },
       ];
 

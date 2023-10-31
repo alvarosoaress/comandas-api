@@ -3,7 +3,6 @@ import { db } from '../../../database';
 import { type IShopRepository } from './Ishop.repository';
 import {
   shop,
-  type Item,
   type ShopExtendedSafe,
   type Shop,
   type QrCode,
@@ -11,6 +10,7 @@ import {
   type Order,
   type OrderFormatted,
   type ShopSchedule,
+  type ItemMenu,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
@@ -212,12 +212,12 @@ export class ShopRepository implements IShopRepository {
     return resultTyped;
   }
 
-  async getMenu(userId: string): Promise<Item[] | undefined> {
+  async getMenu(userId: string): Promise<ItemMenu[] | undefined> {
     const shopMenu = await db.query.shop.findFirst({
       where: eq(shop.userId, parseInt(userId)),
       columns: {},
       with: {
-        menu: true,
+        menu: { with: { category: true }, columns: { categoryId: false } },
       },
     });
 

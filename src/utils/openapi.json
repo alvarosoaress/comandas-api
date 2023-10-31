@@ -4748,9 +4748,30 @@
               "type": "integer",
               "example": 1
             },
-            "categoryId": {
-              "type": "integer",
-              "example": 1
+            "category": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Isekai"
+                },
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "shopId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-04-03T00:25:32.189Z"
+                }
+              }
             },
             "description": {
               "type": "string",
@@ -5478,7 +5499,7 @@
             "type": "integer",
             "example": 1
           },
-          "tables": {
+          "table": {
             "type": "integer",
             "example": 1
           },
