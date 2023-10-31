@@ -91,14 +91,14 @@ export class OrderRepository implements IOrderRepository {
       where: eq(order.groupId, randomGroupId),
     });
 
-    const newOrderTransformed = formatOrder(newOrder);
+    const newOrderTransformed = await formatOrder(newOrder);
 
     await db
       .update(qrCode)
       .set({ isOccupied: true, updatedAt: newOrderTransformed.updatedAt })
       .where(
         and(
-          eq(qrCode.shopId, newOrderTransformed.shopId),
+          eq(qrCode.shopId, newOrderTransformed.shop.userId),
           eq(qrCode.table, newOrderTransformed.tableId),
         ),
       );
@@ -111,7 +111,7 @@ export class OrderRepository implements IOrderRepository {
       where: eq(order.groupId, parseInt(orderGroupId)),
     });
 
-    const orderFormatted = formatOrder(orderFound);
+    const orderFormatted = await formatOrder(orderFound);
 
     return orderFormatted;
   }
@@ -146,14 +146,14 @@ export class OrderRepository implements IOrderRepository {
 
     if (!completedOrder) return undefined;
 
-    const completedOrderFormatted = formatOrder(completedOrder);
+    const completedOrderFormatted = await formatOrder(completedOrder);
 
     await db
       .update(qrCode)
       .set({ isOccupied: false, updatedAt: orderInfo.updatedAt })
       .where(
         and(
-          eq(qrCode.shopId, completedOrderFormatted.shopId),
+          eq(qrCode.shopId, completedOrderFormatted.shop.userId),
           eq(qrCode.table, completedOrderFormatted.tableId),
         ),
       );
@@ -184,14 +184,14 @@ export class OrderRepository implements IOrderRepository {
 
     if (!cancelledOrder) return undefined;
 
-    const cancelledOrderFormatted = formatOrder(cancelledOrder);
+    const cancelledOrderFormatted = await formatOrder(cancelledOrder);
 
     await db
       .update(qrCode)
       .set({ isOccupied: false, updatedAt: orderInfo.updatedAt })
       .where(
         and(
-          eq(qrCode.shopId, cancelledOrderFormatted.shopId),
+          eq(qrCode.shopId, cancelledOrderFormatted.shop.userId),
           eq(qrCode.table, cancelledOrderFormatted.tableId),
         ),
       );

@@ -349,6 +349,11 @@ export type ShopExtendedSafe = typeof shop.$inferInsert & {
   schedule?: ShopSchedule[];
 };
 
+export type ShopOrderExtended = typeof shop.$inferInsert & {
+  userInfo: UserSafe;
+  addressInfo: Address;
+};
+
 export type Item = typeof item.$inferInsert;
 
 export type ItemCategory = typeof itemCategory.$inferInsert;
@@ -361,14 +366,10 @@ export type OrderFormatted = {
   id: number | undefined;
   createdAt?: Date;
   updatedAt?: Date;
-  shopId: number;
+  shop: ShopOrderExtended;
   groupId: number;
-  customerId: number;
-  items: Array<{
-    itemId: number;
-    quantity: number;
-    total: number;
-  }>;
+  customer: CustomerExtendedSafe;
+  items: Item[];
   total: number;
   tableId: number;
   status: 'open' | 'closed' | 'cancelled' | undefined;

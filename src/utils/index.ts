@@ -1,4 +1,15 @@
-import { type Order, type OrderFormatted } from '../../database/schema';
+import { eq } from 'drizzle-orm';
+import { db } from '../../database';
+import {
+  type Item,
+  item,
+  type Order,
+  type OrderFormatted,
+  shop,
+  customer,
+  type ShopExtended,
+  type CustomerExtended,
+} from '../../database/schema';
 
 export function deleteObjKey<
   T extends Record<string, unknown>,
@@ -11,21 +22,50 @@ export function deleteObjKey<
   delete object[key];
 }
 
-export function formatOrder(orders: Order[]): OrderFormatted {
+export async function formatOrder(
+  orders: Order[],
+): Promise<Promise<OrderFormatted>> {
+  const itemsId = new Set(orders.map((item) => item.itemId));
+
+  const itemsInfo: Item[] = [];
+
+  // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+  await db.transaction(async (tx) => {
+    Array.from(itemsId).map(async (id) => {
+      itemsInfo.push(
+        (await tx.query.item.findFirst({
+          where: eq(item.id, id),
+        })) as unknown as Item,
+      );
+    });
+  });
+
+  const shopFound = (await db.query.shop.findFirst({
+    where: eq(shop.userId, orders[0].shopId),
+    with: { userInfo: true, addressInfo: true },
+  })) as unknown as ShopExtended;
+
+  deleteObjKey(shopFound.userInfo, 'refreshToken');
+  deleteObjKey(shopFound.userInfo, 'password');
+
+  const customerFound = (await db.query.customer.findFirst({
+    where: eq(customer.userId, orders[0].customerId),
+    with: { userInfo: true },
+  })) as unknown as CustomerExtended;
+
+  deleteObjKey(customerFound.userInfo, 'refreshToken');
+  deleteObjKey(customerFound.userInfo, 'password');
+
   const newOrderTransformed: OrderFormatted = orders.reduce(
     (result, order) => {
       result.id = order.id;
       result.createdAt = order.createdAt;
       result.updatedAt = order.updatedAt;
-      result.shopId = order.shopId;
+      result.shop = shopFound;
       result.groupId = order.groupId;
-      result.customerId = order.customerId;
+      result.customer = customerFound;
 
-      result.items.push({
-        itemId: order.itemId,
-        quantity: order.quantity,
-        total: order.total,
-      });
+      result.items = itemsInfo;
 
       result.total += order.total;
       result.tableId = order.tableId;
@@ -38,20 +78,19 @@ export function formatOrder(orders: Order[]): OrderFormatted {
       id: 0 as number | undefined,
       createdAt: new Date() as Date | undefined,
       updatedAt: new Date() as Date | undefined,
-      shopId: 0,
+      // TODO TROCAR ESSE CRIME DE ANY AQUI
+      // FAZER UM ZOD SCHEMA PARA ShopOrderExtended
+      shop: undefined as any,
       groupId: 0,
-      customerId: 0,
-      items: [{ itemId: 0, quantity: 0, total: 0 }],
+      // TODO TROCAR ESSE CRIME DE ANY AQUI
+      customer: undefined as any,
+      items: new Array<Item>(),
       total: 0,
       tableId: 0,
       status: 'open' as 'open' | 'closed' | 'cancelled' | undefined,
       note: undefined as string | null | undefined,
     },
   );
-
-  // Forma mais rápida que encontrei para remover o
-  // item 0 que vem de default por causa do reduce
-  newOrderTransformed.items.shift();
 
   return newOrderTransformed;
 }

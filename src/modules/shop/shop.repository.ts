@@ -283,10 +283,10 @@ export class ShopRepository implements IShopRepository {
 
     const formattedOrderArray: OrderFormatted[] | undefined = [];
 
-    orderArray.forEach((arrayOrder) =>
+    for (const arrayOrder of orderArray) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      formattedOrderArray.push(formatOrder(arrayOrder!)),
-    );
+      formattedOrderArray.push(await formatOrder(arrayOrder[1]!));
+    }
 
     return formattedOrderArray;
   }

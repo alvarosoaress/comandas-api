@@ -20,7 +20,7 @@ router
 router
   .route('/:id/order')
   .get(
-    verifyToken('shop'),
+    verifyToken('customer'),
     validate(customerGetOrderSchema),
     async (req, res) => await customerFactory().getCustomerOrders(req, res),
   );
