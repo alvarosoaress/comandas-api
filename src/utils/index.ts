@@ -57,7 +57,7 @@ export async function formatOrder(
   deleteObjKey(customerFound.userInfo, 'password');
 
   const newOrderTransformed: OrderFormatted = orders.reduce(
-    (result, order) => {
+    (result, order, index) => {
       result.id = order.id;
       result.createdAt = order.createdAt;
       result.updatedAt = order.updatedAt;
@@ -65,7 +65,11 @@ export async function formatOrder(
       result.groupId = order.groupId;
       result.customer = customerFound;
 
-      result.items = itemsInfo;
+      result.items.push({
+        ...itemsInfo[index],
+        quantity: order.quantity,
+        total: order.total,
+      });
 
       result.total += order.total;
       result.tableId = order.tableId;
@@ -78,13 +82,13 @@ export async function formatOrder(
       id: 0 as number | undefined,
       createdAt: new Date() as Date | undefined,
       updatedAt: new Date() as Date | undefined,
-      // TODO TROCAR ESSE CRIME DE ANY AQUI
+      // TODO TROCAR ESSE ANY AQUI
       // FAZER UM ZOD SCHEMA PARA ShopOrderExtended
       shop: undefined as any,
       groupId: 0,
-      // TODO TROCAR ESSE CRIME DE ANY AQUI
+      // TODO TROCAR ESSE ANY AQUI
       customer: undefined as any,
-      items: new Array<Item>(),
+      items: new Array<Item & { quantity: number; total: number }>(),
       total: 0,
       tableId: 0,
       status: 'open' as 'open' | 'closed' | 'cancelled' | undefined,

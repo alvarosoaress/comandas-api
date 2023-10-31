@@ -212,6 +212,8 @@ describe('Customer Controller Integration', () => {
               categoryId: null,
               description: null,
               temperature: null,
+              quantity: 1,
+              total: 258.78,
               createdAt: expect.any(String),
               updatedAt: expect.any(String),
             },

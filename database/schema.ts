@@ -373,7 +373,7 @@ export type OrderFormatted = {
   shop: ShopOrderExtended;
   groupId: number;
   customer: CustomerExtendedSafe;
-  items: Item[];
+  items: Array<Item & { quantity: number; total: number }>;
   total: number;
   tableId: number;
   status: 'open' | 'closed' | 'cancelled' | undefined;

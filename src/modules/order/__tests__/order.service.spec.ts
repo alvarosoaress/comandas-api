@@ -103,6 +103,8 @@ describe('Order Service', () => {
         categoryId: null,
         description: null,
         temperature: null,
+        quantity: 1,
+        total: 120,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       },
