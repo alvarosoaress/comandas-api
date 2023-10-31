@@ -4429,6 +4429,14 @@
                     "type": "number",
                     "example": 1.99
                   },
+                  "quantity": {
+                    "type": "number",
+                    "example": 5
+                  },
+                  "total": {
+                    "type": "number",
+                    "example": 9.95
+                  },
                   "categoryId": {
                     "type": "integer",
                     "example": 1
@@ -5104,6 +5112,14 @@
                   "price": {
                     "type": "number",
                     "example": 1.99
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "example": 5
+                  },
+                  "total": {
+                    "type": "number",
+                    "example": 9.95
                   },
                   "categoryId": {
                     "type": "integer",
