@@ -9,6 +9,7 @@ import {
   type ShopGetItemCategoryType,
   type ShopGetOrderType,
   type ShopGetScheduleType,
+  type ShopGetReviewType,
 } from './shop.schema';
 import { type ShopService } from './shop.service';
 import verifyOwnership from '../../middleware/verifyOwnership';
@@ -75,6 +76,12 @@ export class ShopController {
     );
 
     return res.status(200).json(shopItemCategories);
+  }
+
+  async getShopReviews(req: Request<ShopGetReviewType>, res: Response) {
+    const shopReviews = await this.shopService.getReviews(req.params.id);
+
+    return res.status(200).json(shopReviews);
   }
 
   async updateShop(

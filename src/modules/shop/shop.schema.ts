@@ -73,10 +73,17 @@ export const shopGetScheduleSchema = z.object({
   }),
 });
 
+export const shopGetReviewSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
 export const shopUpdateSchema = z.object({
   body: createInsertSchema(shop).omit({
     addressId: true,
     createdAt: true,
+    rating: true,
   }),
 });
 
@@ -115,6 +122,7 @@ export type ShopListResType = {
   phone_number: number;
   category_name: string;
   category_id: number;
+  rating: number;
   photo_url?: string;
   schedule: ShopSchedule[];
 };
@@ -126,6 +134,7 @@ export type ShopGetOrderType = z.infer<typeof shopGetOrderSchema>['params'];
 export type ShopGetScheduleType = z.infer<
   typeof shopGetScheduleSchema
 >['params'];
+export type ShopGetReviewType = z.infer<typeof shopGetReviewSchema>['params'];
 export type ShopGetItemCategoryType = z.infer<
   typeof shopGetItemCategorySchema
 >['params'];

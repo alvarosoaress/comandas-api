@@ -6,6 +6,7 @@ import {
   type OrderFormatted,
   type ShopSchedule,
   type ItemMenu,
+  type Review,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type IShopRepository } from '../Ishop.repository';
@@ -31,6 +32,7 @@ describe('Shop Service', () => {
       getItemCategories: jest.fn(),
       getOrders: jest.fn(),
       getSchedule: jest.fn(),
+      getReviews: jest.fn(),
     };
 
     shopService = new ShopService(shopRepositoryMock);
@@ -117,6 +119,7 @@ describe('Shop Service', () => {
           category_name: 'Fiaaaun',
           category_id: 7,
           photo_url: undefined,
+          rating: 0,
           schedule: [],
         },
       ];
@@ -419,7 +422,7 @@ describe('Shop Service', () => {
     });
   });
 
-  describe('Shop Shedule', () => {
+  describe('Shop Schedule', () => {
     it('should return the shop schedule', async () => {
       const shopSchedule: ShopSchedule[] = [
         {
@@ -495,6 +498,42 @@ describe('Shop Service', () => {
       );
 
       expect(shopRepositoryMock.getSchedule).toHaveBeenCalledWith('1');
+    });
+  });
+
+  describe('Shop Review', () => {
+    const reviewInfo: Review[] = [
+      {
+        id: 1,
+        customerId: 2,
+        shopId: 1,
+        rating: 2.12,
+        comment: 'Not so good anymore',
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      },
+    ];
+
+    it('should return all shop reviews', async () => {
+      shopRepositoryMock.getReviews.mockResolvedValue(reviewInfo);
+
+      const shopReviewFound = await shopService.getReviews('1');
+
+      expect(shopRepositoryMock.getReviews).toHaveBeenCalledWith('1');
+
+      expect(shopReviewFound).toEqual(reviewInfo);
+    });
+
+    it('should throw a error if the shop has no reviews', async () => {
+      const shopReviews = undefined;
+
+      shopRepositoryMock.getReviews.mockResolvedValue(shopReviews);
+
+      await expect(shopService.getReviews('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+
+      expect(shopRepositoryMock.getReviews).toHaveBeenCalledWith('1');
     });
   });
 

@@ -6,6 +6,7 @@ import {
   shopGetMenuSchema,
   shopGetOrderSchema,
   shopGetQrCodeSchema,
+  shopGetReviewSchema,
   shopUpdateSchema,
 } from '../modules/shop/shop.schema';
 import { shopFactory } from '../modules/shop/shop.factory';
@@ -58,6 +59,13 @@ router
   .get(
     validate(shopGetOrderSchema),
     async (req, res) => await shopFactory().getShopSchedule(req, res),
+  );
+
+router
+  .route('/:id/review')
+  .get(
+    validate(shopGetReviewSchema),
+    async (req, res) => await shopFactory().getShopReviews(req, res),
   );
 
 router

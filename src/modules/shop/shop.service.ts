@@ -6,6 +6,7 @@ import {
   type OrderFormatted,
   type ShopSchedule,
   type ItemMenu,
+  type Review,
 } from '../../../database/schema';
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
 
@@ -90,6 +91,17 @@ export class ShopService {
       throw new NotFoundError('Shop has no schedule');
 
     return shopSchedule;
+  }
+
+  async getReviews(userId: string): Promise<Review[] | undefined> {
+    const shopReviews = await this.shopRepository.getReviews(userId);
+
+    if (!shopReviews) throw new NotFoundError('No shop found');
+
+    if (!shopReviews || shopReviews.length < 1)
+      throw new NotFoundError('Shop has no reviews');
+
+    return shopReviews;
   }
 
   async update(newShopInfo: ShopUpdateType): Promise<Shop | undefined> {

@@ -50,6 +50,10 @@
     {
       "name": "Schedule",
       "description": "Operations about schedule"
+    },
+    {
+      "name": "Review",
+      "description": "Operations about shop reviews"
     }
   ],
   "paths": {
@@ -2948,6 +2952,173 @@
           }
         }
       }
+    },
+    "/review/create": {
+      "post": {
+        "security": [
+          {
+            "appApiKey": [],
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
+          }
+        ],
+        "tags": ["Review"],
+        "summary": "Submit a new review for a shop",
+        "requestBody": {
+          "required": true,
+          "description": "<h1>The minimum rating is 1</h1>",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewCreateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not exists OR Customer not exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/update": {
+      "put": {
+        "security": [
+          {
+            "appApiKey": [],
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
+          }
+        ],
+        "tags": ["Review"],
+        "summary": "Update a review for a shop",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewUpdateRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Review not exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/delete/{reviewId}": {
+      "delete": {
+        "security": [
+          {
+            "appApiKey": [],
+            "customerBearerAuth": [],
+            "adminBearerAuth": []
+          }
+        ],
+        "tags": ["Review"],
+        "summary": "Delete a review",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reviewId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the review to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDeleteRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Review not exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3382,6 +3553,14 @@
           "addressId": {
             "type": "integer",
             "example": 1
+          },
+          "photoUrl": {
+            "type": "string",
+            "example": "www.somecat.picture"
+          },
+          "rating": {
+            "type": "integer",
+            "example": 4.58
           },
           "createdAt": {
             "type": "string",
@@ -4724,6 +4903,10 @@
               "type": "integer",
               "example": 1
             },
+            "rating": {
+              "type": "integer",
+              "example": 4.58
+            },
             "createdAt": {
               "type": "string",
               "example": "2023-04-03T00:25:32.189Z"
@@ -5178,6 +5361,10 @@
           "tables": {
             "type": "integer",
             "example": 8
+          },
+          "photoUrl": {
+            "type": "string",
+            "example": "www.somecat.picture"
           }
         }
       },
@@ -5195,6 +5382,10 @@
           "addressId": {
             "type": "integer",
             "example": 1
+          },
+          "photoUrl": {
+            "type": "string",
+            "example": "www.somecat.picture"
           },
           "createdAt": {
             "type": "string",
@@ -5980,6 +6171,133 @@
               "type": "string",
               "example": "2023-04-03T00:25:32.189Z"
             }
+          }
+        }
+      },
+      "ReviewCreateSchema": {
+        "type": "object",
+        "required": ["shopId", "customerId", "rating"],
+        "properties": {
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customer": {
+            "type": "integer",
+            "example": 2
+          },
+          "rating": {
+            "type": "integer",
+            "example": 4.58
+          },
+          "comment": {
+            "type": "string",
+            "example": "The mini torta is expansive"
+          }
+        }
+      },
+      "ReviewCreateRes": {
+        "type": "object",
+        "properties": {
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customer": {
+            "type": "integer",
+            "example": 2
+          },
+          "rating": {
+            "type": "integer",
+            "example": 4.58
+          },
+          "comment": {
+            "type": "string",
+            "example": "The mini torta is expansive"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "ReviewUpdateSchema": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "rating": {
+            "type": "integer",
+            "example": 2.58
+          },
+          "comment": {
+            "type": "string",
+            "example": "The mini torta is tasty"
+          }
+        }
+      },
+      "ReviewUpdateRes": {
+        "type": "object",
+        "properties": {
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customer": {
+            "type": "integer",
+            "example": 2
+          },
+          "rating": {
+            "type": "integer",
+            "example": 2.58
+          },
+          "comment": {
+            "type": "string",
+            "example": "The mini torta is tasty"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          }
+        }
+      },
+      "ReviewDeleteRes": {
+        "type": "object",
+        "properties": {
+          "shopId": {
+            "type": "integer",
+            "example": 1
+          },
+          "customer": {
+            "type": "integer",
+            "example": 2
+          },
+          "rating": {
+            "type": "integer",
+            "example": 2.58
+          },
+          "comment": {
+            "type": "string",
+            "example": "The mini torta is tasty"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-04-03T00:25:32.189Z"
           }
         }
       },

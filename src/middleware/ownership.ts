@@ -1,6 +1,13 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../database';
-import { item, itemCategory, order, qrCode, shop } from '../../database/schema';
+import {
+  item,
+  itemCategory,
+  order,
+  qrCode,
+  review,
+  shop,
+} from '../../database/schema';
 import { type ScheduleSetType } from '../modules/schedule/schedule.schema';
 
 type doubleOwnership = {
@@ -105,4 +112,15 @@ export function scheduleShopOwnership(
   });
 
   return shopIdDuplicate;
+}
+
+export async function reviewOwnership(
+  requesterId: number | string,
+  reviewId: number,
+): Promise<boolean> {
+  const reviewFound = await db.query.review.findFirst({
+    where: eq(review.id, Number(reviewId)),
+  });
+
+  return reviewFound?.customerId === requesterId;
 }

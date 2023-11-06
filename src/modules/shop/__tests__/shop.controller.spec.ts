@@ -8,6 +8,7 @@ import {
   type OrderFormatted,
   type ShopSchedule,
   type ItemMenu,
+  type Review,
 } from '../../../../database/schema';
 import app from '../../../app';
 import request from 'supertest';
@@ -20,6 +21,7 @@ import { type ItemCategoryCreateType } from '../../itemCategory/itemCategory.sch
 import { type OrderCreateType } from '../../order/order.schema';
 import { type CustomerCreateType } from '../../customer/customer.schema';
 import { type ScheduleSetType } from '../../schedule/schedule.schema';
+import { type ReviewCreateType } from '../../review/review.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -454,6 +456,50 @@ describe('Shop Controller Integration', () => {
       expect(response.body.length).toBeGreaterThanOrEqual(1);
 
       expect(response.body).toMatchObject(itemCategories);
+    });
+  });
+
+  describe('GET /shop/:id/review', () => {
+    beforeAll(async () => {
+      const newReview: ReviewCreateType = {
+        shopId: 1,
+        customerId: 2,
+        rating: 4.58,
+        comment: 'Ok',
+      };
+
+      await request(app)
+        .post('/review/create')
+        .send(newReview)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+    });
+
+    it('should return all reviews belonging to shop', async () => {
+      const shopReviews: Review[] = [
+        {
+          shopId: 1,
+          customerId: 2,
+          id: 1,
+          rating: 4.58,
+          comment: 'Ok',
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+      ];
+
+      const response = await request(app)
+        .get('/shop/1/review')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toBeInstanceOf(Array);
+
+      expect(response.body.length).toBeGreaterThanOrEqual(1);
+
+      expect(response.body).toMatchObject(shopReviews);
     });
   });
 

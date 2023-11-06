@@ -6,6 +6,7 @@ import {
   type OrderFormatted,
   type ShopSchedule,
   type ItemMenu,
+  type Review,
 } from '../../../database/schema';
 import {
   type ShopUpdateType,
@@ -23,5 +24,6 @@ export type IShopRepository = {
   getOrders: (userId: string) => Promise<OrderFormatted[] | undefined>;
   getItemCategories: (userId: string) => Promise<ItemCategory[] | undefined>;
   getSchedule: (userId: string) => Promise<ShopSchedule[] | undefined>;
+  getReviews: (userId: string) => Promise<Review[] | undefined>;
   update: (newShopInfo: ShopUpdateType) => Promise<Shop | undefined>;
 };

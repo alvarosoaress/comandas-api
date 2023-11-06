@@ -67,6 +67,7 @@ export const shop = mysqlTable('shop', {
     }),
   tables: int('tables'),
   photoUrl: text('photo_url'),
+  rating: real('rating', { precision: 10, scale: 2 }).default(0),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
@@ -86,6 +87,7 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
   itemCategories: many(itemCategory),
   orders: many(order),
   schedule: many(shopSchedule),
+  reviews: many(review),
 }));
 
 export const shopCategory = mysqlTable(
@@ -304,6 +306,37 @@ export const ordersRelations = relations(order, ({ one }) => ({
   }),
 }));
 
+export const review = mysqlTable('review', {
+  id: int('id').primaryKey().autoincrement(),
+  customerId: int('customer_id')
+    .references(() => customer.userId, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    })
+    .notNull(),
+  shopId: int('shop_id')
+    .references(() => shop.userId, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    })
+    .notNull(),
+  rating: real('rating', { precision: 10, scale: 2 }).notNull(),
+  comment: text('comment'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const reviewRelations = relations(review, ({ one }) => ({
+  shop: one(shop, {
+    fields: [review.shopId],
+    references: [shop.userId],
+  }),
+  customer: one(customer, {
+    fields: [review.customerId],
+    references: [customer.userId],
+  }),
+}));
+
 // TODO Inserir UpdatedAt em todas colunas
 
 export type GeneralCategory = typeof generalCategory.$inferInsert;
@@ -381,3 +414,5 @@ export type OrderFormatted = {
 };
 
 export type ShopSchedule = typeof shopSchedule.$inferInsert;
+
+export type Review = typeof review.$inferInsert;

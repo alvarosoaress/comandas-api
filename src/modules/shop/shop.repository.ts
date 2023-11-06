@@ -11,6 +11,7 @@ import {
   type OrderFormatted,
   type ShopSchedule,
   type ItemMenu,
+  type Review,
 } from '../../../database/schema';
 import { type AddressService } from '../address/address.service';
 import { type UserService } from '../user/user.service';
@@ -79,7 +80,7 @@ export class ShopRepository implements IShopRepository {
   }
 
   async list(query?: ShopListType): Promise<ShopListResType[]> {
-    const shopsBase = sql`SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, s.photo_url, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
+    const shopsBase = sql`SELECT s.tables, s.user_id, s.createdAt, s.updatedAt, s.photo_url, s.rating, a.id as address_id, a.city, a.state, a.street, a.country, a.lat, a.long, a.neighborhood, a.number, u.email, u.phone_number, u.name, gc.name as category_name, gc.id as category_id
         FROM shop as s
         JOIN address as a ON s.address_id = a.id
         JOIN user as u ON s.user_id = u.id
@@ -303,6 +304,20 @@ export class ShopRepository implements IShopRepository {
     if (!shopSchedule) return undefined;
 
     return Object.values(shopSchedule.schedule);
+  }
+
+  async getReviews(userId: string): Promise<Review[] | undefined> {
+    const shopReviews = await db.query.shop.findFirst({
+      where: eq(shop.userId, parseInt(userId)),
+      columns: {},
+      with: {
+        reviews: true,
+      },
+    });
+
+    if (!shopReviews) return undefined;
+
+    return Object.values(shopReviews.reviews);
   }
 
   async exists(userId: number): Promise<boolean> {
