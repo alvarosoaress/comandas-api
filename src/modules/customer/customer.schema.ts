@@ -3,7 +3,9 @@ import { userSchema } from '../user/user.schema';
 import { z } from 'zod';
 import { customer } from '../../../database/schema';
 
-export const customerSchema = createInsertSchema(customer);
+export const customerSchema = createInsertSchema(customer, {
+  birthday: z.string().transform((str) => new Date(str)),
+});
 
 export const customerCreateSchema = z.object({
   body: z.object({
