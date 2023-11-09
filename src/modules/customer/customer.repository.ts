@@ -37,15 +37,22 @@ export class CustomerRepository implements ICustomerRepository {
 
     if (!newUser) return undefined;
 
-    await db
-      .insert(customer)
+    await db.insert(customer).values({
+      ...info.customerInfo,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .values({ ...info.customerInfo, userId: newUser.id! });
+      userId: newUser.id!,
+      birthday: info.customerInfo?.birthday
+        ? new Date(info.customerInfo?.birthday)
+        : null,
+    });
 
     return {
       ...info.customerInfo,
       userId: newUser.id as number,
       userInfo: newUser,
+      birthday: info.customerInfo?.birthday
+        ? new Date(info.customerInfo?.birthday)
+        : null,
     };
   }
 
@@ -72,7 +79,12 @@ export class CustomerRepository implements ICustomerRepository {
 
     await db
       .update(customer)
-      .set(newCostumerInfo)
+      .set({
+        ...newCostumerInfo,
+        birthday: newCostumerInfo?.birthday
+          ? new Date(newCostumerInfo?.birthday)
+          : null,
+      })
       .where(eq(customer.userId, userId));
 
     const updatedCustomer = await db.query.customer.findFirst({

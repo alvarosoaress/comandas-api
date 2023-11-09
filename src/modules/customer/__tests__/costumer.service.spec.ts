@@ -6,7 +6,10 @@ import {
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
 import { type ICustomerRepository } from '../Icustomer.repository';
-import { type CustomerCreateType } from '../customer.schema';
+import {
+  type CustomerUpdateType,
+  type CustomerCreateType,
+} from '../customer.schema';
 import { CustomerService } from '../customer.service';
 
 describe('Customer Service', () => {
@@ -238,9 +241,10 @@ describe('Customer Service', () => {
   });
 
   describe('Update Customer', () => {
-    const newCostumerInfo: Customer = {
+    const newCostumerInfo: CustomerUpdateType = {
       userId: 1,
       photoUrl: 'https://animeisnotfun.anymore',
+      birthday: '2002-04-03T00:25:32.189Z',
     };
     it('should return the updated customer', async () => {
       const updatedCustomer: Customer = {

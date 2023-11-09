@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { customer } from '../../../database/schema';
 
 export const customerSchema = createInsertSchema(customer, {
-  birthday: z.coerce.date(),
+  birthday: z.string(),
 });
 
 export const customerCreateSchema = z.object({
