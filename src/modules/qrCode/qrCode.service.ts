@@ -42,7 +42,7 @@ export class QrCodeService {
     const qrCodeSize = '350';
     const qrCodeColor = 'F3484F';
 
-    const newQrCodeUrl = `https://image-charts.com/chart?chs=${qrCodeSize}x${qrCodeSize}&cht=qr&choe=UTF-8&icqrf=${qrCodeColor}&chld=M&chof=.png&chl={shopId:${qrCodeInfo.shopId},table:${qrCodeInfo.table}}`;
+    const newQrCodeUrl = `https://image-charts.com/chart?chs=${qrCodeSize}x${qrCodeSize}&cht=qr&choe=UTF-8&icqrf=${qrCodeColor}&chld=M&chof=.png&chl={"shopId":${qrCodeInfo.shopId},"table":${qrCodeInfo.table}}`;
 
     const newQrCodeInfo: QrCode = {
       shopId: qrCodeInfo.shopId,
