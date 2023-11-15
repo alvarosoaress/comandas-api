@@ -2065,6 +2065,55 @@
         }
       }
     },
+    "/shop/{shopId}/review": {
+      "get": {
+        "tags": ["Shop"],
+        "summary": "Get all reviews belonging to shop id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shopId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Shop ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shop reivews found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopGetReviewRes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shop not foud OR Shop has no reviews",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid api key ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/shop/update": {
       "put": {
         "security": [
@@ -4996,7 +5045,7 @@
               "type": "integer",
               "example": 1
             },
-            "tables": {
+            "table": {
               "type": "integer",
               "example": 1
             },
@@ -5095,7 +5144,7 @@
             "shop": {
               "type": "object",
               "properties": {
-                "tables": {
+                "table": {
                   "type": "integer",
                   "example": 8
                 },
@@ -5338,6 +5387,38 @@
             "note": {
               "type": "string",
               "example": "No romcom please"
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2023-04-03T00:25:32.189Z"
+            }
+          }
+        }
+      },
+      "ShopGetReviewRes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "shopId": {
+              "type": "integer",
+              "example": 1
+            },
+            "customer": {
+              "type": "integer",
+              "example": 2
+            },
+            "rating": {
+              "type": "integer",
+              "example": 4.58
+            },
+            "comment": {
+              "type": "string",
+              "example": "The mini torta is expansive"
             },
             "createdAt": {
               "type": "string",
@@ -5614,7 +5695,7 @@
       },
       "QrCodeCreateSchema": {
         "type": "object",
-        "required": ["shopId", "tables"],
+        "required": ["shopId", "table"],
         "properties": {
           "shopId": {
             "type": "integer",
@@ -5637,7 +5718,7 @@
             "type": "integer",
             "example": 1
           },
-          "tables": {
+          "table": {
             "type": "integer",
             "example": 1
           },
@@ -5672,7 +5753,7 @@
               "type": "integer",
               "example": 1
             },
-            "tables": {
+            "table": {
               "type": "integer",
               "example": 1
             },
@@ -5739,7 +5820,7 @@
             "type": "integer",
             "example": 1
           },
-          "tables": {
+          "table": {
             "type": "integer",
             "example": 1
           },
