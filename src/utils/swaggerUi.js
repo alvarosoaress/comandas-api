@@ -7,4 +7,13 @@ window.addEventListener('load', function () {
   newImg.width = 75;
   newImg.height = 75;
   imgWrapper.appendChild(newImg);
+
+  const cssNode = document.createElement('link');
+  cssNode.setAttribute('rel', 'stylesheet');
+  cssNode.setAttribute('type', 'text/css');
+  cssNode.setAttribute(
+    'href',
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css',
+  );
+  document.getElementsByTagName('head')[0].appendChild(cssNode);
 });
