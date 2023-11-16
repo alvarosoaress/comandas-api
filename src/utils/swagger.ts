@@ -5,13 +5,14 @@ import swaggerJsonDocs from './openapi.json';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function swaggerDocs(app: Express, port: number) {
-  const CSS_URL = 'https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css';
+  const CSS_URL =
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
 
   app.use(
     '/docs',
     swaggerUi.serve,
     swaggerUi.setup(swaggerJsonDocs, {
-      customCssUrl: `/docs/css`,
+      customCssUrl: CSS_URL,
       customSiteTitle: 'ComandasApi Docs',
       customJs: `/docs/swaggerjs`,
       customfavIcon: `/docs/favicon`,

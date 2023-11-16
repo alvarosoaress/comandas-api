@@ -40,10 +40,6 @@ app.get('/docs/favicon', (req, res) => {
   res.sendFile(path.resolve(process.cwd(), './src/utils/favicon.ico'));
 });
 
-app.get('/docs/css', (req, res) => {
-  res.sendFile(path.resolve(process.cwd(), './src/utils/defaultStyle.css'));
-});
-
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 swaggerDocs(app, Number(PORT));
 
