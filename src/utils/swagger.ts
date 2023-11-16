@@ -6,16 +6,15 @@ import swaggerJsonDocs from './openapi.json';
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function swaggerDocs(app: Express, port: number) {
   const CSS_URL =
-    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
+    'https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.3.0/swagger-ui.css';
 
   app.use(
     '/docs',
     swaggerUi.serve,
     swaggerUi.setup(swaggerJsonDocs, {
-      customCssUrl:
-        'https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.3.0/swagger-ui.css',
+      customCssUrl: CSS_URL,
       customSiteTitle: 'ComandasApi Docs',
-      customJs: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.3.0/swagger-ui-bundle.js`,
+      customJs: `/docs/swaggerjs`,
       customfavIcon: `/docs/favicon`,
     }),
   );
