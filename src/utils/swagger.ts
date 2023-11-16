@@ -13,7 +13,7 @@ function swaggerDocs(app: Express, port: number) {
     swaggerUi.serve,
     swaggerUi.setup(swaggerJsonDocs, {
       customCssUrl:
-        'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.48.0/swagger-ui.css',
+        'https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.3.0/swagger-ui.css',
       customSiteTitle: 'ComandasApi Docs',
       customJs: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.3.0/swagger-ui-bundle.js`,
       customfavIcon: `/docs/favicon`,
