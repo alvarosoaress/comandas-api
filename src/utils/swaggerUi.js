@@ -13,5 +13,5 @@ window.addEventListener('load', function () {
     'src',
     'https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.3.0/swagger-ui-bundle.js',
   );
-  document.getElementsByTagName('head')[0].appendChild(jsNode);
+  document.getElementsByTagName('body')[0].appendChild(jsNode);
 });
