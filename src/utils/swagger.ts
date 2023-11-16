@@ -12,7 +12,7 @@ function swaggerDocs(app: Express, port: number) {
     '/docs',
     swaggerUi.serve,
     swaggerUi.setup(swaggerJsonDocs, {
-      //   customCssUrl: CSS_URL,
+      customCssUrl: CSS_URL,
       customSiteTitle: 'ComandasApi Docs',
       customJs: `/docs/swaggerjs`,
       customfavIcon: `/docs/favicon`,
