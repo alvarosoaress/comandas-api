@@ -3,6 +3,8 @@ import {
   type CustomerExtendedSafe,
   type ShopExtendedSafe,
   type UserSafe,
+  type CustomerExtended,
+  type ShopExtended,
 } from '../../../database/schema';
 import {
   ConflictError,
@@ -92,7 +94,7 @@ export class UserService {
   }
 
   async logIn(email: string, password: string): Promise<UserLoginRes> {
-    const userFound = await this.userRepository.getByEmail(email);
+    let userFound = await this.userRepository.getByEmail(email);
 
     if (!userFound) throw new NotFoundError('No user found');
 
@@ -126,7 +128,26 @@ export class UserService {
     deleteObjKey(userFound.userInfo, 'refreshToken');
     deleteObjKey(userFound.userInfo, 'password');
 
-    return { accessToken, userInfo: userFound.userInfo };
+    if (userFound.userInfo.role === 'customer') {
+      userFound = userFound as CustomerExtended;
+
+      const userInfo = {
+        ...userFound.userInfo,
+        photoUrl: userFound.photoUrl,
+        birthday: userFound.birthday,
+      };
+
+      return { accessToken, userInfo };
+    } else {
+      userFound = userFound as ShopExtended;
+
+      const userInfo = {
+        ...userFound.userInfo,
+        photoUrl: userFound.photoUrl,
+      };
+
+      return { accessToken, userInfo };
+    }
   }
 
   async updateAccessToken(id: number): Promise<boolean | string> {

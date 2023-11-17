@@ -11,6 +11,7 @@ import {
 } from '../../../database/schema';
 import { type UserUpdateType } from './user.schema';
 import { deleteObjKey } from '../../utils';
+import { InternalServerError } from '../../helpers/api.erros';
 
 export class UserRepository implements IUserRepository {
   async exists(email: string): Promise<boolean> {
@@ -63,12 +64,16 @@ export class UserRepository implements IUserRepository {
         },
       });
 
+      if (!shopFound) throw new InternalServerError();
+
       return shopFound;
     } else {
       const customerFound = await db.query.customer.findFirst({
         where: eq(customer.userId, userFound.id),
         with: { userInfo: true },
       });
+
+      if (!customerFound) throw new InternalServerError();
 
       return customerFound;
     }

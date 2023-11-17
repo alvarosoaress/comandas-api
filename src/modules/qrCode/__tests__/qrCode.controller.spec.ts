@@ -79,7 +79,7 @@ describe('QrCode Controller Integration', () => {
       expect(response.body.id).toEqual(1);
 
       expect(response.body.qrCodeUrl).toEqual(
-        'https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}',
+        'https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={"shopId":1,"table":1}',
       );
 
       expect(response.body.isOccupied).toBeFalsy();
@@ -91,7 +91,7 @@ describe('QrCode Controller Integration', () => {
       const qrCodes: QrCode[] = [
         {
           qrCodeUrl:
-            'https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:1,table:1}',
+            'https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={"shopId":1,"table":1}',
           shopId: 1,
           table: 1,
           id: 1,

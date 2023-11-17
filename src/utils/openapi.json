@@ -3765,6 +3765,16 @@
                   "enum": ["customer", "shop"],
                   "example": "customer"
                 },
+                "photoUrl": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "www.imgur.ui/something.bop"
+                },
+                "birthday": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "2023-04-03T00:25:32.189Z"
+                },
                 "createdAt": {
                   "type": "string",
                   "example": "2023-04-03T00:25:32.189Z"

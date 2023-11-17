@@ -49,7 +49,7 @@ describe('QrCode Service', () => {
       );
       expect(qrCodeRepositoryMock.create).toHaveBeenCalledWith({
         ...qrCodeInfo,
-        qrCodeUrl: `https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={shopId:${qrCodeInfo.shopId},table:${qrCodeInfo.table}}`,
+        qrCodeUrl: `https://image-charts.com/chart?chs=350x350&cht=qr&choe=UTF-8&icqrf=F3484F&chld=M&chof=.png&chl={"shopId":${qrCodeInfo.shopId},"table":${qrCodeInfo.table}}`,
       });
       expect(qrCode).toHaveProperty('id');
     });
