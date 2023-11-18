@@ -14,6 +14,7 @@ beforeEach(() => {
     create: jest.fn(),
     list: jest.fn(),
     getById: jest.fn(),
+    getByTable: jest.fn(),
     complete: jest.fn(),
     customerExists: jest.fn(),
     existsById: jest.fn(),
@@ -98,13 +99,12 @@ describe('Order Service', () => {
       {
         id: 1,
         name: 'Bolinea de Gorfwe',
-        price: 258.78,
         shopId: 1,
         categoryId: null,
         description: null,
         temperature: null,
         quantity: 1,
-        total: 120,
+        total: 258.78,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       },
@@ -273,6 +273,26 @@ describe('Order Service', () => {
 
     it('should throw a error if no order found with the specified group id', async () => {
       orderRepositoryMock.existsById.mockResolvedValue(false);
+
+      await expect(orderService.getById('1')).rejects.toThrowError(
+        NotFoundError,
+      );
+    });
+  });
+
+  describe('Get By Table Id Order', () => {
+    it('should return the order with the specified table id', async () => {
+      orderRepositoryMock.getByTable.mockResolvedValue(orderFormatted);
+
+      const orderFound = await orderService.getByTable('1');
+
+      expect(orderRepositoryMock.getByTable).toHaveBeenCalledWith('1');
+      expect(orderFound).toHaveProperty('tableId');
+      expect(orderFound?.tableId).toEqual(1);
+    });
+
+    it('should throw a error if no order found with the specified table id', async () => {
+      orderRepositoryMock.getByTable.mockResolvedValue(undefined);
 
       await expect(orderService.getById('1')).rejects.toThrowError(
         NotFoundError,

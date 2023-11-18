@@ -70,6 +70,14 @@ export class OrderService {
     return orderFound;
   }
 
+  async getByTable(table: string): Promise<OrderFormatted | undefined> {
+    const orderFound = await this.orderRepository.getByTable(table);
+
+    if (!orderFound) throw new NotFoundError('Table has no orders');
+
+    return orderFound;
+  }
+
   async completeOrder(
     completedOrderInfo: OrderCompleteType,
   ): Promise<OrderFormatted | undefined> {

@@ -207,7 +207,6 @@ describe('Customer Controller Integration', () => {
             {
               id: 1,
               name: 'Bolo de murango',
-              price: 71.8,
               shopId: 2,
               categoryId: null,
               description: null,

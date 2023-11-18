@@ -406,7 +406,7 @@ export type OrderFormatted = {
   shop: ShopOrderExtended;
   groupId: number;
   customer: CustomerExtendedSafe;
-  items: Array<Item & { quantity: number; total: number }>;
+  items: Array<Omit<Item & { quantity: number; total: number }, 'price'>>;
   total: number;
   tableId: number;
   status: 'open' | 'closed' | 'cancelled' | undefined;

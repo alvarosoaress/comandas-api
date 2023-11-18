@@ -33,6 +33,13 @@ router
   );
 
 router
+  .route('/table/:tableId')
+  .get(
+    verifyToken('both'),
+    async (req, res) => await orderFactory().getOrderByTable(req, res),
+  );
+
+router
   .route('/complete/:groupId')
   .post(
     verifyToken('both'),

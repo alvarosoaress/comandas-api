@@ -116,6 +116,21 @@ export class OrderRepository implements IOrderRepository {
     return orderFormatted;
   }
 
+  async getByTable(orderTable: string): Promise<OrderFormatted | undefined> {
+    const orderFound = await db.query.order.findMany({
+      where: and(
+        eq(order.tableId, parseInt(orderTable)),
+        eq(order.status, 'open'),
+      ),
+    });
+
+    if (!orderFound || orderFound.length <= 0) return undefined;
+
+    const orderFormatted = await formatOrder(orderFound);
+
+    return orderFormatted;
+  }
+
   // TODO Implementar um limit aqui
   async list(): Promise<Order[]> {
     const orders = await db.query.order.findMany();

@@ -257,7 +257,6 @@ describe('Shop Controller Integration', () => {
             {
               id: 1,
               name: 'Bolinea de Gorfwe',
-              price: 6.99,
               shopId: 1,
               categoryId: null,
               description: null,

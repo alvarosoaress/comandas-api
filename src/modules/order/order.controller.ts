@@ -5,6 +5,7 @@ import {
   type OrderCreateType,
   type OrderCompleteType,
   type OrderCancelType,
+  type OrderGetByTableType,
 } from './order.schema';
 import { type OrderService } from './order.service';
 import verifyOwnership from '../../middleware/verifyOwnership';
@@ -47,6 +48,17 @@ export class OrderController {
     );
 
     const orderFound = await this.orderService.getById(req.params.groupId);
+
+    return res.status(200).json(orderFound);
+  }
+
+  async getOrderByTable(req: Request<OrderGetByTableType>, res: Response) {
+    // verifyOwnership(
+    //   await orderGenericOwnership(Number(req.user.id), req.params.tableId),
+    //   req,
+    // );
+
+    const orderFound = await this.orderService.getByTable(req.params.tableId);
 
     return res.status(200).json(orderFound);
   }

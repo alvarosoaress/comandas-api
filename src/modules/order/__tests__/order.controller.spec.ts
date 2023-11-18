@@ -149,6 +149,22 @@ describe('Order Controller Integration', () => {
     });
   });
 
+  describe('GET /order/table/:tableId', () => {
+    it('should return order with specified table id', async () => {
+      const response = await request(app)
+        .get(`/order/table/1`)
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('groupId');
+      expect(response.body).toHaveProperty('tableId');
+      expect(response.body.tableId).toEqual(1);
+    });
+  });
+
   describe('POST /order/complete/:groupId', () => {
     it('should return order with specified group id', async () => {
       // Necessário o GET primeio pois o groupId é random

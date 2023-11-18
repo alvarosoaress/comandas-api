@@ -40,6 +40,10 @@ export async function formatOrder(
     });
   });
 
+  itemsInfo.forEach((item) => {
+    deleteObjKey(item, 'price');
+  });
+
   const shopFound = (await db.query.shop.findFirst({
     where: eq(shop.userId, orders[0].shopId),
     with: { userInfo: true, addressInfo: true },
@@ -65,11 +69,25 @@ export async function formatOrder(
       result.groupId = order.groupId;
       result.customer = customerFound;
 
-      result.items.push({
-        ...itemsInfo[index],
-        quantity: order.quantity,
-        total: order.total,
-      });
+      // Procura o item no array existente com base no ID
+      const existingItemIndex = result.items.findIndex(
+        (item) => item && item.id === order?.itemId,
+      );
+
+      if (existingItemIndex !== -1) {
+        // Se o item já existe, apenas atualiza as quantidades e totais
+        if (result.items[existingItemIndex]) {
+          result.items[existingItemIndex].quantity += order.quantity;
+          result.items[existingItemIndex].total += order.total;
+        }
+      } else {
+        // Se o item não existe, adiciona um novo item ao array
+        result.items.push({
+          ...itemsInfo[index],
+          quantity: order.quantity,
+          total: order.total,
+        });
+      }
 
       result.total += order.total;
       result.tableId = order.tableId;

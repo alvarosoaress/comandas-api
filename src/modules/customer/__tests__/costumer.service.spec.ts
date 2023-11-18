@@ -127,7 +127,6 @@ describe('Customer Service', () => {
             {
               id: 1,
               name: 'Bolinea de Gorfwe',
-              price: 258.78,
               shopId: 1,
               categoryId: null,
               description: null,

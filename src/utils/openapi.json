@@ -2822,6 +2822,62 @@
           }
         }
       },
+      "/order/table/{tableId}": {
+        "get": {
+          "security": [
+            {
+              "appApiKey": [],
+              "shopBearerAuth": [],
+              "customerBearerAuth": [],
+              "adminBearerAuth": []
+            }
+          ],
+          "tags": ["Order"],
+          "summary": "Get a specific order by Table Id",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "tableId",
+              "schema": {
+                "type": "integer"
+              },
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Order found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OrderGetByTableRes"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Order not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotFoundError"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Invalid api key",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ForbiddenError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "/order/complete/{groupId}": {
         "post": {
           "security": [
@@ -6078,6 +6134,71 @@
             }
           }
         },
+        "OrderGetByTableRes": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "groupId": {
+                "type": "integer",
+                "example": 123456789
+              },
+              "shopId": {
+                "type": "integer",
+                "example": 1
+              },
+              "customerId": {
+                "type": "integer",
+                "example": 5
+              },
+              "tableId": {
+                "type": "integer",
+                "example": 3
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "itemId": {
+                      "type": "integer",
+                      "example": 2
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "example": 2
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 88.78
+                    }
+                  }
+                }
+              },
+              "total": {
+                "type": "integer",
+                "example": 88.78
+              },
+              "status": {
+                "type": "string",
+                "example": "open"
+              },
+              "note": {
+                "type": "string",
+                "example": "No romcom please"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2023-04-03T00:25:32.189Z"
+              }
+            }
+          },
         "OrderCompleteRes": {
           "type": "object",
           "properties": {

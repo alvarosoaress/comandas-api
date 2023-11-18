@@ -17,6 +17,7 @@ export type IOrderRepository = {
   ) => Promise<boolean | undefined>;
   create: (orderInfo: OrderCreateType) => Promise<OrderFormatted | undefined>;
   getById: (orderGroupId: string) => Promise<OrderFormatted | undefined>;
+  getByTable: (orderTable: string) => Promise<OrderFormatted | undefined>;
   list: () => Promise<Order[]>;
   complete: (
     orderInfo: OrderCompleteType,

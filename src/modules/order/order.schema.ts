@@ -10,6 +10,12 @@ export const orderGetSchema = z.object({
   }),
 });
 
+export const orderGetByTableSchema = z.object({
+  params: z.object({
+    tableId: z.string(),
+  }),
+});
+
 export const orderCreateSchema = z.object({
   body: z.array(
     orderSchema.omit({
@@ -38,5 +44,8 @@ export const orderCancelSchema = z.object({
 
 export type OrderCreateType = z.infer<typeof orderCreateSchema>['body'];
 export type OrderGetType = z.infer<typeof orderGetSchema>['params'];
+export type OrderGetByTableType = z.infer<
+  typeof orderGetByTableSchema
+>['params'];
 export type OrderCompleteType = z.infer<typeof orderCompleteSchema>['params'];
 export type OrderCancelType = z.infer<typeof orderCancelSchema>['params'];
