@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
+  bigint,
   boolean,
   int,
   mysqlEnum,
@@ -16,7 +17,7 @@ export const user = mysqlTable('user', {
   name: varchar('name', { length: 256 }).notNull(),
   email: varchar('email', { length: 256 }).unique().notNull(),
   password: varchar('password', { length: 256 }).notNull(),
-  phoneNumber: int('phone_number'),
+  phoneNumber: bigint('phone_number', { mode: 'number' }),
   role: mysqlEnum('role', ['customer', 'shop']),
   refreshToken: varchar('refreshToken', { length: 256 }).unique(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
