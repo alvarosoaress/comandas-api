@@ -13,6 +13,7 @@ import {
   orderGenericDoubleOwnership,
   orderGenericOwnership,
   orderShopOwnership,
+  orderTableShopOwnership,
 } from '../../middleware/ownership';
 
 export class OrderController {
@@ -53,12 +54,16 @@ export class OrderController {
   }
 
   async getOrderByTable(req: Request<OrderGetByTableType>, res: Response) {
-    // verifyOwnership(
-    //   await orderGenericOwnership(Number(req.user.id), req.params.tableId),
-    //   req,
-    // );
+    verifyOwnership(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await orderTableShopOwnership(req.user.id!, req.params.tableId),
+      req,
+    );
 
-    const orderFound = await this.orderService.getByTable(req.params.tableId);
+    const orderFound = await this.orderService.getByTable(
+      req.params.tableId,
+      req.params.shopId,
+    );
 
     return res.status(200).json(orderFound);
   }

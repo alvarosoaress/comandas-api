@@ -149,10 +149,10 @@ describe('Order Controller Integration', () => {
     });
   });
 
-  describe('GET /order/table/:tableId', () => {
+  describe('GET /order/shop/:shopId/table/:tableId', () => {
     it('should return order with specified table id', async () => {
       const response = await request(app)
-        .get(`/order/table/1`)
+        .get(`/order/shop/1/table/1`)
         .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
         .set('x-api-key', `${process.env.API_KEY}`);
 

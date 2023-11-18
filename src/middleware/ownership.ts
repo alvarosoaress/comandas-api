@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { db } from '../../database';
 import {
   item,
@@ -98,6 +98,22 @@ export async function orderShopOwnership(
   });
 
   return orderFound?.shopId === shopId;
+}
+
+export async function orderTableShopOwnership(
+  shopId: number | string,
+  tableId: number | string,
+): Promise<boolean> {
+  if (shopId === 'admin') return true;
+
+  const orderFound = await db.query.order.findFirst({
+    where: and(
+      eq(order.shopId, Number(shopId)),
+      eq(order.tableId, Number(tableId)),
+    ),
+  });
+
+  return orderFound ? orderFound?.shopId === shopId : false;
 }
 
 export function scheduleShopOwnership(

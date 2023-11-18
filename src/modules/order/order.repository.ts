@@ -116,10 +116,14 @@ export class OrderRepository implements IOrderRepository {
     return orderFormatted;
   }
 
-  async getByTable(orderTable: string): Promise<OrderFormatted | undefined> {
+  async getByTable(
+    tableId: string,
+    shopId: string,
+  ): Promise<OrderFormatted | undefined> {
     const orderFound = await db.query.order.findMany({
       where: and(
-        eq(order.tableId, parseInt(orderTable)),
+        eq(order.shopId, parseInt(shopId)),
+        eq(order.tableId, parseInt(tableId)),
         eq(order.status, 'open'),
       ),
     });

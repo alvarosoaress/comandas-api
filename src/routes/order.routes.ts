@@ -33,7 +33,7 @@ router
   );
 
 router
-  .route('/table/:tableId')
+  .route('/shop/:shopId/table/:tableId')
   .get(
     verifyToken('both'),
     async (req, res) => await orderFactory().getOrderByTable(req, res),

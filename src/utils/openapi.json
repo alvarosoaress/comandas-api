@@ -2822,7 +2822,7 @@
           }
         }
       },
-      "/order/table/{tableId}": {
+      "/order/shop/{shopId}/table/{tableId}": {
         "get": {
           "security": [
             {
@@ -2833,11 +2833,19 @@
             }
           ],
           "tags": ["Order"],
-          "summary": "Get a specific order by Table Id",
+          "summary": "Get a specific order by Shop Id and Table Id",
           "parameters": [
             {
               "in": "path",
               "name": "tableId",
+              "schema": {
+                "type": "integer"
+              },
+              "required": true
+            },
+            {
+              "in": "path",
+              "name": "shopId",
               "schema": {
                 "type": "integer"
               },
@@ -6198,7 +6206,7 @@
                 "example": "2023-04-03T00:25:32.189Z"
               }
             }
-          },
+        },
         "OrderCompleteRes": {
           "type": "object",
           "properties": {

@@ -282,19 +282,29 @@ describe('Order Service', () => {
 
   describe('Get By Table Id Order', () => {
     it('should return the order with the specified table id', async () => {
+      orderRepositoryMock.shopExists.mockResolvedValue(true);
       orderRepositoryMock.getByTable.mockResolvedValue(orderFormatted);
 
-      const orderFound = await orderService.getByTable('1');
+      const orderFound = await orderService.getByTable('1', '1');
 
-      expect(orderRepositoryMock.getByTable).toHaveBeenCalledWith('1');
+      expect(orderRepositoryMock.getByTable).toHaveBeenCalledWith('1', '1');
       expect(orderFound).toHaveProperty('tableId');
       expect(orderFound?.tableId).toEqual(1);
     });
 
+    it('should throw a error if no shop found with the specified id', async () => {
+      orderRepositoryMock.shopExists.mockResolvedValue(false);
+
+      await expect(orderService.getByTable('1', '1')).rejects.toThrowError(
+        NotFoundError,
+      );
+    });
+
     it('should throw a error if no order found with the specified table id', async () => {
+      orderRepositoryMock.shopExists.mockResolvedValue(true);
       orderRepositoryMock.getByTable.mockResolvedValue(undefined);
 
-      await expect(orderService.getById('1')).rejects.toThrowError(
+      await expect(orderService.getByTable('1', '1')).rejects.toThrowError(
         NotFoundError,
       );
     });

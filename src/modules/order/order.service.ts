@@ -70,8 +70,15 @@ export class OrderService {
     return orderFound;
   }
 
-  async getByTable(table: string): Promise<OrderFormatted | undefined> {
-    const orderFound = await this.orderRepository.getByTable(table);
+  async getByTable(
+    tableId: string,
+    shopId: string,
+  ): Promise<OrderFormatted | undefined> {
+    const shopExists = await this.orderRepository.shopExists(Number(shopId));
+
+    if (!shopExists) throw new NotFoundError('Shop not found');
+
+    const orderFound = await this.orderRepository.getByTable(tableId, shopId);
 
     if (!orderFound) throw new NotFoundError('Table has no orders');
 

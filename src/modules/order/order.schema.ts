@@ -12,6 +12,7 @@ export const orderGetSchema = z.object({
 
 export const orderGetByTableSchema = z.object({
   params: z.object({
+    shopId: z.string(),
     tableId: z.string(),
   }),
 });
