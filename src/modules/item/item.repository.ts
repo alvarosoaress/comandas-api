@@ -6,7 +6,15 @@ import { deleteObjKey } from '../../utils';
 import { type ItemUpdateType } from './item.schema';
 
 export class ItemRepository implements IItemRepository {
-  async exists(itemId: number): Promise<boolean> {
+  async exists(shopId: number, name: string): Promise<boolean> {
+    const itemFound = await db.query.item.findFirst({
+      where: and(eq(item.shopId, shopId), eq(item.name, name)),
+    });
+
+    return !!itemFound;
+  }
+
+  async existsById(itemId: number): Promise<boolean> {
     const itemFound = await db.query.item.findFirst({
       where: eq(item.id, itemId),
     });
@@ -70,5 +78,19 @@ export class ItemRepository implements IItemRepository {
     });
 
     return updatedItem;
+  }
+
+  async delete(itemId: number): Promise<Item | undefined> {
+    const itemInfo = await db.query.item.findFirst({
+      where: eq(item.id, itemId),
+    });
+
+    try {
+      await db.delete(item).where(eq(item.id, itemId));
+    } catch (error) {
+      return undefined;
+    }
+
+    return itemInfo;
   }
 }

@@ -60,4 +60,14 @@ export class ItemService {
 
     return updatedItem;
   }
+
+  async delete(itemId: string): Promise<Item | undefined> {
+    const itemExists = await this.itemRepository.existsById(parseInt(itemId));
+
+    if (!itemExists) throw new NotFoundError('Item not found');
+
+    const itemDeleted = await this.itemRepository.delete(parseInt(itemId));
+
+    return itemDeleted;
+  }
 }

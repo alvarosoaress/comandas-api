@@ -2,6 +2,7 @@ import { Router } from 'express';
 import validate from '../middleware/validateResource';
 import {
   itemCreateSchema,
+  itemDeleteSchema,
   itemGetSchema,
   itemUpdateSchema,
 } from '../modules/item/item.schema';
@@ -38,6 +39,14 @@ router
     verifyToken('shop'),
     validate(itemUpdateSchema),
     async (req, res) => await itemFactory().updateItem(req, res),
+  );
+
+router
+  .route('/delete/:id')
+  .delete(
+    verifyToken('shop'),
+    validate(itemDeleteSchema),
+    async (req, res) => await itemFactory().deleteItem(req, res),
   );
 
 export default router;

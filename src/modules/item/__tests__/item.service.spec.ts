@@ -14,12 +14,14 @@ let itemRepositoryMock: jest.Mocked<IItemRepository>;
 beforeEach(() => {
   itemRepositoryMock = {
     exists: jest.fn(),
+    existsById: jest.fn(),
     shopExists: jest.fn(),
     create: jest.fn(),
     list: jest.fn(),
     getById: jest.fn(),
     update: jest.fn(),
     itemCategoryExists: jest.fn(),
+    delete: jest.fn(),
   };
 
   itemService = new ItemService(itemRepositoryMock);
@@ -189,6 +191,34 @@ describe('Item Service', () => {
       await expect(itemService.update(updatedItem)).rejects.toThrowError(
         InternalServerError,
       );
+    });
+  });
+
+  describe('Delete Item', () => {
+    const itemDeleted: Item = {
+      id: 1,
+      name: 'Bolinea de Gorfwe',
+      shopId: 1,
+      price: 6.99,
+    };
+
+    it('should return the deleted Item', async () => {
+      itemRepositoryMock.existsById.mockResolvedValue(true);
+      itemRepositoryMock.delete.mockResolvedValue(itemDeleted);
+
+      const deletedItem = await itemService.delete('1');
+
+      expect(itemRepositoryMock.existsById).toBeCalledWith(1);
+      expect(itemRepositoryMock.delete).toBeCalledWith(1);
+      expect(deletedItem).toHaveProperty('id');
+    });
+
+    it('should throw a error if no Item found with the specified id', async () => {
+      itemRepositoryMock.exists.mockResolvedValue(false);
+
+      await expect(itemService.delete('1')).rejects.toThrowError(NotFoundError);
+
+      expect(itemRepositoryMock.delete).not.toHaveBeenCalled();
     });
   });
 });

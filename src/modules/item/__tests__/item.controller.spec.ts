@@ -145,4 +145,19 @@ describe('Item Controller Integration', () => {
       expect(response.body).toMatchObject(itemUpdated);
     });
   });
+
+  describe('DELETE /item/delete/:id', () => {
+    it('should return the deleted item', async () => {
+      const response = await request(app)
+        .delete('/item/delete/1')
+        .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
+        .set('x-api-key', `${process.env.API_KEY}`);
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toHaveProperty('id');
+
+      expect(response.body.id).toEqual(1);
+    });
+  });
 });

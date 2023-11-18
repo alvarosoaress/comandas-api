@@ -8,6 +8,12 @@ export const itemGetSchema = z.object({
   }),
 });
 
+export const itemDeleteSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
 export const itemSchema = createInsertSchema(item, {
   name: (schema) => schema.name.min(3),
 });
@@ -28,3 +34,4 @@ export const itemUpdateSchema = z.object({
 export type ItemGetType = z.infer<typeof itemGetSchema>['params'];
 export type ItemCreateType = z.infer<typeof itemCreateSchema>['body'];
 export type ItemUpdateType = z.infer<typeof itemUpdateSchema>['body'];
+export type ItemDeleteType = z.infer<typeof itemDeleteSchema>['params'];

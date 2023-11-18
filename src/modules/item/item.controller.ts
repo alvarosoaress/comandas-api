@@ -4,6 +4,7 @@ import {
   type ItemUpdateType,
   type ItemCreateType,
   type ItemGetType,
+  type ItemDeleteType,
 } from './item.schema';
 import { type ItemService } from './item.service';
 import verifyOwnership from '../../middleware/verifyOwnership';
@@ -58,5 +59,16 @@ export class ItemController {
     const updatedItem = await this.itemService.update(req.body);
 
     return res.status(200).json(updatedItem);
+  }
+
+  async deleteItem(req: Request<ItemDeleteType>, res: Response) {
+    verifyOwnership(
+      await itemOwnership(Number(req.user.id), req.params.id),
+      req,
+    );
+
+    const itemDeleted = await this.itemService.delete(req.params.id);
+
+    return res.status(200).json(itemDeleted);
   }
 }
