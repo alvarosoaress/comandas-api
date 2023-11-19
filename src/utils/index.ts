@@ -31,13 +31,13 @@ export async function formatOrder(
 
   // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
   await db.transaction(async (tx) => {
-    Array.from(itemsId).map(async (id) => {
+    for (const id of itemsId) {
       itemsInfo.push(
         (await tx.query.item.findFirst({
           where: eq(item.id, id),
         })) as unknown as Item,
       );
-    });
+    }
   });
 
   itemsInfo.forEach((item) => {
@@ -69,21 +69,21 @@ export async function formatOrder(
       result.groupId = order.groupId;
       result.customer = customerFound;
 
-      // Procura o item no array existente com base no ID
-      const existingItemIndex = result.items.findIndex(
+      const existingItem = result.items.find(
         (item) => item && item.id === order?.itemId,
       );
 
-      if (existingItemIndex !== -1) {
+      if (existingItem) {
         // Se o item já existe, apenas atualiza as quantidades e totais
-        if (result.items[existingItemIndex]) {
-          result.items[existingItemIndex].quantity += order.quantity;
-          result.items[existingItemIndex].total += order.total;
-        }
+        existingItem.quantity += order.quantity;
+        existingItem.total += order.total;
       } else {
         // Se o item não existe, adiciona um novo item ao array
         result.items.push({
-          ...itemsInfo[index],
+          // Pegando infos do item diretamente o array de Items gerado
+          // a partir do GET no DB
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          ...itemsInfo.find((item) => item.id === order.itemId)!,
           quantity: order.quantity,
           total: order.total,
         });
