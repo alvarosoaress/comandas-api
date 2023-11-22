@@ -878,7 +878,7 @@
       }
     },
     "/generalcategory/set": {
-      "put": {
+      "post": {
         "security": [
           {
             "appApiKey": [],
@@ -943,7 +943,7 @@
       }
     },
     "/generalcategory/remove": {
-      "put": {
+      "delete": {
         "security": [
           {
             "appApiKey": [],
