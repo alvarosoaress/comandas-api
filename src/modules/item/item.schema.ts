@@ -19,7 +19,9 @@ export const itemSchema = createInsertSchema(item, {
 });
 
 export const itemCreateSchema = z.object({
-  body: itemSchema.omit({ createdAt: true, id: true, updatedAt: true }),
+  body: itemSchema
+    .omit({ createdAt: true, id: true, updatedAt: true })
+    .merge(z.object({ quantity: z.number().positive().optional() })),
 });
 
 export const itemUpdateSchema = z.object({

@@ -16,6 +16,7 @@ import {
   type OrderCreateType,
 } from './order.schema';
 import { deleteObjKey, formatOrder } from '../../utils';
+import { BadRequestError } from '../../helpers/api.erros';
 
 export class OrderRepository implements IOrderRepository {
   async exists(shopId: number, tableId: number): Promise<boolean> {
@@ -82,6 +83,44 @@ export class OrderRepository implements IOrderRepository {
     const randomGroupId = Math.floor((Date.now() * Math.random()) / 1000);
 
     await db.transaction(async (tx) => {
+      // Verificando se há items em estoque
+      // Se tiver, atualiza o número disponível em estoque
+      for (const orderItem of orders) {
+        const itemInStock = await tx.query.item.findFirst({
+          where: eq(item.id, orderItem.itemId),
+          columns: { quantity: true },
+        });
+
+        if (
+          !itemInStock ||
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          itemInStock.quantity! <= 0 ||
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          itemInStock.quantity! < orderItem.quantity
+        )
+          throw new BadRequestError(
+            `Item ${orderItem.itemId} has no stock, requested stock: ${orderItem.quantity},curent item stock: ${itemInStock?.quantity}`,
+          );
+
+        // Mudando item para "Não disponível" caso o pedido atual vá zerar o seu estoque
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (itemInStock.quantity! - orderItem.quantity === 0) {
+          await tx
+            .update(item)
+            .set({
+              quantity: 0,
+              available: false,
+            })
+            .where(eq(item.id, orderItem.itemId));
+        } else {
+          await tx
+            .update(item)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            .set({ quantity: itemInStock.quantity! - orderItem.quantity })
+            .where(eq(item.id, orderItem.itemId));
+        }
+      }
+
       orders.forEach(async (orderInfo) => {
         await tx.insert(order).values({ ...orderInfo, groupId: randomGroupId });
       });

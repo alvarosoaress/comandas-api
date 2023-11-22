@@ -53,6 +53,7 @@ beforeAll(async () => {
     name: 'Bolo de murango',
     price: 71.8,
     shopId: 1,
+    quantity: 5,
   };
 
   const newQrCodeInfo: QrCodeCreateType = {

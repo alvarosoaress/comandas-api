@@ -1,0 +1,16 @@
+DATABASE_URL_TEMPLATE="databaseName://databaseUser:password@adress:port/"
+DATABASE_URL="databaseName://databaseUser:password@adress:port/"
+
+# Do not provide "schema" for the two variables above!
+
+DATABASE_HOST='databaseName'
+DATABASE_PORT='databasePort'
+DATABASE_USER='dbUser'
+DATABASE_PASSWORD='dbPassword'
+
+ACCESS_TOKEN_SECRET=SOME ACCESS SECRET
+REFRESH_TOKEN_SECRET=SOME REFRESH SECRET
+
+API_KEY=JWT_TOKEN WITH subject id === 'x-api-key'
+ADMIN_TOKEN=JWT_TOKEN WITH subject id === ADMIN
+

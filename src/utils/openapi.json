@@ -2754,6 +2754,16 @@
               }
             }
           },
+          "400": {
+            "description": "Item not available in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Shop not exists OR Customer not exists OR Item not exists OR Table not exists",
             "content": {
@@ -5634,6 +5644,11 @@
             "type": "integer",
             "example": 1
           },
+          "quantity": {
+            "type": "integer",
+            "example": 5,
+            "description": "Amount of items available in stock"
+          },
           "categoryId": {
             "type": "number",
             "example": 1
@@ -5670,6 +5685,16 @@
           "description": {
             "type": "string",
             "example": "Bolinho de murango"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 5,
+            "description": "Amount of items available in stock"
+          },
+          "available": {
+            "type": "boolean",
+            "example": true,
+            "description": "Item available in stock"
           },
           "temperature": {
             "type": "string",
@@ -5718,6 +5743,16 @@
               "type": "string",
               "enum": ["cold", "hot"]
             },
+            "quantity": {
+              "type": "integer",
+              "example": 5,
+              "description": "Amount of items available in stock"
+            },
+            "available": {
+              "type": "boolean",
+              "example": true,
+              "description": "Item available in stock"
+            },
             "createdAt": {
               "type": "string",
               "example": "2023-04-03T00:25:32.189Z"
@@ -5748,6 +5783,16 @@
           "categoryId": {
             "type": "number",
             "example": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 5,
+            "description": "Amount of items available in stock"
+          },
+          "available": {
+            "type": "boolean",
+            "example": true,
+            "description": "Item available in stock"
           },
           "description": {
             "type": "string",
@@ -5786,6 +5831,16 @@
             "type": "string",
             "enum": ["cold", "hot"]
           },
+          "quantity": {
+            "type": "integer",
+            "example": 5,
+            "description": "Amount of items available in stock"
+          },
+          "available": {
+            "type": "boolean",
+            "example": true,
+            "description": "Item available in stock"
+          },
           "createdAt": {
             "type": "string",
             "example": "2023-04-03T00:25:32.189Z"
@@ -5823,6 +5878,16 @@
             "type": "string",
             "example": "cold"
           },
+          "quantity": {
+            "type": "integer",
+            "example": 5,
+            "description": "Amount of items available in stock"
+          },
+          "available": {
+            "type": "boolean",
+            "example": true,
+            "description": "Item available in stock"
+          },
           "createdAt": {
             "type": "string",
             "example": "2023-04-03T00:25:32.189Z"
@@ -5859,6 +5924,16 @@
           "temperature": {
             "type": "string",
             "example": "cold"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 5,
+            "description": "Amount of items available in stock"
+          },
+          "available": {
+            "type": "boolean",
+            "example": true,
+            "description": "Item available in stock"
           },
           "createdAt": {
             "type": "string",

@@ -1,0 +1,9 @@
+DATABASE_URL="databaseName://databaseUser:password@adress:port/schema"
+
+ACCESS_TOKEN_SECRET=SOME ACCESS SECRET
+REFRESH_TOKEN_SECRET=SOME REFRESH SECRET
+
+PORT='apiPort'
+
+API_KEY=JWT_TOKEN WITH subject id === 'x-api-key'
+ADMIN_TOKEN=JWT_TOKEN WITH subject id === ADMIN

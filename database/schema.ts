@@ -220,6 +220,8 @@ export const item = mysqlTable('item', {
   price: real('price', { precision: 10, scale: 2 }).notNull(),
   temperature: mysqlEnum('temperature', ['cold', 'hot']),
   photoUrl: text('photo_url'),
+  quantity: int('quantity').default(1),
+  available: boolean('available').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });

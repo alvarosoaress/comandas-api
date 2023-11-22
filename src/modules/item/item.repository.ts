@@ -43,9 +43,11 @@ export class ItemRepository implements IItemRepository {
 
     const insertId = insertReturn[0].insertId;
 
-    itemInfo.id = insertId;
+    const newItem = await db.query.item.findFirst({
+      where: eq(item.id, insertId),
+    });
 
-    return itemInfo;
+    return newItem;
   }
 
   async getById(itemId: string): Promise<Item | undefined> {
