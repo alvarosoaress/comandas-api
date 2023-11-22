@@ -34,7 +34,7 @@ describe('Shop Controller Integration', () => {
     it('should create a shop', async () => {
       const newShopInfo: ShopCreateType = {
         shopInfo: {
-          tables: 5,
+          tables: 1,
         },
         userInfo: {
           name: 'Francesco Virgulini',
@@ -205,7 +205,7 @@ describe('Shop Controller Integration', () => {
           shop: {
             userId: 1,
             addressId: 1,
-            tables: 5,
+            tables: 1,
             photoUrl: null,
             createdAt: expect.any(String),
             updatedAt: expect.any(String),

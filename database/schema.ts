@@ -66,7 +66,7 @@ export const shop = mysqlTable('shop', {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
-  tables: int('tables'),
+  tables: int('tables').default(1).notNull(),
   photoUrl: text('photo_url'),
   rating: real('rating', { precision: 10, scale: 2 }).default(0),
   createdAt: timestamp('createdAt').defaultNow().notNull(),

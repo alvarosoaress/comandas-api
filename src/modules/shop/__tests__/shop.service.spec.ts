@@ -9,6 +9,9 @@ import {
   type Review,
 } from '../../../../database/schema';
 import { NotFoundError } from '../../../helpers/api.erros';
+import { type IQrCodeRepository } from '../../qrCode/IqrCode.repository';
+import { type QrCodeCreateType } from '../../qrCode/qrCode.schema';
+import { QrCodeService } from '../../qrCode/qrCode.service';
 import { type IShopRepository } from '../Ishop.repository';
 import {
   type ShopUpdateType,
@@ -21,7 +24,22 @@ describe('Shop Service', () => {
   let shopService: ShopService;
   let shopRepositoryMock: jest.Mocked<IShopRepository>;
 
+  let qrCodeService: QrCodeService;
+  let qrCodeRepositoryMock: jest.Mocked<IQrCodeRepository>;
+
   beforeEach(() => {
+    qrCodeRepositoryMock = {
+      create: jest.fn(),
+      list: jest.fn(),
+      exists: jest.fn(),
+      existsShop: jest.fn(),
+      delete: jest.fn(),
+      existsByTable: jest.fn(),
+      getById: jest.fn(),
+    };
+
+    qrCodeService = new QrCodeService(qrCodeRepositoryMock);
+
     shopRepositoryMock = {
       create: jest.fn(),
       list: jest.fn(),
@@ -35,7 +53,7 @@ describe('Shop Service', () => {
       getReviews: jest.fn(),
     };
 
-    shopService = new ShopService(shopRepositoryMock);
+    shopService = new ShopService(shopRepositoryMock, qrCodeService);
   });
 
   afterEach(() => {
@@ -67,7 +85,7 @@ describe('Shop Service', () => {
 
     const newShopInfo: ShopCreateType = {
       shopInfo: {
-        tables: 5,
+        tables: 1,
       },
       userInfo: {
         name: 'Francesco Virgulini',
@@ -84,8 +102,20 @@ describe('Shop Service', () => {
       },
     };
 
-    it('should create a shop', async () => {
+    const qrCodeInfo: QrCodeCreateType = {
+      shopId: 1,
+      table: 1,
+    };
+
+    it('should create a shop with qrCodes', async () => {
       shopRepositoryMock.create.mockResolvedValue(shopInfo);
+      qrCodeRepositoryMock.existsByTable.mockResolvedValue(false);
+      qrCodeRepositoryMock.existsShop.mockResolvedValue(true);
+      qrCodeRepositoryMock.create.mockResolvedValue({
+        ...qrCodeInfo,
+        id: 1,
+        qrCodeUrl: 'something.com',
+      });
 
       const newShop = await shopService.create(newShopInfo);
 

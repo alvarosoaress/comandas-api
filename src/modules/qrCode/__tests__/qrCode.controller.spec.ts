@@ -21,7 +21,7 @@ beforeAll(async () => {
   // um shop poder existir
   const newShopInfo: ShopCreateType = {
     shopInfo: {
-      tables: 5,
+      tables: 1,
     },
     userInfo: {
       name: 'Francesco Virgulini',
@@ -59,9 +59,9 @@ describe('QrCode Controller Integration', () => {
         .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
         .set('x-api-key', `${process.env.API_KEY}`);
 
-      expect(response.status).toBe(200);
-
-      expect(response.body).toHaveProperty('id');
+      // Esperando resposta 409 pois o shop já terá um qrCode
+      // O registro cria um qrCode para cada mesa do shop
+      expect(response.status).toBe(409);
     });
   });
 

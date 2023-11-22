@@ -1616,6 +1616,7 @@
         ],
         "tags": ["Shop"],
         "summary": "Create a new shop",
+        "description": "<h2>It creates all the shop's qrCodes as well! The amount of qrCodes will be the same as the shop's tables</h2>",
         "requestBody": {
           "required": true,
           "content": {
@@ -4867,7 +4868,7 @@
       },
       "ShopCreateSchema": {
         "type": "object",
-        "required": ["userInfo, addressInfo"],
+        "required": ["userInfo, addressInfo, shopInfo"],
         "properties": {
           "userInfo": {
             "type": "object",
@@ -4898,10 +4899,10 @@
           },
           "shopInfo": {
             "type": "object",
+            "required": ["tables"],
             "properties": {
               "tables": {
                 "type": "integer",
-                "nullable": true,
                 "example": 8
               },
               "photoUrl": {

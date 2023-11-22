@@ -10,7 +10,7 @@ import { type ShopSchedule, shop } from '../../../database/schema';
 // });
 
 export const shopSchema = createInsertSchema(shop, {
-  tables: z.number().optional(),
+  tables: z.number(),
 }).omit({
   addressId: true,
   createdAt: true,
@@ -20,7 +20,7 @@ export const shopSchema = createInsertSchema(shop, {
 
 export const shopCreateSchema = z.object({
   body: z.object({
-    shopInfo: shopSchema.optional(),
+    shopInfo: shopSchema,
     userInfo: userSchema.omit({
       createdAt: true,
       id: true,

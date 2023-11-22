@@ -4,11 +4,10 @@
 
 import app from '../../../app';
 import request from 'supertest';
-import { type UserCreateType } from '../user.schema';
-import { type AddressCreateType } from '../../address/address.schema';
 import { type UserSafe } from '../../../../database/schema';
 import path from 'path';
 import dotenv from 'dotenv';
+import { type ShopCreateType } from '../../shop/shop.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -19,23 +18,28 @@ jest.setTimeout(10000);
 beforeAll(async () => {
   // Pré criando informações necessárias para
   // um user poder existir
-  const userInfo: UserCreateType = {
-    name: 'Francesco Virgulini',
-    email: 'maquinabeloz@tute.italia',
-    password: 'supersafepasswordnobodywillnowhihi123',
-  };
-  const addressInfo: AddressCreateType = {
-    number: 69,
-    street: 'Virgulini',
-    neighborhood: 'Francesco',
-    city: 'City Test',
-    state: 'Tute',
-    country: 'Italia',
+  const newShopInfo: ShopCreateType = {
+    shopInfo: {
+      tables: 1,
+    },
+    userInfo: {
+      name: 'Francesco Virgulini',
+      email: 'maquinabeloz@tute.italia',
+      password: 'supersafepasswordnobodywillnowhihi123',
+    },
+    addressInfo: {
+      number: 69,
+      street: 'Virgulini',
+      neighborhood: 'Francesco',
+      city: 'City Test',
+      state: 'Tute',
+      country: 'Italia',
+    },
   };
 
   await request(app)
     .post('/shop/create')
-    .send({ userInfo, addressInfo })
+    .send(newShopInfo)
     .set('Authorization', `bearer ${process.env.ADMIN_TOKEN}`)
     .set('x-api-key', `${process.env.API_KEY}`);
 });

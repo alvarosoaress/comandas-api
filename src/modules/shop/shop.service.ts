@@ -9,6 +9,7 @@ import {
   type Review,
 } from '../../../database/schema';
 import { InternalServerError, NotFoundError } from '../../helpers/api.erros';
+import { type QrCodeService } from '../qrCode/qrCode.service';
 
 import { type IShopRepository } from './Ishop.repository';
 import {
@@ -19,12 +20,27 @@ import {
 } from './shop.schema';
 
 export class ShopService {
-  constructor(private readonly shopRepository: IShopRepository) {}
+  constructor(
+    private readonly shopRepository: IShopRepository,
+    private readonly qrCodeService: QrCodeService,
+  ) {}
 
   async create(info: ShopCreateType): Promise<ShopExtendedSafe> {
     const newShop = await this.shopRepository.create(info);
 
     if (!newShop) throw new InternalServerError();
+
+    const requests = Array.from(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      { length: newShop.tables! },
+      async (_, index) =>
+        await this.qrCodeService.create({
+          shopId: newShop.userId,
+          table: index + 1,
+        }),
+    );
+
+    await Promise.all(requests);
 
     return newShop;
   }
