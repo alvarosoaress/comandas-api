@@ -68,7 +68,7 @@ yarn dev
 
 Esse projeto conta com testes desenvolvidos usando Jest. Eles foram criados para certificar que o código ainda funciona e a regra de negócio ainda está de acordo após alterações.
 
-Cada module da API conta com testes de serviço, quais testam a lógica e regra de negócio, e de integração, quais testam a integração do código com o banco de dados.
+Cada module da API conta com testes unitários, quais testam a lógica e regra de negócio, e de integração, quais testam a integração do código com o banco de dados.
 
 Os testes de integração criam schemas temporários dentro do seu MySQL para cada module da API, os schemas são automaticamente destruídos ao fim de cada teste.
 
