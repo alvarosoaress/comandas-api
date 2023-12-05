@@ -18,7 +18,7 @@ API RESTful desenvolvida com Node.js, TypeScript, Express, MySQL, DrizzleORM e c
 ![MySql](https://img.shields.io/badge/MySQL-20232A?style=for-the-badge&logo=mysql&logoColor=005C84)
 ![NodeJs](https://img.shields.io/badge/Node%20js-20232A?style=for-the-badge&logo=nodedotjs&logoColor=339933)
 ![Swagger](https://img.shields.io/badge/Swagger-20232A?style=for-the-badge&logo=Swagger&logoColor=85EA2D)
-![Jest](https://img.shields.io/badge/JWT-20232A?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-20232A?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
 ![Jest](https://img.shields.io/badge/Jest-20232A?style=for-the-badge&logo=jest&logoColor=C21325)
 ![Drizzle](https://img.shields.io/badge/Drizzle%20ORM-20232A?style=for-the-badge&logo=drizzle&logoColor=339933)
 
@@ -89,3 +89,11 @@ yarn migrate
 - Quando executado os testes, é automaticamente checado se existe alguma migration já realizada, se não houver, a migration é criada.
 
 - Verifique a pasta `database/migrations` e veja se há apenas um .sql dentro dela, caso exista mais de um, mova temporariamente a pasta `migrations` para fora de `database` e rode os testes novamente.
+
+<!--Comandas API>
+<!--2>
+<!--https://comandas-api.vercel.app/docs/>
+<!--TypeScript;TsNode;Express;MySQL;Node.JS;Swagger;JsonWebTokens;Jest;Drizzle>
+<!-->
+<!--API RESTful desenvolvida com Node.js, TypeScript, Express, MySQL, DrizzleORM e com testes Jest. Ela inclui autenticação de usuário usando JSON Web Tokens (JWT), documentação Swagger para uma exploração fácil da API e segue uma estrutura baseada no Clean Architecture e desenvolvimento orientado a testes (TDD). Este projeto visa fornecer um backend robusto e escalável para os aplicativos do projeto Comandas >
+<!--available>
