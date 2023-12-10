@@ -90,10 +90,12 @@ yarn migrate
 
 - Verifique a pasta `database/migrations` e veja se há apenas um .sql dentro dela, caso exista mais de um, mova temporariamente a pasta `migrations` para fora de `database` e rode os testes novamente.
 
-<!--Comandas API>
-<!--2>
-<!--https://comandas-api.vercel.app/docs/>
-<!--TypeScript;TsNode;Express;MySQL;Node.JS;Swagger;JsonWebTokens;Jest;Drizzle>
-<!-->
-<!--API RESTful desenvolvida com Node.js, TypeScript, Express, MySQL, DrizzleORM e com testes Jest. Ela inclui autenticação de usuário usando JSON Web Tokens (JWT), documentação Swagger para uma exploração fácil da API e segue uma estrutura baseada no Clean Architecture e desenvolvimento orientado a testes (TDD). Este projeto visa fornecer um backend robusto e escalável para os aplicativos do projeto Comandas >
-<!--available>
+<!--
+Comandas API
+2
+https://comandas-api.vercel.app/docs/
+TypeScript;TsNode;Express;MySQL;Node.JS;Swagger;JsonWebTokens;Jest;Drizzle
+
+API RESTful desenvolvida com Node.js, TypeScript, Express, MySQL, DrizzleORM e com testes Jest. Ela inclui autenticação de usuário usando JSON Web Tokens (JWT), documentação Swagger para uma exploração fácil da API e segue uma estrutura baseada no Clean Architecture e desenvolvimento orientado a testes (TDD). Este projeto visa fornecer um backend robusto e escalável para os aplicativos do projeto Comandas
+available
+-->
