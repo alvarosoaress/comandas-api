@@ -99,6 +99,6 @@ Comandas API
 https://comandas-api.vercel.app/docs/
 TypeScript;TsNode;Express;MySQL;Node.JS;Swagger;JsonWebTokens;Jest;Drizzle
 
-API RESTful desenvolvida com Node.js, TypeScript, Express, MySQL, DrizzleORM e com testes Jest. Ela inclui autenticação de usuário usando JSON Web Tokens (JWT), documentação Swagger para uma exploração fácil da API e segue uma estrutura baseada no Clean Architecture e desenvolvimento orientado a testes (TDD). Este projeto visa fornecer um backend robusto e escalável para os aplicativos do projeto Comandas
+RESTful API developed with Node.js, TypeScript, Express, MySQL, DrizzleORM, and Jest tests. It includes user authentication using JSON Web Tokens (JWT), Swagger documentation for easy API exploration, and follows a structure based on Clean Architecture and Test-Driven Development (TDD). This project aims to provide a robust and scalable backend for the Comandas project applications.
 available
 -->
